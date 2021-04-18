@@ -253,4 +253,34 @@ public class ArbolBin {
         return cadena2;
   
     }
+    public ArbolBin clone (){
+        ArbolBin clone= new ArbolBin ();
+        if (this.raiz!=null){
+            NodoArbol aux2=new NodoArbol (this.raiz.getElem(),null,null);
+            clone.raiz=aux2;
+            auxClon (this.raiz, clone, aux2);
+            
+        }
+        return clone;
+       
+    }
+    private void auxClon (NodoArbol nodo, ArbolBin clone, NodoArbol aux2){
+        //precondicion nodo distinto de null
+
+        if (nodo.getIzquierdo()!=null){
+            aux2.setIzquierdo( new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
+        }
+        if (nodo.getDerecho()!=null){
+             aux2.setDerecho(new NodoArbol (nodo.getDerecho().getElem(),null,null));
+        }
+        if (nodo.getIzquierdo()!=null){
+            aux2=aux2.getIzquierdo();
+            auxClon (nodo.getIzquierdo(),clone, aux2);
+        }
+        if (nodo.getDerecho()!=null){
+            aux2=aux2.getDerecho();
+             auxClon (nodo.getDerecho(),clone, aux2);
+        }
+        
+    }
 }

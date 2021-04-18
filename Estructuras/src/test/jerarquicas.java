@@ -21,22 +21,23 @@ public class jerarquicas {
         arbol.insertar('A', null, 'I');
         arbol.insertar('B', 'A', 'I');
         arbol.insertar('C', 'A', 'D');
-        arbol.insertar('D', 'B', 'I');
-        arbol.insertar('E', 'C', 'I');
-        arbol.insertar('F', 'C', 'D');
-        arbol.insertar('G', 'E', 'I');
-        arbol.insertar('H', 'E', 'D');
+//        arbol.insertar('D', 'B', 'I');
+//        arbol.insertar('E', 'C', 'I');
+//        arbol.insertar('F', 'C', 'D');
+//        arbol.insertar('G', 'E', 'I');
+//        arbol.insertar('H', 'E', 'D');
         
        System.out.println (arbol.toString());
+       System.out.println (arbol.clone().toString());
         
-        
-        System.out.println ("Espera: [A,B,D,C,E,G,H,F]");
+     /*  System.out.println ("Espera: [A,B,D,C,E,G,H,F]");
         System.out.println (arbol.listarPreorden().toString());
         System.out.println ("Espera: [D,B,A,G,E,H,C,F]");
         System.out.println (arbol.listarInorden().toString());
         System.out.println ("Espera: [D,B,G,H,E,F,C,A]");
         System.out.println (arbol.listarPosorden().toString());
-        
+     */   
+     
     }
     
 }
