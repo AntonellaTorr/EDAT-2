@@ -266,20 +266,22 @@ public class ArbolBin {
     }
     private void auxClon (NodoArbol nodo, ArbolBin clone, NodoArbol aux2){
         //precondicion nodo distinto de null
-
+        //si eixste un nodo izquierdo creo un nodo nuevo a la izquierda de mi nodo raiz
         if (nodo.getIzquierdo()!=null){
             aux2.setIzquierdo( new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
         }
+        //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
         if (nodo.getDerecho()!=null){
              aux2.setDerecho(new NodoArbol (nodo.getDerecho().getElem(),null,null));
         }
+        //si el izquierdo existe llamo a auxClon con ese nodo
         if (nodo.getIzquierdo()!=null){
-            aux2=aux2.getIzquierdo();
-            auxClon (nodo.getIzquierdo(),clone, aux2);
+            
+            auxClon (nodo.getIzquierdo(),clone, aux2.getIzquierdo());
         }
+        //si el derecho existe llamo a auxClon con ese nodo
         if (nodo.getDerecho()!=null){
-            aux2=aux2.getDerecho();
-             auxClon (nodo.getDerecho(),clone, aux2);
+             auxClon (nodo.getDerecho(),clone, aux2.getDerecho());
         }
         
     }
