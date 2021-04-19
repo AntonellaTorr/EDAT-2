@@ -13,7 +13,7 @@ public class Cola {
     private Object [] arreglo;
     private int frente;
     private int fin;
-    private static final int TAMANIO=5;
+    private static final int TAMANIO=10;
     
     public Cola (){
         this.arreglo=new Object [this.TAMANIO];

@@ -7,29 +7,24 @@ package estructuras;
 
 import jerarquicas.ArbolBin;
 
-/**
- *
- * @author Anto
- */
 public class Estructuras {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-               ArbolBin arbol= new ArbolBin ();
-        arbol.insertar('A', null, 'I');
-        arbol.insertar('B', 'A', 'I');
-        arbol.insertar('C', 'A', 'D');
-        arbol.insertar('D', 'B', 'I');
-        arbol.insertar('E', 'C', 'I');
-        arbol.insertar('F', 'C', 'D');
-        arbol.insertar('G', 'E', 'I');
-        arbol.insertar('H', 'E', 'D');
-        
-   System.out.println (arbol.toString());
-       System.out.println (arbol.clone().toString());
+    public static void main(String[] arg) {
+        ArbolBin arbol= new ArbolBin ();
+        arbol.insertar(1,null, 'I');
+        arbol.insertar(2,1, 'I');
+        arbol.insertar(3,1, 'D');
+        arbol.insertar(4,2, 'I');
+        arbol.insertar(5,2, 'D');
+        arbol.insertar(6,3, 'I');
+        /*  1
+          2   3
+        4  5 6
+        */
+        System.out.println (arbol.listarNiveles().toString());
     }
-    
+
+
 }
+
+
+

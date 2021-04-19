@@ -5,6 +5,8 @@
  */
 package jerarquicas;
 import lineales.dinamicas.Lista;
+import lineales.dinamicas.Cola;
+import lineales.dinamicas.Nodo;
 /**
  *
  * @author Anto
@@ -90,6 +92,7 @@ public class ArbolBin {
         else{
             mayorLongitud=longitudIzq;
         }
+        //max math entre ambos
         return mayorLongitud;
     }
     public int nivel (Object elem){
@@ -126,8 +129,35 @@ public class ArbolBin {
         return encontrado;
 }
 
-   
-
+   public Object padre (Object elem){
+       Object padre=null;
+       if (this.raiz!=null){
+           //si se busca en padre de la raiz devolvemos null
+           if (!(this.raiz.getElem().equals(elem))){
+              padre=auxPadre(this.raiz,elem).getElem(); 
+           }
+       }
+       return padre;
+   }
+   private NodoArbol auxPadre (NodoArbol nodo,Object elem ){
+       NodoArbol padre=null;
+       //estoy parada un nodo mas arriba de los que comparo
+       if ( (nodo.getIzquierdo()!=null && nodo.getIzquierdo().getElem().equals(elem))|| (nodo.getDerecho()!=null && nodo.getDerecho().getElem().equals(elem))){
+           padre=nodo;
+       }
+       else{
+           if (nodo.getIzquierdo()!=null){
+               padre=auxPadre (nodo.getIzquierdo(), elem);
+               //si no lo encontre de ese lado llamo al otro
+               if (padre==null && nodo.getDerecho()!=null){
+                    padre=auxPadre(nodo.getDerecho(),elem);
+               }
+              
+           }
+       }
+       return padre;
+   }
+           //nodo=Anterior
     public Lista listarPreorden (){
         Lista lista=null;
         if (this.raiz!=null){
@@ -211,6 +241,33 @@ public class ArbolBin {
         }
         return pos;
     }
+    public Lista listarNiveles (){
+        //este metodo devuelve una lista con los elementos del arbol almacenados por niveles
+        Lista lista= new Lista ();
+        int i=1;
+        Cola Q= new Cola ();
+        Q.poner(this.raiz);
+        while (!Q.esVacia()){
+            //obtenemos el nodo de la cola
+            NodoArbol nodoActual= (NodoArbol) Q.obtenerFrente();
+            //lo sacamos
+            Q.sacar();
+            //lo insertamos en la lista
+            lista.insertar(nodoActual.getElem(), i);
+            //si tiene hijo izquierdo lo pongo en la cola
+            if (nodoActual.getIzquierdo()!=null){
+                Q.poner(nodoActual.getIzquierdo());
+            }
+            //si tiene hijo derecho lo pongo en la cola 
+            if (nodoActual.getDerecho()!=null){
+                Q.poner(nodoActual.getDerecho());
+            }
+            i++;
+         
+        }
+        return lista;
+    }
+
     public void vaciar (){
         this.raiz=null;
     }
@@ -222,6 +279,7 @@ public class ArbolBin {
        }
        return cadena;
    }
+   //por que cuando llamo recursivo hay que pasarle el nodo y el nodo desde afuera no puedo
     private String stringAux (NodoArbol nodo, String cadena){
        //precondicion nodo debe ser distinto de nulo
        String cadena2=cadena;
