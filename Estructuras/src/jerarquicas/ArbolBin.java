@@ -343,4 +343,38 @@ public class ArbolBin {
         }
         
     }
-}
+    public Lista frontera (){
+        Lista lista= new Lista ();
+        //si el arbol no es vacio
+        if (this.raiz!=null){
+            //verifico si la raiz es una hoja
+            if (this.raiz.getDerecho()==null && this.raiz.getIzquierdo()==null){
+                lista.insertar(this.raiz, 1);
+            }
+            //si no lo es llamo al metodo aux
+            else{
+                fronteraAux(this.raiz,lista,1);
+            }
+        }
+        return lista;
+    }
+    
+    private int fronteraAux(NodoArbol nodo,Lista lista,int pos){
+        //pongo en la lista el elemento que sea hoja
+        if (nodo.getDerecho()==null && nodo.getIzquierdo()==null){
+            lista.insertar(nodo.getElem(), pos);
+            pos++;
+        }
+        else{
+            //llamo recursivamente con cada lado
+            //puede que tenga hijo de un solo lado asi que verifico para no llamar con un elemento nulo
+            if (nodo.getIzquierdo()!=null){
+                fronteraAux(nodo.getIzquierdo(), lista, pos);
+            }
+            if (nodo.getDerecho()!=null){
+                fronteraAux(nodo.getDerecho(),lista,pos);
+            }  
+        }
+       return pos;
+    }
+ }

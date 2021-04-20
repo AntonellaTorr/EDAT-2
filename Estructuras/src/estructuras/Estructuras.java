@@ -12,7 +12,20 @@ import lineales.dinamicas.Lista;
 public class Estructuras {
     static String sOk = "OK!", sErr = "ERROR";
     public static void main(String[] arg) {
-        testCola();
+        ArbolBin arbol=new ArbolBin ();
+        /*
+                1
+             2     3
+           4   5   6
+        */
+        arbol.insertar(1,null, 'I');
+        arbol.insertar(2,1, 'I');
+        arbol.insertar(3,1, 'D');
+        arbol.insertar(4,2, 'I');        
+        arbol.insertar(5,2, 'D');        
+        arbol.insertar(6,3, 'I');   
+        arbol.insertar(7,6, 'I');   
+        System.out.println (arbol.frontera().toString());
     }
     public static void testCola() {
 		System.out.println("COMIENZO TEST COLA");
