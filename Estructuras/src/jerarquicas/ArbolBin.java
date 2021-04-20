@@ -273,13 +273,13 @@ public class ArbolBin {
     }
     @Override
    public String toString (){
-       String cadena="";
+       String cadena="Arbol vacio";
        if (this.raiz!=null){
+           cadena="";
            cadena=stringAux(this.raiz, cadena);
        }
        return cadena;
    }
-   //por que cuando llamo recursivo hay que pasarle el nodo y el nodo desde afuera no puedo
     private String stringAux (NodoArbol nodo, String cadena){
        //precondicion nodo debe ser distinto de nulo
        String cadena2=cadena;
