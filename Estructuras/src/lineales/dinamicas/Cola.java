@@ -113,7 +113,7 @@ public class Cola {
         //este metodo que es a fines de debuggin crea una cadena con todos los elementos de la cola
         String cadena="";
         if (this.esVacia()){
-            cadena="Cola vacia";
+            cadena="[]";
         }
         else{ 
             cadena="[";

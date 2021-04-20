@@ -82,13 +82,16 @@ public class Cola {
         if (!this.esVacia()){
             cadena="[";
             while (i!=this.fin){
-                cadena+=this.arreglo[i].toString()+ " ";
+                cadena+=this.arreglo[i].toString();
                 i=(i+1)% this.TAMANIO;
+                if (i!=this.fin){
+                    cadena+=" ";
+                }
             }
             cadena+="]";
         }
         else{
-            cadena="La cola esta vacia";
+            cadena="[]";
         }
         
         return cadena;
