@@ -4,275 +4,327 @@
  * and open the template in the editor.
  */
 package jerarquicas;
+
 import lineales.dinamicas.Lista;
 import lineales.dinamicas.Cola;
 import lineales.dinamicas.Nodo;
+
 /**
  *
  * @author Anto
  */
 public class ArbolBin {
+
     NodoArbol raiz;
-    
-    public ArbolBin (){
-        this.raiz=null;
+
+    public ArbolBin() {
+        this.raiz = null;
     }
-    public boolean insertar (Object nuevoElem, Object elemPadre, char lugar){
-        boolean exito=true;
-        if (this.raiz==null){
-            this.raiz=new NodoArbol (nuevoElem,null,null);
-        }
-        else{
-            NodoArbol nodoPadre=obtenerNodo (this.raiz, elemPadre);
-            if (nodoPadre!=null){
-                if( lugar=='I' && nodoPadre.getIzquierdo()==null){
-                    nodoPadre.setIzquierdo(new NodoArbol (nuevoElem,null,null));
-                }
-                else{
-                    if(lugar=='D' && nodoPadre.getDerecho()==null){
-                        nodoPadre.setDerecho(new NodoArbol (nuevoElem, null,null));
-                    }
-                    else{
-                        exito=false;
-                    }
-                }
-            }
-            else{
-                exito=false;
-            }
-        }
-        return exito;
-    }
-    private NodoArbol obtenerNodo (NodoArbol n, Object buscado){
-        NodoArbol resultado=null;
-        if (n!=null){
-            if (n.getElem().equals(buscado)){
-                resultado=n;
-            }
-            else{
-                resultado=obtenerNodo (n.getIzquierdo(),buscado);
-                if (resultado==null){
-                    resultado=obtenerNodo (n.getDerecho(), buscado);
+
+    private NodoArbol obtenerNodo(NodoArbol n, Object buscado) {
+        NodoArbol resultado = null;
+        if (n != null) {
+            if (n.getElem().equals(buscado)) {
+                resultado = n;
+            } else {
+                resultado = obtenerNodo(n.getIzquierdo(), buscado);
+                if (resultado == null) {
+                    resultado = obtenerNodo(n.getDerecho(), buscado);
                 }
             }
         }
         return resultado;
     }
-    public boolean esVacio (){
-        return (this.raiz==null);
+
+    public boolean insertar(Object nuevoElem, Object elemPadre, char lugar) {
+        boolean exito = true;
+        if (this.raiz == null) {
+            this.raiz = new NodoArbol(nuevoElem, null, null);
+        } else {
+            NodoArbol nodoPadre = obtenerNodo(this.raiz, elemPadre);
+            if (nodoPadre != null) {
+                if (lugar == 'I' && nodoPadre.getIzquierdo() == null) {
+                    nodoPadre.setIzquierdo(new NodoArbol(nuevoElem, null, null));
+                } else {
+                    if (lugar == 'D' && nodoPadre.getDerecho() == null) {
+                        nodoPadre.setDerecho(new NodoArbol(nuevoElem, null, null));
+                    } else {
+                        exito = false;
+                    }
+                }
+            } else {
+                exito = false;
+            }
+        }
+        return exito;
     }
-    
-    public int altura (){
+
+    public boolean esVacio() {
+        return (this.raiz == null);
+    }
+
+    public void vaciar() {
+        this.raiz = null;
+    }
+
+    public int nivel(Object elem) {
+        //este metodo retorn el nivel donde se encuentra un determinado elemento en el arbol
+        int nivel = -1;
+        //si el arbol no esta vacio 
+        nivel = encontrarNivel(this.raiz, elem, -1);
+
+        return nivel;
+    }
+
+    private int encontrarNivel(NodoArbol nodo, Object elem, int nivel) {
+        int encontrado = -1;
+        //si el nodo es una hoja y el elemento esta en dicho nivel retornamos 0
+        if (nodo != null) {
+            if (nodo.getElem().equals(elem)) {
+                encontrado = nivel + 1;
+            } else {
+                encontrado = encontrarNivel(nodo.getIzquierdo(), elem, nivel + 1);
+                if (encontrado == -1) {
+                    encontrado = encontrarNivel(nodo.getDerecho(), elem, nivel + 1);
+                }
+            }
+        }
+
+        return encontrado;
+    }
+
+    private int encontrarNivel2(NodoArbol nodo, Object elem, int nivel) {
+        int encontrado = -1;
+        //si el nodo es una hoja y el elemento esta en dicho nivel retornamos 0
+        if (nodo != null) {
+            if (nodo.getElem().equals(elem)) {
+                encontrado = nivel + 1;
+            } else {
+                //ver de sacar esto 
+                if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
+                    encontrado = -1;
+                } else {
+                    if (nodo.getIzquierdo() != null) {
+                        encontrado = encontrarNivel(nodo.getIzquierdo(), elem, nivel + 1);
+                    }
+                    if (nodo.getDerecho() != null && encontrado == -1) {
+                        //i=nivel;
+                        encontrado = encontrarNivel(nodo.getDerecho(), elem, nivel + 1);
+                    }
+                }
+            }
+        }
+
+        return encontrado;
+    }
+
+    public int altura() {
+        return medirAltura(this.raiz);
+    }
+
+    private int medirAltura(NodoArbol n) {
+        int longitud = -1, longitud2 = -1;
+        if (n != null) {
+            if (n.getIzquierdo() == null && n.getDerecho() == null) {
+                longitud = 0;
+            } else {
+                longitud = medirAltura(n.getIzquierdo()) + 1;
+                longitud2 = medirAltura(n.getIzquierdo()) + 1;
+
+            }
+        }
+        return Math.max(longitud, longitud2);
+    }
+
+    /*private int altura2 (){
         //este metodo devuelve la altura del arbol desde la raiz 
         int altura=-1;
         if (this.raiz!=null){
-            altura=calcularLongitud(this.raiz);
+            altura=calcularAltura(this.raiz);
         }
         return altura;
     }
-    private int calcularLongitud(NodoArbol nodo){
+    //dejar el de nico
+    private int calcularAltura(NodoArbol nodo){
         //este metodo calcula la longitud de un arbol
-        int longitudDer=-1, longitudIzq=-1, mayorLongitud;
-        if ( nodo.getIzquierdo()==null && nodo.getDerecho()==null){
+        int longitudDer=-1, longitudIzq=-1;
+        if (nodo!=null){
+             if ( nodo.getIzquierdo()==null && nodo.getDerecho()==null){
                 longitudDer=0;
                 longitudIzq=0;
-        }
-        else{
-            if (nodo.getIzquierdo()!=null){
-                    longitudIzq=1+calcularLongitud(nodo.getIzquierdo ());
             }
-            if (nodo.getDerecho()!=null){
-                    longitudDer= 1+calcularLongitud(nodo.getDerecho ());
-            }
+            else{
+                if (nodo.getIzquierdo()!=null){
+                        longitudIzq=1+calcularAltura(nodo.getIzquierdo ());
+                }
+                if (nodo.getDerecho()!=null){
+                        longitudDer= 1+calcularAltura(nodo.getDerecho ());
+                }
                
-            }
-        if (longitudDer>=longitudIzq){
-            mayorLongitud=longitudDer;
         }
-        else{
-            mayorLongitud=longitudIzq;
-        }
-        //max math entre ambos
-        return mayorLongitud;
-    }
-    public int nivel (Object elem){
-        //este metodo retorn el nivel donde se encuentra un determinado elemento en el arbol
-       int nivel=-1;
-       //si el arbol no esta vacio 
-       if (this.raiz!=null){
-           nivel=encontrarNivel(this.raiz, elem,-1);
         }
        
-       return nivel;
+        return  Math.max(longitudIzq, longitudDer);
+    }
+     */
+    public Object padre(Object elem) {
+        return obtenerElemPadre(this.raiz, elem);
     }
 
-    private int encontrarNivel (NodoArbol nodo, Object elem, int nivel){
-        int encontrado=-1;
-        //si el nodo es una hoja y el elemento esta en dicho nivel retornamos 0
-        if (nodo.getElem().equals(elem)){
-            encontrado= nivel+1;
-        }
-        else {
-            if (nodo.getIzquierdo()==null &&  nodo.getDerecho()==null ){
-                encontrado=-1;
-            }
-            else{
-                if (nodo.getIzquierdo ()!=null){
-                    encontrado=encontrarNivel(nodo.getIzquierdo(),elem,nivel+1);
-                }
-                if (nodo.getDerecho()!=null && encontrado==-1 ){
-                    //i=nivel;
-                    encontrado=encontrarNivel(nodo.getDerecho(),elem,nivel+1);
-                }  
-            }   
-        }
-        return encontrado;
-}
+    private Object obtenerElemPadre(NodoArbol n, Object x) {
+        Object elemento = null;
+        if (n != null) {
+            //equals
+            if (n.getIzquierdo() != null && n.getIzquierdo().getElem().equals(x) || n.getDerecho() != null && n.getDerecho().getElem().equals(x)) {
+                elemento = n.getElem();
+            } else {
+                elemento = obtenerElemPadre(n.getIzquierdo(), x);
 
-   public Object padre (Object elem){
-       Object padre=null;
-       if (this.raiz!=null){
-           //si se busca en padre de la raiz devolvemos null
-           if (!(this.raiz.getElem().equals(elem))){
-              padre=auxPadre(this.raiz,elem).getElem(); 
-           }
-       }
-       return padre;
-   }
-   private NodoArbol auxPadre (NodoArbol nodo,Object elem ){
-       NodoArbol padre=null;
-       //estoy parada un nodo mas arriba de los que comparo
-       if ( (nodo.getIzquierdo()!=null && nodo.getIzquierdo().getElem().equals(elem))|| (nodo.getDerecho()!=null && nodo.getDerecho().getElem().equals(elem))){
-           padre=nodo;
-       }
-       else{
-           if (nodo.getIzquierdo()!=null){
-               padre=auxPadre (nodo.getIzquierdo(), elem);
-               //si no lo encontre de ese lado llamo al otro
-               if (padre==null && nodo.getDerecho()!=null){
-                    padre=auxPadre(nodo.getDerecho(),elem);
-               }
-              
-           }
-       }
-       return padre;
-   }
-           //nodo=Anterior
-    public Lista listarPreorden (){
-        Lista lista=null;
-        if (this.raiz!=null){
-            lista=new Lista ();
-            recursivoPreorden (this.raiz,lista,1);
+                if (elemento == null) {
+                    elemento = obtenerElemPadre(n.getDerecho(), x);
+                }
+            }
         }
+        return elemento;
+    }
+
+    //nodo=Anterior
+    public Lista listarPreorden() {
+        Lista lista = new Lista();
+        recursivoPreorden(this.raiz, lista, 1);
         return lista;
     }
-    public int recursivoPreorden (NodoArbol nodo,Lista lista, int pos){
-        if (nodo!=null){
+
+    public int recursivoPreorden(NodoArbol nodo, Lista lista, int pos) {
+        if (nodo != null) {
+            //ver de sacar los controles de null
             lista.insertar(nodo.getElem(), pos);
-            if (nodo.getIzquierdo() !=null){
-                pos=recursivoPreorden (nodo.getIzquierdo(),lista,pos+1);
+            if (nodo.getIzquierdo() != null) {
+                pos = recursivoPreorden(nodo.getIzquierdo(), lista, pos + 1);
             }
-            if (nodo.getDerecho() !=null){
-                pos=recursivoPreorden (nodo.getDerecho(),lista,pos+1);
+            if (nodo.getDerecho() != null) {
+                pos = recursivoPreorden(nodo.getDerecho(), lista, pos + 1);
             }
         }
-        return pos; 
+        return pos;
     }
-     public Lista listarInorden (){
-        Lista lista=null;
-        if (this.raiz!=null){
-            lista=new Lista ();
-            recursivoInorden (this.raiz,lista,1);
-        }
+
+    public Lista listarInorden() {
+        Lista lista = new Lista();
+        recursivoInorden(this.raiz, lista, 1);
+
         return lista;
     }
-    public int recursivoInorden (NodoArbol nodo,Lista lista, int pos){
-        if (nodo!=null){
+
+    public int recursivoInorden(NodoArbol nodo, Lista lista, int pos) {
+        if (nodo != null) {
             //si llego a la hoja del lado izquierdo imprimo y aumento pos
-            if (nodo.getIzquierdo()==null && nodo.getDerecho()==null){
+            if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
-            }
-            else{
-                //
-                if (nodo.getIzquierdo() !=null){
-                    pos=recursivoInorden (nodo.getIzquierdo(),lista,pos); 
-                }
+            } else {
+                pos = recursivoInorden(nodo.getIzquierdo(), lista, pos);
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
-                if (nodo.getDerecho() !=null){
-                    pos=recursivoInorden (nodo.getDerecho(),lista,pos);
-                }
-                
+                pos = recursivoInorden(nodo.getDerecho(), lista, pos);
             }
 
         }
         return pos;
     }
-        public Lista listarPosorden (){
-        Lista lista=null;
-        if (this.raiz!=null){
-            lista=new Lista ();
-            recursivoPosorden (this.raiz,lista,1);
-        }
+
+    public Lista listarPosorden() {
+        Lista lista = new Lista();
+        recursivoPosorden(this.raiz, lista, 1);
         return lista;
     }
-    public int recursivoPosorden (NodoArbol nodo,Lista lista, int pos){
-      if (nodo!=null){
+
+    public int recursivoPosorden(NodoArbol nodo, Lista lista, int pos) {
+        if (nodo != null) {
             //si llego a la hoja del lado izquierdo imprimo y aumento pos
-            if (nodo.getIzquierdo()==null && nodo.getDerecho()==null){
+            if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
-            }
-            else{
-                //
-                if (nodo.getIzquierdo() !=null){
-                    pos=recursivoPosorden (nodo.getIzquierdo(),lista,pos); 
-                }
-                
-                if (nodo.getDerecho() !=null){
-                    pos=recursivoPosorden (nodo.getDerecho(),lista,pos);
-                }
+            } else {
+                pos = recursivoPosorden(nodo.getIzquierdo(), lista, pos);
+                pos = recursivoPosorden(nodo.getDerecho(), lista, pos);
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
-                
             }
 
         }
         return pos;
     }
-    public Lista listarNiveles (){
+
+    public Lista listarPorNiveles() {
         //este metodo devuelve una lista con los elementos del arbol almacenados por niveles
-        Lista lista= new Lista ();
-        int i=1;
-        Cola Q= new Cola ();
-        Q.poner(this.raiz);
-        while (!Q.esVacia()){
-            //obtenemos el nodo de la cola
-            NodoArbol nodoActual= (NodoArbol) Q.obtenerFrente();
-            //lo sacamos
-            Q.sacar();
-            //lo insertamos en la lista
-            lista.insertar(nodoActual.getElem(), i);
-            //si tiene hijo izquierdo lo pongo en la cola
-            if (nodoActual.getIzquierdo()!=null){
-                Q.poner(nodoActual.getIzquierdo());
+        Lista lista = new Lista();
+        if (this.raiz != null) {
+            int i = 1;
+            Cola Q = new Cola();
+            Q.poner(this.raiz);
+            NodoArbol nodoActual;
+            while (!Q.esVacia()) {
+                //obtenemos el nodo de la cola
+                nodoActual = (NodoArbol) Q.obtenerFrente();
+                //lo sacamos
+                Q.sacar();
+                //lo insertamos en la lista
+                lista.insertar(nodoActual.getElem(), i);
+                //si tiene hijo izquierdo lo pongo en la cola
+                if (nodoActual.getIzquierdo() != null) {
+                    Q.poner(nodoActual.getIzquierdo());
+                }
+                //si tiene hijo derecho lo pongo en la cola 
+                if (nodoActual.getDerecho() != null) {
+                    Q.poner(nodoActual.getDerecho());
+                }
+                i++;
+
             }
-            //si tiene hijo derecho lo pongo en la cola 
-            if (nodoActual.getDerecho()!=null){
-                Q.poner(nodoActual.getDerecho());
-            }
-            i++;
-         
+
         }
         return lista;
     }
 
-    public void vaciar (){
-        this.raiz=null;
+    public String toString() {
+        return concatenar(this.raiz);
     }
-    @Override
-   public String toString (){
+
+    private String concatenar(NodoArbol n) {
+        //creamos aca las cadenas porque nos indicaron que no era necesario pasarla por parametro
+        String cadenaAux = "", cadena = "arbol vacio";
+        if (n != null) {
+            //si el nodo ingresado no es null
+            cadena = "";
+            //pondremos el padre primero 
+            cadena += "\nNodo padre: " + n.getElem() + " ";
+            //luego pondremos si tiene o no tiene hijos izquierdo o derecho
+            if (n.getIzquierdo() != null) {
+                cadena += "HI:" + n.getIzquierdo().getElem() + " ";
+            } else {
+                cadena += "HI:- ";
+            }
+            if (n.getDerecho() != null) {
+                cadena += "HD: " + n.getDerecho().getElem() + "\n";
+            } else {
+                cadena += "HD:-\n";
+            }
+            //si tenia hijo izquierdo iremos repitiendo hasta que ya no hayan mas elementos del lado derecho del arbol 
+            if (n.getIzquierdo() != null) {
+                cadenaAux = concatenar(n.getIzquierdo());
+                cadena += cadenaAux;
+            }
+            //repetimos el mismo procedimiento para el lado derecho
+            if (n.getDerecho() != null) {
+                cadenaAux = concatenar(n.getDerecho());
+                cadena += cadenaAux;
+            }
+        }
+        return cadena;
+    }
+
+    /*public String toString2 (){
        String cadena="Arbol vacio";
        if (this.raiz!=null){
            cadena="";
@@ -311,70 +363,118 @@ public class ArbolBin {
         return cadena2;
   
     }
-    public ArbolBin clone (){
-        ArbolBin clone= new ArbolBin ();
-        if (this.raiz!=null){
-            NodoArbol aux2=new NodoArbol (this.raiz.getElem(),null,null);
-            clone.raiz=aux2;
-            auxClon (this.raiz, clone, aux2);
-            
+     */
+    public ArbolBin clone() {
+        ArbolBin clone = new ArbolBin();
+        if (this.raiz != null) {
+            clone.raiz =  new NodoArbol(this.raiz.getElem(), null, null);;
+            auxClon(this.raiz, raiz);
+
         }
+        return clone;
+
+    }
+
+    private void auxClon(NodoArbol nodo, NodoArbol aux2) {
+        //precondicion nodo distinto de null
+        //si eixste un nodo izquierdo creo un nodo nuevo a la izquierda de mi nodo raiz
+        if (nodo.getIzquierdo() != null) {
+            aux2.setIzquierdo(new NodoArbol(nodo.getIzquierdo().getElem(), null, null));
+            auxClon(nodo.getIzquierdo(), aux2.getIzquierdo());
+
+        }
+        //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
+        if (nodo.getDerecho() != null) {
+            aux2.setDerecho(new NodoArbol(nodo.getDerecho().getElem(), null, null));
+            auxClon(nodo.getDerecho(), aux2.getDerecho());
+        }
+
+    }
+
+    /*public ArbolBin clone (){
+        ArbolBin clone= new ArbolBin ();
+        
+        clone.raiz=auxClon2 (this.raiz);
         return clone;
        
     }
-    private void auxClon (NodoArbol nodo, ArbolBin clone, NodoArbol aux2){
+    private void auxClon2 (NodoArbol nodo, NodoArbol aux2){
         //precondicion nodo distinto de null
         //si eixste un nodo izquierdo creo un nodo nuevo a la izquierda de mi nodo raiz
         if (nodo.getIzquierdo()!=null){
             aux2.setIzquierdo( new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
+            auxClon (nodo.getIzquierdo(), aux2.getIzquierdo());
         }
         //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
         if (nodo.getDerecho()!=null){
-             aux2.setDerecho(new NodoArbol (nodo.getDerecho().getElem(),null,null));
-        }
-        //si el izquierdo existe llamo a auxClon con ese nodo
-        if (nodo.getIzquierdo()!=null){
-            
-            auxClon (nodo.getIzquierdo(),clone, aux2.getIzquierdo());
-        }
-        //si el derecho existe llamo a auxClon con ese nodo
-        if (nodo.getDerecho()!=null){
-             auxClon (nodo.getDerecho(),clone, aux2.getDerecho());
-        }
-        
+            aux2.setDerecho(new NodoArbol (nodo.getDerecho().getElem(),null,null));
+            auxClon (nodo.getDerecho(), aux2.getDerecho());
+        }    
     }
-    public Lista frontera (){
-        Lista lista= new Lista ();
-        //si el arbol no es vacio
-        if (this.raiz!=null){
-            //verifico si la raiz es una hoja
-            if (this.raiz.getDerecho()==null && this.raiz.getIzquierdo()==null){
-                lista.insertar(this.raiz, 1);
+
+     private NodoArbol auxClon(NodoArbol nodo){
+       if (nodo!=null){
+            NodoArbol nuevo= new NodoArbol (nodo.getElem(),null,null);
+            if (nodo.getIzquierdo()!=null){
+                nuevo.setIzquierdo(auxClon(nodo.getIzquierdo()) );
             }
-            //si no lo es llamo al metodo aux
-            else{
-                fronteraAux(this.raiz,lista,1);
+            //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
+            if (nodo.getDerecho()!=null){
+                nuevo.setDerecho(auxClon(nodo.getDerecho()));
+            }  
+       }
+       
+        return nodo;
+    }
+     */
+    public Lista frontera() {
+        //podriamos pasarle 1 nada mas para no crear la variable posicion
+        Lista listado = new Lista();
+        listarFrontera(this.raiz, listado, 1);
+        return listado;
+    }
+
+    public int listarFrontera(NodoArbol n, Lista listado, int pos) {
+
+        if (n != null) {
+            if (n.getIzquierdo() == null && n.getDerecho() == null) {
+                listado.insertar(n.getElem(), pos);
+                pos++;
+            } else {
+                if (n.getIzquierdo() != null) {
+                    pos = listarFrontera(n.getIzquierdo(), listado, pos);
+                }
+                if (n.getDerecho() != null) {
+                    pos = listarFrontera(n.getDerecho(), listado, pos);
+                }
             }
         }
+        return pos;
+    }
+
+    public Lista frontera2() {
+        Lista lista = new Lista();
+        fronteraAux(this.raiz, lista, 1);
         return lista;
     }
-    
-    private int fronteraAux(NodoArbol nodo,Lista lista,int pos){
+
+    private int fronteraAux(NodoArbol nodo, Lista lista, int pos) {
         //pongo en la lista el elemento que sea hoja
-        if (nodo.getDerecho()==null && nodo.getIzquierdo()==null){
-            lista.insertar(nodo.getElem(), pos);
-            pos++;
-        }
-        else{
-            //llamo recursivamente con cada lado
-            //puede que tenga hijo de un solo lado asi que verifico para no llamar con un elemento nulo
-            if (nodo.getIzquierdo()!=null){
-                fronteraAux(nodo.getIzquierdo(), lista, pos);
+        if (nodo != null) {
+            if (nodo.getDerecho() == null && nodo.getIzquierdo() == null) {
+                lista.insertar(nodo.getElem(), pos);
+                pos++;
+            } else {
+                //llamo recursivamente con cada lado
+                //puede que tenga hijo de un solo lado asi que verifico para no llamar con un elemento nulo
+                if (nodo.getIzquierdo() != null) {
+                    fronteraAux(nodo.getIzquierdo(), lista, pos);
+                }
+                if (nodo.getDerecho() != null) {
+                    fronteraAux(nodo.getDerecho(), lista, pos);
+                }
             }
-            if (nodo.getDerecho()!=null){
-                fronteraAux(nodo.getDerecho(),lista,pos);
-            }  
         }
-       return pos;
+        return pos;
     }
- }
+}

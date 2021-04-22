@@ -26,13 +26,12 @@ public class Lista {
             //caso especial cuando hay que insertar al comienzo de la lista
             if(pos==1){
                 //creo el nodo nuevo y hago que la cabecera lo apunte
-                Nodo nuevo= new Nodo(elem,this.cabecera);
-                this.cabecera=nuevo;
+                this.cabecera=new Nodo(elem,this.cabecera);;
             }
             else{
                /*creo una variable auxiliar llamada aux que va a recorrer la lista hasta llegar una posicion antes a la
                recibida por parametro*/
-               Nodo aux=cabecera;
+               Nodo aux=this.cabecera;
                int i=1;
                while (i<pos-1){
                     //aux esta una posicion antes del lugar donde queremos insertar el nodo
@@ -52,19 +51,19 @@ public class Lista {
     public boolean eliminar (int pos){
         //este metodo elimina un elemento en la posicion ingresada por parametro
         boolean exito=false;
-        int i, longitud= this.longitud();
+        int i;
         //si la posicion es valida procedemos
-        if (pos>=1 && pos<=longitud ){
+        if (pos>=1 && pos<=this.longitud() ){
             /*caso especial el primer elemento, hago que el nodo que era apuntado por la cabecera
             ahora no lo apunte nadie asi el garbage collector se lo lleva, y la cabecera ahora apunta
             al segundo nodo*/
             if (pos==1){
-                cabecera=cabecera.getEnlace();
+                this.cabecera=this.cabecera.getEnlace();
             }
             else{
                /*creo una variable auxiliar llamada aux que va a recorrer la lista hasta llegar una posicion antes a la
                recibida por parametro*/
-                Nodo aux=cabecera;
+                Nodo aux=this.cabecera;
                 i=2;
                 while (i<pos){
                   aux=aux.getEnlace();
@@ -79,45 +78,54 @@ public class Lista {
         return exito;    
     }
     public Object recuperar (int pos){
-        //precondicion pos es valida
         //este metodo recupera un objeto en la posicion recibida por parametro
         int i=2;
         Object elem;
         //el nodo aux apunta a la cabecera
-        Nodo aux=this.cabecera;
-        if (pos==1){
-            elem=this.cabecera.getElem();
+        if (pos<1 || pos>this.longitud()){
+            elem=null;
         }
         else{
-            //llego hasta la posicion de la cual quiero recuperar el elemento
-            while (i<=pos){
-                //avanzo en los nodos
-                aux=aux.getEnlace();
-                i++;
+            Nodo aux=this.cabecera;
+            if (pos==1){
+                elem=this.cabecera.getElem();
             }
-            //una vez que llegue a la posicion recupero el elemento
-            elem=aux.getElem();
-          
+            else{
+                //llego hasta la posicion de la cual quiero recuperar el elemento
+                while (i<=pos){
+                    //avanzo en los nodos
+                    aux=aux.getEnlace();
+                    i++;
+                }
+                //una vez que llegue a la posicion recupero el elemento
+                elem=aux.getElem();
+            }
         }
+            
+       
         return elem;
        
     }
     public int localizar (Object elem){
         //este metodo localiza un elemento en la lista, si lo encuentra devuelve la posicion en la que lo encontro sino -1
-        int encontrado=-1,i=1;
-        Nodo aux=cabecera;
+        int encontrado=-1;
         //En el peor de los casos recorre toda la lista y no la encuentra
         //avanzo mientras que no encontre el elemento y la lista no sea vacia
-        while (encontrado==-1 && aux.getElem()!=null){
-            if(aux.getElem().equals(elem)){
-                encontrado=i;
-            }
-            else{
-                aux=aux.getEnlace();
-                i++;
-            }
+        if (this.cabecera!=null){
+            int i=1;
+            Nodo aux=cabecera;
+            while (encontrado==-1 && aux.getElem()!=null){
+                if(aux.getElem().equals(elem)){
+                    encontrado=i;
+                }
+                else{
+                    aux=aux.getEnlace();
+                    i++;
+                }
             
+            }
         }
+       
         return encontrado;
     }
     
@@ -135,12 +143,12 @@ public class Lista {
         //si la lista no esta vacia procedo a copiar elemento por elemento sino retorno la lista vacia
         if (!this.esVacia()){
             //aux1 es la variable auxiliar que se va a ir moviendo en la lista original
-            Nodo aux1=this.cabecera;
             //aux2 es la variable que se va a ir moviendo en la lista clone
             //creo el primer elemento
-            Nodo aux2= new Nodo(aux1.getElem(),null);
             //hago que la cabecera lo apunte
-            clone.cabecera=aux2;
+            clone.cabecera=new Nodo(this.cabecera.getElem(),null);
+            Nodo aux2=clone.cabecera;
+            Nodo aux1=this.cabecera;
             //avanzo al 2 elemento
             aux1=aux1.getEnlace();
             //mientras que la lista tenga elementos 
@@ -167,12 +175,32 @@ public class Lista {
         }
         return i;
     }
-    @Override
-    public String toString (){
+    
+    public String toString() {
+    //creamos una variable de tipo String con el texto predeterminado "lista vacia"
+    String cadena="lista vacia";
+    if(!this.esVacia()) {
+        //si la pila no esta vacia entonces se borrara el texto predeterminado para que se copien los elementos
+        cadena="[";
+        Nodo aux=this.cabecera;
+        while(aux!=null) {
+                //si el proximo elemento por agregar no es nulo entonces lo agregamos a la variable de tipo String 
+                cadena+=aux.getElem();
+                //actualizamos la variable auxiliar puntero
+                aux=aux.getEnlace();
+                if(aux!=null) {
+                   cadena+=",";
+                }
+        }
+        cadena+="]";
+    }
+    return cadena;
+	}
+    public String toString2 (){
         //metodo a fines de debuggin que devuelve una cadena con todos los elementos de los nodos
-        String cadena="";
+        String cadena="La lista esta vacia";
         if (!this.esVacia()){
-            cadena+="[";
+            cadena="[";
             Nodo aux=cabecera;
             cadena+=aux.getElem()+",";
             aux=aux.getEnlace();
@@ -184,9 +212,6 @@ public class Lista {
                 }
             }
             cadena+="]";
-        }
-        else{
-            cadena="La lista esta vacia";
         }
         return cadena;
        
@@ -228,12 +253,7 @@ public class Lista {
        }
        return aux;
     }
-    //1 2 3
-    //aux-> 1
-    //aux3= invertir 2 (3)(2)
-    //2 linea
-    //aux3=invertir 3
-    //retorna 3
+
     
 }
     

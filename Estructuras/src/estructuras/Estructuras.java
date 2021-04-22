@@ -10,134 +10,208 @@ import lineales.estaticas.Cola;
 import lineales.dinamicas.Lista;
 
 public class Estructuras {
-    static String sOk = "OK!", sErr = "ERROR";
-    public static void main(String[] arg) {
-        ArbolBin arbol=new ArbolBin ();
-        /*
-                1
-             2     3
-           4   5   6
-        */
-        arbol.insertar(1,null, 'I');
-        arbol.insertar(2,1, 'I');
-        arbol.insertar(3,1, 'D');
-        arbol.insertar(4,2, 'I');        
-        arbol.insertar(5,2, 'D');        
-        arbol.insertar(6,3, 'I');   
-        arbol.insertar(7,6, 'I');   
-        System.out.println (arbol.frontera().toString());
+
+    static String sOk = "\u001B[32m OK! \u001B[0m";
+    static String sErr = " \u001B[31m ERROR \u001B[0m";
+    public static final String NEGRO = "\u001B[30m";
+    public static final String ROJO = "\u001B[31m";
+    public static final String VERDE = "\u001B[32m";
+    public static final String AMARILLO = "\u001B[33m";
+    public static final String AZUL = "\u001B[34m";
+    public static final String PURPLE = "\u001B[35m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String BLANCO = "\u001B[37m";
+
+    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+
+    public static final String RESET = "\u001B[0m";
+
+    public static void main(String args[]) {
+
+        System.out.println(ANSI_CYAN_BACKGROUND + ROJO + "**************************************************************");
+        System.out.println(ANSI_CYAN_BACKGROUND + ROJO + "*                  Test Arbol Binario                        *");
+        System.out.println(ANSI_CYAN_BACKGROUND + ROJO + "**************************************************************" + "\n\n" + RESET);
+
+        ArbolBin a = new ArbolBin();
+        ArbolBin b = new ArbolBin();
+
+        System.out.println(ANSI_YELLOW_BACKGROUND + "--------------------------------------------------------------------------------------------------------"
+                + "------------------------------------------------------------------------------------------" + RESET);
+        System.out.println("\n\n");
+
+        System.out.println("****************************************");
+        System.out.println("*      Pruebas sobre arbol vacio       *");
+        System.out.println("****************************************");
+        System.out.println("Checkeo si es vacio " + ((a.esVacio()) ? sOk : sErr));
+        System.out.println("Listar preorden vacio: " + a.listarPreorden().toString());
+        System.out.println("Listar inorden vacio: " + a.listarInorden().toString());
+        System.out.println("Listar posorden vacio: " + a.listarPosorden().toString());
+        System.out.println("Listar por niveles vacio: " + a.listarPorNiveles().toString());
+        System.out.println("Altura de arbol vacio (debe dar -1):  " + a.altura());
+        System.out.println("Intento vaciar arbol vacio ");
+        a.vaciar();
+        System.out.println("Intento obtener padre de un elemento cualquiera (debe dar null): "+ ((a.padre(10)) == null? sOk : sErr));
+        System.out.println("Intento obtener nivel de un elemento cualquiera (debe dar -1): "+ ((a.nivel(10)) == -1 ? sOk : sErr));
+        System.out.println("toString de arbol vacío: " + a.toString());
+        System.out.println();
+        System.out.println();
+        
+        System.out.println("****************************************");
+        System.out.println("*          Insercion - altura          *");
+        System.out.println("****************************************");
+        System.out.println("Inserto el 10 en raiz " + ((a.insertar(10, 1, 'I')) ? sOk : sErr));
+        System.out.println("Altura de arbol solo con raiz (debe dar 0):  " + a.altura());
+        System.out.println("Busco el nivel de raiz. Tiene que dar 0: " + sOk + " --> " + (((int) a.nivel(10) == 0) ? sOk : sErr));
+        System.out.println("");
+        System.out.println("Inserto el 9 como hijo I de 10: " + ((a.insertar(9, 10, 'I')) ? sOk : sErr));
+        System.out.println("Busco el nivel de 9. Tiene que dar 1: " + sOk + " --> " + (((int) a.nivel(9) == 1) ? sOk : sErr));
+        System.out.println("Inserto el 7 como hijo I de 9 " + ((a.insertar(7, 9, 'I')) ? sOk : sErr));
+        System.out.println("Inserto el 3 como hijo D de 9 " + ((a.insertar(3, 9, 'D')) ? sOk : sErr));
+        System.out.println("Altura de arbol deberia dar 2:  " + a.altura());
+        System.out.println("Busco el nivel de 3. Tiene que dar 2: " + sOk + " --> " + (((int) a.nivel(3) == 2) ? sOk : sErr));
+        System.out.println("Inserto el 15 como hijo D de 10 " + ((a.insertar(15, 10, 'D')) ? sOk : sErr));
+        System.out.println("Inserto el 12 como hijo I de 15 " + ((a.insertar(12, 15, 'I')) ? sOk : sErr));
+        System.out.println("Inserto el 20 como hijo D de 15 " + ((a.insertar(20, 15, 'D')) ? sOk : sErr));
+        System.out.println("\n toString()  deberia dar: \n"
+                + "            10 \n"
+                + "        /       \\    \n"
+                + "      9           15  \n"
+                + "   /     \\      /    \\ \n"
+                + " 7         3   12      20 \n"
+                + "\n");
+        System.out.println("" + a.toString() + "\n\n");
+
+        System.out.println("\n");
+        System.out.println("Inserto con padre inexistente. Tiene que dar: " + sErr + " --> " + ((a.insertar(5, 50, 'I')) ? sOk : sErr));
+        System.out.println("Inserto sin caracter válido de hijo. Tiene que dar:" + sErr + " --> " + ((a.insertar(5, 3, ' ')) ? sOk : sErr));
+        System.out.println("Inserto hijo I a raiz en pos llena. Tiene que dar: " + sErr + " --> " + ((a.insertar(5, 10, 'I')) ? sOk : sErr));
+        System.out.println("Inserto hijo D a raiz en pos llena. Tiene que dar: " + sErr + " --> " + ((a.insertar(5, 10, 'D')) ? sOk : sErr));
+        System.out.println("Inserto elemento duplicado en pos valida 10 como hijo I de 3. Tiene que dar " + sOk + " --> " + ((a.insertar(10, 3, 'I')) ? sOk : sErr));
+        System.out.println("Checkeo si arbol es vacio. Tiene que dar" + sErr + " --> " + ((a.esVacio()) ? sOk : sErr));
+
+        System.out.println("\n toString() antes de clonar. Deberia dar: \n"
+                + "            10 \n"
+                + "        /       \\    \n"
+                + "      9           15  \n"
+                + "   /     \\      /    \\ \n"
+                + " 7         3   12      20 \n"
+                + "         /  \n"
+                + "        10  \n"
+                + "\n");
+        System.out.println("" + a.toString() + "\n\n");
+        System.out.println("\n\n");
+        System.out.println(ANSI_YELLOW_BACKGROUND + "-------------------------------------------------------------------------------------------------------"
+                + "-------------------------------------------------------------------------------------------" + RESET);
+
+        System.out.println("\n\n********************************");
+        System.out.println("*      Test de clone           *");
+        System.out.println("********************************\n");
+        b = a.clone();
+        System.out.println("Altura de arbol clon (debe dar 3):  " + b.altura());
+        System.out.println("\n clon toString()  deberia dar: \n"
+                + "            10 \n"
+                + "        /       \\    \n"
+                + "      9           15  \n"
+                + "   /     \\      /    \\ \n"
+                + " 7         3   12      20 \n"
+                + "         /  \n"
+                + "        10  \n"
+                + "\n");
+        System.out.println("" + b.toString() + "\n\n");
+
+        System.out.println("\n");
+        System.out.println("Inserto el 25 como hijo D de 20 en CLON" + ((b.insertar(25, 20, 'D')) ? sOk : sErr));
+        System.out.println("Inserto el 35 como hijo I de 20 en CLON" + ((b.insertar(35, 20, 'I')) ? sOk : sErr));
+        System.out.println("\n" + AZUL + "CLON toString() \t\t\t");
+        System.out.println("\n clon toString()  deberia dar: \n"
+                + "            10 \n"
+                + "        /       \\    \n"
+                + "      9           15  \n"
+                + "   /     \\      /    \\ \n"
+                + " 7         3   12      20 \n"
+                + "         /           /     \\\n"
+                + "        10         35      25 \n"
+                + "\n");
+        System.out.println("" + b.toString() + "\n\n");
+
+        System.out.println(VERDE + "ORIGINAL toString() - verifica que tenga igual estructura que antes \t\t\t ");
+        System.out.println("\n original toString()  deberia dar: \n"
+                + "            10 \n"
+                + "        /       \\    \n"
+                + "      9           15  \n"
+                + "   /     \\      /    \\ \n"
+                + " 7         3   12      20 \n"
+                + "         /  \n"
+                + "        10  \n"
+                + "\n");
+        System.out.println("" + a.toString() + "\n\n");
+
+        System.out.println("Vacio el CLON");
+        b.vaciar();
+        System.out.println("toString de arbol vacio (CLON)");
+        System.out.println("" + b.toString() + "\n\n");
+        System.out.println("Busco al padre 20 en Arbol vacio (tiene que dar null): " + sOk + " --> " + ((b.padre(20) == null) ? sOk : sErr));
+
+        System.out.println("\n\n");
+        System.out.println(ANSI_YELLOW_BACKGROUND + "----------------------------------------------------------------------------------------------------------"
+                + "----------------------------------------------------------------------------------------" + RESET);
+        System.out.println("\n\n********************************");
+        System.out.println("*   Test de Busqueda de Padre  *");
+        System.out.println("********************************\n");
+        System.out.println("Busco al padre de 3. Tiene que dar 9: " + sOk + " --> " + (((int) a.padre(3) == 9) ? sOk : sErr));
+        System.out.println("Busco al padre de 20. Tiene que dar 15: " + sOk + " --> " + (((int) a.padre(20) == 15) ? sOk : sErr));
+        System.out.println("Busco al padre de raiz. Tiene que dar null: " + sOk + " --> " + ((a.padre(10) == null) ? sOk : sErr));
+        System.out.println("Busco al padre de elemento inexistente. Tiene que dar null: " + sErr + " --> " + ((a.padre(1011) != null) ? sOk : sErr));
+
+        System.out.println("\n\n");
+        System.out.println(ANSI_YELLOW_BACKGROUND + "----------------------------------------------------------------------------------------------------------"
+                + "----------------------------------------------------------------------------------------" + RESET);
+        System.out.println("\n\n**********************************");
+        System.out.println("*        Test de Niveles         *");
+        System.out.println("**********************************\n");
+        System.out.println("Busco el nivel de raiz. Tiene que dar 0 -- " + sOk + " --> " + (((int) a.nivel(10) == 0) ? sOk : sErr));
+        System.out.println("Busco el nivel 3. Tiene que dar 2: " + sOk + " --> " + (((int) a.nivel(3) == 2) ? sOk : sErr));
+        System.out.println("Busco el nivel 20. Tiene que dar 2: " + sOk + " --> " + (((int) a.nivel(20) == 2) ? sOk : sErr));
+        System.out.println("Busco el nivel 9. Tiene que dar 1: " + sOk + " --> " + (((int) a.nivel(9) == 1) ? sOk : sErr));
+        System.out.println("Busco nivel de elemento inexistente. Tiene que dar -1: " + sErr + " --> " + (((int) a.nivel(1000) == -1) ? sErr : sOk));
+
+        System.out.println("\n\n");
+        System.out.println(ANSI_YELLOW_BACKGROUND + "----------------------------------------------------------------------------------------------------------"
+                + "----------------------------------------------------------------------------------------" + RESET);
+        System.out.println("\n\n**********************************");
+        System.out.println("*      Test de Recorridos        *");
+        System.out.println("**********************************\n");
+        System.out.println("Listar en preOrden.\n Tiene que dar: [ 10 - 9 - 7 - 3 - 10 - 15 - 12 - 20 ]  " + a.listarPreorden().toString());
+        System.out.println("\n");
+        System.out.println("Listar en posOrden.\n Tiene que dar: [ 7 - 10 - 3 - 9 - 12 - 20 - 15 - 10 ]  " + a.listarPosorden().toString());
+        System.out.println("\n");
+        System.out.println("Listar en InOrden.\n Tiene que dar: [ 7 - 9 - 10 - 3 - 10 - 12 - 15 - 20 ]  " + a.listarInorden().toString());
+        System.out.println("\n");
+        System.out.println("Listar por niveles.\n Tiene que dar: [ 10 - 9 - 15 - 7 - 3 - 12 - 20 - 10 ]  " + a.listarPorNiveles().toString());
+        System.out.println("\n\n");
+        System.out.println(ANSI_YELLOW_BACKGROUND + "----------------------------------------------------------------------------------------------------------"
+                + "----------------------------------------------------------------------------------------" + RESET);
+        System.out.println();
+        System.out.println("\n\n**********************************");
+        System.out.println("*      Test de FRONTERA          *");
+        System.out.println("**********************************\n");
+        System.out.println("Frontera de original.\n Tiene que dar: [ 7 - 10 - 12 - 20 ]  " + a.frontera().toString());
+        System.out.println("");
+        System.out.println("Inserto el 40 como hijo D de 12 " + ((a.insertar(40, 12, 'D')) ? sOk : sErr));
+        System.out.println("");
+        System.out.println("Frontera de original modificado.\n Tiene que dar: [ 7 - 10 - 40 - 20 ]  " + a.frontera().toString());
+        System.out.println("");
+        System.out.println("Frontera de clon que está vacio.\n Tiene que dar: [ ]  " + b.frontera().toString());
+        System.out.println("");
+        System.out.println("Inserto el 50 en el clon " + ((b.insertar(50, null, 'D')) ? sOk : sErr));
+        System.out.println("");
+        System.out.println("Frontera de clon con solo raiz.\n Tiene que dar: [ 50 ]  " + b.frontera().toString());
     }
-    public static void testCola() {
-		System.out.println("COMIENZO TEST COLA");
-		Cola q1 = new Cola();
-		System.out.println("Cola vac�a: \t\t\t\t\t\t\t--> " + q1.toString());
-		boolean exito = true;
-
-		System.out.println("Si es cola estatica tama�o <= 10 se debe llenar");
-		int num = 1;
-		while (num < 12) {
-			if (num < 10) {
-				System.out.print("Pone " + num + " espera true: \t\t\t\t\t" + ((q1.poner(num) == true) ? sOk : sErr));
-			} else {
-				System.out.print("Pone " + num + " espera false en estatica y true en dinamica : \t" + q1.poner(num));
-			}
-			num++;
-			System.out.println("\t--> " + q1.toString());
-		}
-		System.out
-				.println("Recupera frente espera 1 recupera: \t\t\t" + (((int) q1.obtenerFrente() == 1) ? sOk : sErr));
-
-		System.out.print("Saca espera true : \t\t\t\t\t" + ((q1.sacar() == true) ? sOk : sErr));
-		System.out.println("\t--> " + q1.toString());
-		System.out.println("Recupera frente espera 2 recupera \t\t\t" + (((int) q1.obtenerFrente() == 2) ? sOk : sErr));
-		System.out.print("Saca espera true: \t\t\t\t\t" + ((q1.sacar() == true) ? sOk : sErr));
-		System.out.println("\t--> " + q1.toString());
-		System.out
-				.println("Recupera frente espera 3 recupera: \t\t\t" + (((int) q1.obtenerFrente() == 3) ? sOk : sErr));
-		System.out.print("Pone 23 espera true: \t\t\t\t\t" + ((q1.poner(23) == true) ? sOk : sErr));
-		System.out.println("\t--> " + q1.toString());
-		System.out.print("Pone 24 espera true: \t\t\t\t\t" + ((q1.poner(24) == true) ? sOk : sErr));
-		System.out.println("\t--> " + q1.toString());
-		System.out
-				.println("Recupera frente espera 3 recupera: \t\t\t" + (((int) q1.obtenerFrente() == 3) ? sOk : sErr));
-
-		Cola q2 = q1.clone();
-		System.out.println("Copia espera [3 4 5 6 7 8 9 <10 11> 23 24]: \t\t\t--> " + q2.toString());
-
-		System.out.println("Pone 7 espera false en estatica, true en dinamica: \t" + q1.poner(7));
-		System.out.print("Pone 8 espera false en estatica, true en dinamica: \t" + q1.poner(8));
-		System.out.println("\t--> " + q1.toString());
-
-		while (!q1.esVacia()) {
-			System.out.print("Saca " + q1.obtenerFrente() + " de cola espera true: \t\t\t\t"
-					+ ((q1.sacar() == true) ? sOk : sErr));
-			System.out.println("\t--> " + q1.toString());
-		}
-		System.out.print("Se vacio la cola q1");
-		System.out.println("\t\t\t\t\t\t--> " + q1.toString());
-		System.out.println("Sacar en cola vacia espera false: \t\t\t" + ((q1.sacar() == false) ? sOk : sErr));
-		System.out.println(
-				"Recupera frente en cola vacia espera null: \t\t" + ((q1.obtenerFrente() == null) ? sOk : sErr));
-
-		System.out.println("Verifica copia guardada espera [3 4 5 6 7 8 9 <10 11> 23 24]: \t--> " + q2.toString());
-		System.out.println(
-				"Pone 27 espera true en dinamica y false en estatica: \t" + ((q2.poner(27) == true) ? sOk : sErr));
-		System.out.println("Verifica copia espera [3 4 5 6 7 8 9 <10 11> 23 24 <27>]: \t--> " + q2.toString());
-		System.out.println(
-				"Saca " + q2.obtenerFrente() + " de cola espera true: \t\t\t\t" + ((q2.sacar() == true) ? sOk : sErr));
-		System.out.println("Verifica copia espera [4 5 6 7 8 9 <10 11> 23 24 <27>]: \t--> " + q2.toString());
-		System.out.println(
-				"Saca " + q2.obtenerFrente() + " de cola espera true: \t\t\t\t" + ((q2.sacar() == true) ? sOk : sErr));
-		System.out.println("Verifica copia espera [5 6 7 8 9 <10 11> 23 24 <27>]: \t\t--> " + q2.toString());
-		System.out.println(
-				"Saca " + q2.obtenerFrente() + " de cola espera true:\t\t\t\t" + ((q2.sacar() == true) ? sOk : sErr));
-		System.out.println("Verifica copia espera [6 7 8 9 <10 11> 23 24 <27>]: \t\t--> " + q2.toString());
-		System.out.println("Pone 28: \t\t\t\t\t\t" + ((q2.poner(28) == true) ? sOk : sErr));
-		System.out.println("Pone 29: \t\t\t\t\t\t" + ((q2.poner(29) == true) ? sOk : sErr));
-		System.out.println("Verifica copia espera [6 7 8 9 <10 11> 23 24 <27> 28 29]: \t--> " + q2.toString());
-		q2.vaciar();
-		System.out.println("Vacia copia espera []: \t\t\t\t\t\t--> " + q2.toString());
-
-	}
-    public void testArbol (){
-    ArbolBin arbol= new ArbolBin ();
-        System.out.println (arbol.toString());
-        System.out.println ("Inserta 1 como raiz del arbol, espera: true==>"+ arbol.insertar(1,null, 'I'));
-        System.out.println ("Inserta 2 como hijo izquierdo de 1, espera: true==>"+ arbol.insertar(2,1, 'I'));
-        System.out.println ("Inserta 3 como hijo derecho de 1, espera: true==>"+ arbol.insertar(3,1, 'D'));
-        System.out.println ("Inserta 4 como hijo izquierdo de 2, espera: true==>"+arbol.insertar(4,2, 'I'));        
-        System.out.println ("Inserta 5 como hijo derecho de 2, espera: true==>"+ arbol.insertar(5,2, 'D'));        
-        System.out.println ("Inserta 6 como hijo izquierdo de 3, espera: true==>"+ arbol.insertar(6,3, 'I'));       
-        System.out.println ("Inserta 6 como hijo izquierdo de 3, espera: false==>"+ arbol.insertar(6,3, 'I')+"\n");
-        System.out.println ("Muestra el arbol:\n" +arbol.toString());
-        System.out.println ("Altura: espera 2 => " +arbol.altura());
-        System.out.println ("Nivel del elemento 1: espera 0 => "+arbol.nivel(1));
-        System.out.println ("Nivel del elemento 2: espera 1 => "+arbol.nivel(2));
-        System.out.println ("Nivel del elemento 3: espera 1 => "+arbol.nivel(3));
-        System.out.println ("Nivel del elemento 6: espera 2 => "+arbol.nivel(6));
-        System.out.println ("Padre del nodo 1: espera null =>" +arbol.padre(1));
-        System.out.println ("Padre del nodo 2: espera 1=>" +arbol.padre(2));
-        System.out.println ("Padre del nodo 6: espera 3=>" +arbol.padre(6));
-        System.out.println ("Listar preorden: espera [1,2,4,5,3,6]=>" +arbol.listarPreorden().toString());
-        System.out.println ("Listar posorden: espera [4,5,2,6,3,1]=>" +arbol.listarPosorden().toString());
-        System.out.println ("Listar inorden: espera [4,2,5,1,6,3]=>" +arbol.listarInorden().toString());
-        System.out.println ("Listar por niveles: espera [1,2,3,4,5,6]=>" +arbol.listarNiveles().toString());
-        System.out.println ("Verifica si el arbol esta vacio: espera false"+arbol.esVacio());
-        System.out.println ("Vacia el arbol"); arbol.vaciar();
-        System.out.println ("Verifica si el arbol esta vacio: espera true"+arbol.esVacio());
-        System.out.println ("Inserta A como raiz del arbol, espera: true==>"+ arbol.insertar('A',null, 'I'));
-        System.out.println ("Inserta B como hijo izquierdo de A, espera: true==>"+ arbol.insertar('B','A', 'I'));
-        System.out.println ("Inserta C como hijo derecho de A, espera: true==>"+ arbol.insertar('C','A', 'D'));
-        System.out.println ("Inserta D como hijo izquierdo de B, espera: true==>"+arbol.insertar('D','B', 'I'));        
-        System.out.println ("Inserta E como hijo derecho de B, espera: true==>"+ arbol.insertar('E','B', 'D')); 
-        System.out.println ("Inserta F como hijo derecho de B, espera: false ==>"+ arbol.insertar('F','B', 'D') +"\n"); 
-        System.out.println ("Muestra el arbol: \n" +arbol.toString());
-        System.out.println ("Clona el arbol \n"+arbol.clone().toString());
-
-    }
-
 
 }
-
-
-

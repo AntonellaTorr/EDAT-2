@@ -21,11 +21,8 @@ public class Cola {
         this.fin=0;
     }
     public boolean poner (Object elem){
-        boolean exito;
-        if (((this.fin+1)%this.TAMANIO) == this.frente){
-            exito=false;
-        }
-        else{
+        boolean exito=false;
+        if (((this.fin+1)%this.TAMANIO) != this.frente){
             this.arreglo[this.fin]=elem;
             this.fin=(this.fin+1)%this.TAMANIO;
             exito=true;
@@ -33,11 +30,8 @@ public class Cola {
         return exito;
     }
     public boolean sacar(){
-        boolean exito;
-        if (this.esVacia()){
-            exito=false;
-        }
-        else{
+        boolean exito=false;
+        if (this.fin!=this.frente){
             this.arreglo[this.frente]=null;
             this.frente=(this.frente+1)%this.TAMANIO;
             exito=true;
@@ -45,15 +39,14 @@ public class Cola {
         return exito;
     }
     public boolean esVacia(){
-        return frente==fin;
+        return (this.frente==this.fin);
     }
     public Object obtenerFrente(){
-        if (!this.esVacia()){
-            return this.arreglo[this.frente];
+        Object frente=null;
+        if (this.frente!=this.fin){
+            frente= this.arreglo[this.frente];
         }
-        else{
-            return null;
-        }
+        return frente;
     }
     public void vaciar (){
         for (int i=this.frente;i<this.fin+1;i++){
@@ -68,16 +61,12 @@ public class Cola {
         //seteo los valores de frente y fin con los mismo de la pila original
         colaClon.frente=this.frente;
         colaClon.fin=this.fin;
-        int i=this.frente;
-        while (i!=this.fin){
-            colaClon.arreglo[i]=this.arreglo[i];
-             i=(i+1)%this.TAMANIO;
-        }
+        colaClon.arreglo=this.arreglo.clone();
         return colaClon;
     }
    
     public String toString (){
-        String cadena="";
+        String cadena="La cola vacia";
         int i=this.frente;
         if (!this.esVacia()){
             cadena="[";
@@ -90,10 +79,6 @@ public class Cola {
             }
             cadena+="]";
         }
-        else{
-            cadena="[]";
-        }
-        
         return cadena;
     }
     

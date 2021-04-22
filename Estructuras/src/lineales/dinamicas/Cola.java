@@ -38,31 +38,26 @@ public class Cola {
         //como la cola nunca se llena retornamos true
         return true;
     }
-    public boolean sacar (){
-        //este metodo quita un elemento de la cola
-        boolean exito=true;
-        //si la cola esta vacia no podemos quitar ningun elemento
-        if (this.frente==null){
-            exito=false;
-        }
-        else{
-            //hacemos que el frente apunte al segundo elemento
-            this.frente=this.frente.getEnlace();
-            //en el caso e que la cola no tuviera mas elemento luego de sacar el primero seteamos el frente tambien
-            if (this.frente==null){
-                 this.fin=null;
-            }
+    public boolean sacar() {
+        //PONER ESTE METODO EN EL TP
+        boolean exito=false;
+        if(this.frente!=null) {
+                //si y solo si la cola no esta vacia
+                //dejamos de apuntar al frente para que el garbage collector lo recoja y sea eliminado
+                this.frente=this.frente.getEnlace();
+                if(this.frente==null) {
+                        //si no hay mas elementos entonces actualizamos el fin y hacemos que no apunte a nada
+                        this.fin=null;
+                }
+                //como pudimos desapilar asignamos true a la variable exito
+                exito=true;
         }
         return exito;
-    }
+	}
     public Object obtenerFrente (){
         //este metodo devuelve el objeto que se encuentra en el comienzo de la cola
-        Object frente;
-        if(this.esVacia()){
-            //la cola no tiene ningun elemento
-            frente= null;
-        }
-        else{
+        Object frente=null;
+        if(this.frente!=null){
             //obtenemos el elemento
             frente=this.frente.getElem();
         }
@@ -111,11 +106,8 @@ public class Cola {
     @Override
     public String toString (){
         //este metodo que es a fines de debuggin crea una cadena con todos los elementos de la cola
-        String cadena="";
-        if (this.esVacia()){
-            cadena="[]";
-        }
-        else{ 
+        String cadena="La cola esta vacia";
+        if (this.frente!=null){
             cadena="[";
             Nodo aux=this.frente;
             //mientras existan elementos en la cola
