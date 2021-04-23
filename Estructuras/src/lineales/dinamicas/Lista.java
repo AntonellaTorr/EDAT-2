@@ -106,6 +106,7 @@ public class Lista {
         return elem;
        
     }
+
     public int localizar (Object elem){
         //este metodo localiza un elemento en la lista, si lo encuentra devuelve la posicion en la que lo encontro sino -1
         int encontrado=-1;
@@ -114,7 +115,7 @@ public class Lista {
         if (this.cabecera!=null){
             int i=1;
             Nodo aux=cabecera;
-            while (encontrado==-1 && aux.getElem()!=null){
+            while (encontrado==-1 && aux!=null){
                 if(aux.getElem().equals(elem)){
                     encontrado=i;
                 }

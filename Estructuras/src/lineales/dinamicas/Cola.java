@@ -39,23 +39,22 @@ public class Cola {
         return true;
     }
     public boolean sacar() {
-        //PONER ESTE METODO EN EL TP
+        //este metodo saca el frente de la cola
         boolean exito=false;
+        //si la cola no esta vacia
         if(this.frente!=null) {
-                //si y solo si la cola no esta vacia
-                //dejamos de apuntar al frente para que el garbage collector lo recoja y sea eliminado
-                this.frente=this.frente.getEnlace();
-                if(this.frente==null) {
-                        //si no hay mas elementos entonces actualizamos el fin y hacemos que no apunte a nada
-                        this.fin=null;
-                }
-                //como pudimos desapilar asignamos true a la variable exito
-                exito=true;
+            //dejamos de apuntar al frente para que el garbage collector lo recoja y sea eliminado
+            this.frente=this.frente.getEnlace();
+            if(this.frente==null) {
+                    //si no hay mas elementos entonces actualizamos el fin y hacemos que no apunte a nada
+                    this.fin=null;
+            }
+            exito=true;
         }
         return exito;
 	}
     public Object obtenerFrente (){
-        //este metodo devuelve el objeto que se encuentra en el comienzo de la cola
+        //este metodo devuelve el objeto que se encuentra en el frente de la cola
         Object frente=null;
         if(this.frente!=null){
             //obtenemos el elemento
@@ -68,16 +67,17 @@ public class Cola {
         return this.frente==null;
     }
     public void vaciar (){
-        //este metodo vacia la cola 
-        //verificar si es necesario que el frente tambien apunte a nulo
+        //este metodo vacia la cola
+        //la cola esta vacia cuando frente y fin apuntan a nulo
         this.fin=null;
         this.frente=null;
     }
 
     public Cola clone (){
+        //este metodo devuelve una copia de la cola original 
         //creo la cola vacia
         Cola clone= new Cola ();
-        if (!this.esVacia()){
+        if (this.frente!=null){
             //primer nodo auxiliar que va a recorrer los elementos de la cola original
             Nodo aux1=this.frente;
             //nodo para la cola
@@ -105,14 +105,16 @@ public class Cola {
     
     @Override
     public String toString (){
-        //este metodo que es a fines de debuggin crea una cadena con todos los elementos de la cola
+        //este metodo, el cual es a fines de debugging,crea una cadena con todos los elementos de la cola
         String cadena="La cola esta vacia";
+        //si la cola no esta vacia busco cada uno de los elementos para ponerlos en la cadena
         if (this.frente!=null){
             cadena="[";
             Nodo aux=this.frente;
             //mientras existan elementos en la cola
             while(aux!=null){
                 cadena+= aux.getElem().toString();
+                //avanzo en la cola
                 aux=aux.getEnlace();
                 if (aux!=null){
                     cadena+=",";
@@ -123,12 +125,6 @@ public class Cola {
         }
         return cadena;
     }
-    
-   
-    
-    
-    
-    
-    
+      
 }
 

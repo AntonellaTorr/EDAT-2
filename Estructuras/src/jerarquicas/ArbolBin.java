@@ -93,31 +93,6 @@ public class ArbolBin {
         return encontrado;
     }
 
-    private int encontrarNivel2(NodoArbol nodo, Object elem, int nivel) {
-        int encontrado = -1;
-        //si el nodo es una hoja y el elemento esta en dicho nivel retornamos 0
-        if (nodo != null) {
-            if (nodo.getElem().equals(elem)) {
-                encontrado = nivel + 1;
-            } else {
-                //ver de sacar esto 
-                if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
-                    encontrado = -1;
-                } else {
-                    if (nodo.getIzquierdo() != null) {
-                        encontrado = encontrarNivel(nodo.getIzquierdo(), elem, nivel + 1);
-                    }
-                    if (nodo.getDerecho() != null && encontrado == -1) {
-                        //i=nivel;
-                        encontrado = encontrarNivel(nodo.getDerecho(), elem, nivel + 1);
-                    }
-                }
-            }
-        }
-
-        return encontrado;
-    }
-
     public int altura() {
         return medirAltura(this.raiz);
     }
@@ -129,66 +104,34 @@ public class ArbolBin {
                 longitud = 0;
             } else {
                 longitud = medirAltura(n.getIzquierdo()) + 1;
-                longitud2 = medirAltura(n.getIzquierdo()) + 1;
+                longitud2 = medirAltura(n.getDerecho()) + 1;
 
             }
         }
         return Math.max(longitud, longitud2);
     }
 
-    /*private int altura2 (){
-        //este metodo devuelve la altura del arbol desde la raiz 
-        int altura=-1;
-        if (this.raiz!=null){
-            altura=calcularAltura(this.raiz);
-        }
-        return altura;
-    }
-    //dejar el de nico
-    private int calcularAltura(NodoArbol nodo){
-        //este metodo calcula la longitud de un arbol
-        int longitudDer=-1, longitudIzq=-1;
-        if (nodo!=null){
-             if ( nodo.getIzquierdo()==null && nodo.getDerecho()==null){
-                longitudDer=0;
-                longitudIzq=0;
-            }
-            else{
-                if (nodo.getIzquierdo()!=null){
-                        longitudIzq=1+calcularAltura(nodo.getIzquierdo ());
-                }
-                if (nodo.getDerecho()!=null){
-                        longitudDer= 1+calcularAltura(nodo.getDerecho ());
-                }
-               
-        }
-        }
-       
-        return  Math.max(longitudIzq, longitudDer);
-    }
-     */
     public Object padre(Object elem) {
         return obtenerElemPadre(this.raiz, elem);
     }
-
     private Object obtenerElemPadre(NodoArbol n, Object x) {
         Object elemento = null;
-        if (n != null) {
-            //equals
-            if (n.getIzquierdo() != null && n.getIzquierdo().getElem().equals(x) || n.getDerecho() != null && n.getDerecho().getElem().equals(x)) {
+        if (n != null && !this.raiz.getElem().equals(x)){
+            if ((n.getIzquierdo() != null && n.getIzquierdo().getElem().equals(x)) ||( n.getDerecho() != null && n.getDerecho().getElem().equals(x))) {
                 elemento = n.getElem();
             } else {
                 elemento = obtenerElemPadre(n.getIzquierdo(), x);
 
                 if (elemento == null) {
+               
                     elemento = obtenerElemPadre(n.getDerecho(), x);
                 }
             }
         }
         return elemento;
     }
+   
 
-    //nodo=Anterior
     public Lista listarPreorden() {
         Lista lista = new Lista();
         recursivoPreorden(this.raiz, lista, 1);
@@ -197,7 +140,6 @@ public class ArbolBin {
 
     public int recursivoPreorden(NodoArbol nodo, Lista lista, int pos) {
         if (nodo != null) {
-            //ver de sacar los controles de null
             lista.insertar(nodo.getElem(), pos);
             if (nodo.getIzquierdo() != null) {
                 pos = recursivoPreorden(nodo.getIzquierdo(), lista, pos + 1);
@@ -324,51 +266,12 @@ public class ArbolBin {
         return cadena;
     }
 
-    /*public String toString2 (){
-       String cadena="Arbol vacio";
-       if (this.raiz!=null){
-           cadena="";
-           cadena=stringAux(this.raiz, cadena);
-       }
-       return cadena;
-   }
-    private String stringAux (NodoArbol nodo, String cadena){
-       //precondicion nodo debe ser distinto de nulo
-       String cadena2=cadena;
-       cadena2+="Nodo:"+nodo.getElem();
-       //si existe el hijo izquierdo lo concatena
-       if (nodo.getIzquierdo()!=null){
-            cadena2+=" HI:"+ nodo.getIzquierdo().getElem();
-       }
-       //sino concatena -
-       else{
-           cadena2+=" HI:-";
-       }
-       //si existe el hijo derecho lo concatena
-       if (nodo.getDerecho()!=null){
-            cadena2+=" HD:"+ nodo.getDerecho().getElem()+"\n";
-       }
-       //sino concatena-
-       else{
-            cadena2+=" HD:- \n";
-       }
-       //si tiene hijo izquierdo llama recursivamente con el
-       if (nodo.getIzquierdo()!=null){
-           cadena2=stringAux(nodo.getIzquierdo(),cadena2);
-       }
-       //si tiene hijo derecho llama recursivamente con el 
-       if (nodo.getDerecho()!=null){
-            cadena2=stringAux(nodo.getDerecho(),cadena2);
-       }
-        return cadena2;
-  
-    }
-     */
     public ArbolBin clone() {
         ArbolBin clone = new ArbolBin();
         if (this.raiz != null) {
+            
             clone.raiz =  new NodoArbol(this.raiz.getElem(), null, null);;
-            auxClon(this.raiz, raiz);
+            auxClon(this.raiz, clone.raiz);
 
         }
         return clone;
@@ -391,42 +294,7 @@ public class ArbolBin {
 
     }
 
-    /*public ArbolBin clone (){
-        ArbolBin clone= new ArbolBin ();
-        
-        clone.raiz=auxClon2 (this.raiz);
-        return clone;
-       
-    }
-    private void auxClon2 (NodoArbol nodo, NodoArbol aux2){
-        //precondicion nodo distinto de null
-        //si eixste un nodo izquierdo creo un nodo nuevo a la izquierda de mi nodo raiz
-        if (nodo.getIzquierdo()!=null){
-            aux2.setIzquierdo( new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
-            auxClon (nodo.getIzquierdo(), aux2.getIzquierdo());
-        }
-        //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
-        if (nodo.getDerecho()!=null){
-            aux2.setDerecho(new NodoArbol (nodo.getDerecho().getElem(),null,null));
-            auxClon (nodo.getDerecho(), aux2.getDerecho());
-        }    
-    }
-
-     private NodoArbol auxClon(NodoArbol nodo){
-       if (nodo!=null){
-            NodoArbol nuevo= new NodoArbol (nodo.getElem(),null,null);
-            if (nodo.getIzquierdo()!=null){
-                nuevo.setIzquierdo(auxClon(nodo.getIzquierdo()) );
-            }
-            //si eixste un nodo derecho creo un nodo nuevo a la derecho de mi nodo raiz
-            if (nodo.getDerecho()!=null){
-                nuevo.setDerecho(auxClon(nodo.getDerecho()));
-            }  
-       }
-       
-        return nodo;
-    }
-     */
+   
     public Lista frontera() {
         //podriamos pasarle 1 nada mas para no crear la variable posicion
         Lista listado = new Lista();

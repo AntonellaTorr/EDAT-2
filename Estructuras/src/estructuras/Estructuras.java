@@ -6,8 +6,9 @@
 package estructuras;
 
 import jerarquicas.ArbolBin;
-import lineales.estaticas.Cola;
+import lineales.dinamicas.Cola;
 import lineales.dinamicas.Lista;
+
 
 public class Estructuras {
 
