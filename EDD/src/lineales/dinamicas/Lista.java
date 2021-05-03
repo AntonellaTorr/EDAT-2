@@ -201,26 +201,6 @@ public class Lista {
         return cadena;
     }
 
-    public String toString2() {
-        //metodo a fines de debuggin que devuelve una cadena con todos los elementos de los nodos
-        String cadena = "La lista esta vacia";
-        if (!this.esVacia()) {
-            cadena = "[";
-            Nodo aux = cabecera;
-            cadena += aux.getElem() + ",";
-            aux = aux.getEnlace();
-            while (aux != null) {
-                cadena += aux.getElem();
-                aux = aux.getEnlace();
-                if (aux != null) {
-                    cadena += ",";
-                }
-            }
-            cadena += "]";
-        }
-        return cadena;
-
-    }
 
 }
     
