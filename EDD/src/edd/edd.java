@@ -32,9 +32,9 @@ public class edd {
         System.out.println(a.listarPreorden().toString()+"\n"); 
         
         System.out.println (a.toString()+"\n");
-        ArbolGen b=a.clone();    
-        System.out.println (b.toString());
-        
+        System.out.println(a.nivel('M'));
+        ArbolGen b=a.clone();
+        System.out.println(b.toString());
     }
     
 }

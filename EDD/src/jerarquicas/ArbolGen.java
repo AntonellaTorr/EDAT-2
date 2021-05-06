@@ -24,17 +24,10 @@ public class ArbolGen {
         else{
             NodoGen padre=obtenerNodo(this.raiz, elemPadre);
             if (padre!=null){
-                if (padre.getHijoIzquierdo()==null){
-                    //si el padre no tenia un hijo izquierdo creo el nuevo nodo y lo enlazo
-                    padre.setHijoIzquierdo(new NodoGen (elemNuevo,null,null));
-                }
-                else{
-                    //sino si ya existia uno
-                    //hago que el nuevo hermano apunte al hermano derecho del hijoIzquierdo que ya existia
-                    NodoGen hijo=new NodoGen (elemNuevo,null,padre.getHijoIzquierdo().getHermanoDerecho());
-                    //el hijo izquierdo que ya existia ahora apunta a su nuevo hermano
-                    padre.getHijoIzquierdo().setHermanoDerecho(hijo);
-                }
+                //hago que el padre apunte a mi nodo nuevo y que el nodo nuevo apunte al hijo izquierdo que ya existia antes
+                //o a null si no existia 
+                padre.setHijoIzquierdo(new NodoGen(elemNuevo,null, padre.getHijoIzquierdo()));
+                exito=true;
             }  
         }
         return exito;
@@ -48,7 +41,11 @@ public class ArbolGen {
             else{
                 resultado=obtenerNodo(nodo.getHijoIzquierdo(),elemPadre);
                 if (resultado==null){
-                    resultado=obtenerNodo(nodo.getHermanoDerecho(),elemPadre);
+                    NodoGen hijo=nodo.getHermanoDerecho();
+                    while (hijo!=null&& resultado==null){
+                        resultado=obtenerNodo(nodo.getHermanoDerecho(),elemPadre);
+                        hijo=hijo.getHermanoDerecho();
+                    }
                 }
             }
         }
@@ -68,13 +65,28 @@ public class ArbolGen {
             else{
                 //sino llama con el hijo izquierdo
                 resultado=buscarElem(nodo.getHijoIzquierdo(),elemBuscado);
-                //si todavia no se encontro llamo con el hermano derecho
+                //si todavia no se encontro llamo con sus hermanos derechos hasta encontrarlo hasta quedarme sin mas hermanos
                 if (!resultado){
-                    resultado=buscarElem(nodo.getHermanoDerecho(),elemBuscado);
+                    NodoGen hijo=nodo.getHermanoDerecho();
+                    while (hijo!=null && !resultado){
+                        resultado=buscarElem(nodo.getHermanoDerecho(),elemBuscado);
+                        hijo=hijo.getHermanoDerecho();
+                    }
+                    
                 }
             }
         }
         return resultado;
+    }
+    public Lista ancestros(Object elem){
+       Lista listaAncestros= new Lista ();
+       return listaAncestros;
+    }
+    private void buscarAncestros (NodoGen nodo,Object elem, Lista lista, int pos){
+        boolean encontrado=false;
+        
+        
+        
     }
     public boolean esVacio(){
         return (this.raiz==null);
@@ -95,12 +107,48 @@ public class ArbolGen {
             else{
                 encontrado=buscarNivel(nodo.getHijoIzquierdo(),elem,nivel+1);
                 //hay que recorrer todos los hermanos hasta que no hayan mas o hasta que encontremos el elemento buscado
-                while (encontrado==-1 && nodo.getHermanoDerecho()!=null){
-                    encontrado=buscarNivel(nodo.getHermanoDerecho(),elem,nivel);
+                NodoGen hijo=nodo.getHermanoDerecho();
+                while (encontrado==-1 && hijo!=null){
+                    encontrado=buscarNivel(hijo,elem,nivel);
+                    hijo=hijo.getHermanoDerecho();
                 }
             }
         }
         return encontrado;
+    }
+    public Object padre (Object elem){
+        return padreAux(this.raiz, elem);
+    }
+     
+    private Object padreAux (NodoGen nodo, Object elem){
+        Object padre=null;
+        if (nodo!=null && nodo.getHijoIzquierdo()!=null){
+            //verifica si el hijo izquierdo del nodo donde estoy parado encuentra el elemento
+            if (nodo.getHijoIzquierdo().getElem().equals(elem)){
+                padre=nodo.getElem();
+            }
+            NodoGen hijo=nodo.getHijoIzquierdo().getHermanoDerecho();
+            //si todavia no lo encontro y el nodo tiene mas hijo lo busca en sus hijos
+            if (padre==null){
+                while (hijo!=null){
+                    if (hijo.getElem().equals(elem)){
+                        padre=nodo.getElem();
+                    }
+                    hijo=hijo.getHermanoDerecho();
+                }
+            }
+            //si sigue sin encontrarlo
+            if (padre==null){
+                //llama recursivamente con cada hijo 
+                hijo=nodo.getHijoIzquierdo();
+                while (padre==null && hijo!=null){
+                     padre=padreAux(hijo, elem);
+                     hijo=hijo.getHermanoDerecho();
+                }
+                
+            }
+        }
+        return padre;
     }
     public Lista listarInorden (){
       Lista lista= new Lista();
@@ -251,4 +299,6 @@ public class ArbolGen {
         }
         return cadena;
     }
+
+        
 }
