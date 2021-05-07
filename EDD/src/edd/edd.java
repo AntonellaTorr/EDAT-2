@@ -26,15 +26,18 @@ public class edd {
         a.insertar('C', 'B');
         a.insertar('D', 'B');
         a.insertar('G', 'F');
+        //a.insertar('M', 'G');
         System.out.println(a.listarInorden().toString()); 
         System.out.println(a.listarPosorden().toString()); 
         System.out.println(a.listarPorNiveles().toString()); 
         System.out.println(a.listarPreorden().toString()+"\n"); 
         
         System.out.println (a.toString()+"\n");
-        System.out.println(a.nivel('M'));
+        System.out.println ("Padre de B: " +a.padre('B'));
+        System.out.println("Nivel de D: "+a.nivel('D'));
         ArbolGen b=a.clone();
         System.out.println(b.toString());
+        System.out.println ("Altura del arbol" +a.altura());
     }
     
 }

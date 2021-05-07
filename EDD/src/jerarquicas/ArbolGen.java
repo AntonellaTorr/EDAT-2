@@ -85,8 +85,33 @@ public class ArbolGen {
     private void buscarAncestros (NodoGen nodo,Object elem, Lista lista, int pos){
         boolean encontrado=false;
         
+    }
+    public int altura (){
+        return alturaAux(this.raiz,-1,-1);        
+    }
+    private int alturaAux(NodoGen nodo, int alt, int mayorAltura){
+        int altura=-1;
+        if (nodo!=null){
+            //si el nodo es una hoja
+            if (nodo.getHijoIzquierdo()==null){
+                //calculo la altura hasta ese momento
+                altura=alt+1;
+                //compara la mayorAltura obtenida hasta ahora con la que se calculo recien
+                //y se queda con la mayor
+                mayorAltura= Math.max(altura, mayorAltura);
+            }
+            else{
+                //llama con cada uno de sus hijos
+                NodoGen hijo=nodo.getHijoIzquierdo();
+                while (hijo!=null){
+                    altura=alturaAux(hijo,alt+1, mayorAltura);
+                    mayorAltura= Math.max(altura, mayorAltura);
+                    hijo=hijo.getHermanoDerecho();
+                }
+            }
+        }
         
-        
+        return mayorAltura;
     }
     public boolean esVacio(){
         return (this.raiz==null);
@@ -105,11 +130,10 @@ public class ArbolGen {
                 encontrado=nivel+1;
             }
             else{
-                encontrado=buscarNivel(nodo.getHijoIzquierdo(),elem,nivel+1);
+                NodoGen hijo=nodo.getHijoIzquierdo();
                 //hay que recorrer todos los hermanos hasta que no hayan mas o hasta que encontremos el elemento buscado
-                NodoGen hijo=nodo.getHermanoDerecho();
                 while (encontrado==-1 && hijo!=null){
-                    encontrado=buscarNivel(hijo,elem,nivel);
+                    encontrado=buscarNivel(hijo,elem,nivel+1);
                     hijo=hijo.getHermanoDerecho();
                 }
             }
@@ -124,20 +148,15 @@ public class ArbolGen {
         Object padre=null;
         if (nodo!=null && nodo.getHijoIzquierdo()!=null){
             //verifica si el hijo izquierdo del nodo donde estoy parado encuentra el elemento
-            if (nodo.getHijoIzquierdo().getElem().equals(elem)){
-                padre=nodo.getElem();
-            }
-            NodoGen hijo=nodo.getHijoIzquierdo().getHermanoDerecho();
-            //si todavia no lo encontro y el nodo tiene mas hijo lo busca en sus hijos
-            if (padre==null){
-                while (hijo!=null){
+            NodoGen hijo=nodo.getHijoIzquierdo();
+            while (hijo!=null && padre==null){
                     if (hijo.getElem().equals(elem)){
                         padre=nodo.getElem();
                     }
                     hijo=hijo.getHermanoDerecho();
                 }
-            }
-            //si sigue sin encontrarlo
+            
+            //si no lo encontró
             if (padre==null){
                 //llama recursivamente con cada hijo 
                 hijo=nodo.getHijoIzquierdo();
@@ -231,9 +250,6 @@ public class ArbolGen {
                     q.poner(hijo);
                     hijo=hijo.getHermanoDerecho();
                 }
-                
-                
-                
             }
         }
         return lista;
@@ -247,6 +263,8 @@ public class ArbolGen {
         return clone;
     }
     private void cloneAux(NodoGen nodo, NodoGen nodo2){
+        //la variable nodo tiene el puntero al arbol original
+        //la variable nodo2 tiene el puntero al arbol clon
         if (nodo.getHijoIzquierdo()!=null){
             //si tiene hijo izquierdo lo copio en mi nuevo arbol
             nodo=nodo.getHijoIzquierdo();
@@ -262,7 +280,6 @@ public class ArbolGen {
                 hermano=hermano.getHermanoDerecho();
                 //muevo el puntero al ultimo hermano creado
                 auxHermano=auxHermano.getHermanoDerecho();
-
             }
             //vuelvo a setearlos punteros para llamar recursivamente con cada hermano
             hermano=nodo.getHermanoDerecho();
