@@ -74,11 +74,39 @@ public class ArbolGen {
     }
     public Lista ancestros(Object elem){
        Lista listaAncestros= new Lista ();
+       if (!this.raiz.getElem().equals(elem)){
+           buscarAncestros(this.raiz, elem, listaAncestros,1);
+       }
+        
        return listaAncestros;
     }
-    private void buscarAncestros (NodoGen nodo,Object elem, Lista lista, int pos){
+    private boolean buscarAncestros (NodoGen nodo,Object elem, Lista lista, int pos){
         boolean encontrado=false;
-        
+        if (nodo!=null){
+            NodoGen hijo= nodo.getHijoIzquierdo();
+            while (hijo!=null && !encontrado){
+              if (hijo.getElem().equals(elem)){
+                  lista.insertar(nodo.getElem(), pos);
+                  encontrado=true;
+              }
+              hijo=hijo.getHermanoDerecho();
+              
+              }
+            if(!encontrado){
+                lista.insertar(nodo.getElem(), pos);
+                hijo=nodo.getHijoIzquierdo();
+                while (hijo!=null && !encontrado){
+                     encontrado=buscarAncestros(hijo, elem, lista, pos+1);
+                     if (!encontrado){
+                         lista.eliminar(pos+1);
+                         hijo=hijo.getHermanoDerecho();
+                     }
+                }
+           
+        }
+         }
+       
+        return encontrado;
     }
     public int altura (){
         return alturaAux(this.raiz,-1,-1);        
@@ -141,7 +169,7 @@ public class ArbolGen {
     private Object padreAux (NodoGen nodo, Object elem){
         Object padre=null;
         if (nodo!=null && nodo.getHijoIzquierdo()!=null){
-            //verifica si el hijo izquierdo del nodo donde estoy parado encuentra el elemento
+            //verifica si alguno los hijos es el elemento buscado
             NodoGen hijo=nodo.getHijoIzquierdo();
             while (hijo!=null && padre==null){
                     if (hijo.getElem().equals(elem)){
