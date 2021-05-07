@@ -39,22 +39,21 @@ public class ArbolGen {
                 resultado=nodo;
             }
             else{
-                resultado=obtenerNodo(nodo.getHijoIzquierdo(),elemPadre);
-                if (resultado==null){
-                    NodoGen hijo=nodo.getHermanoDerecho();
-                    while (hijo!=null&& resultado==null){
-                        resultado=obtenerNodo(nodo.getHermanoDerecho(),elemPadre);
-                        hijo=hijo.getHermanoDerecho();
-                    }
+                NodoGen hijo= nodo.getHijoIzquierdo();
+                while (hijo!=null && resultado==null){
+                    resultado=obtenerNodo(hijo, elemPadre);
+                    hijo=hijo.getHermanoDerecho();
                 }
             }
         }
         return resultado;
     }
+    
     public boolean pertenece(Object elem){
         return buscarElem(this.raiz, elem);
     }
-    private boolean buscarElem(NodoGen nodo,Object elemBuscado){
+ 
+        private boolean buscarElem(NodoGen nodo,Object elemBuscado){
         //este metodo privado busca un elemento en el arbol de forma recursiva
         boolean resultado=false;
         if(nodo!=null){
@@ -63,16 +62,11 @@ public class ArbolGen {
                 resultado=true;
             }
             else{
-                //sino llama con el hijo izquierdo
-                resultado=buscarElem(nodo.getHijoIzquierdo(),elemBuscado);
-                //si todavia no se encontro llamo con sus hermanos derechos hasta encontrarlo hasta quedarme sin mas hermanos
-                if (!resultado){
-                    NodoGen hijo=nodo.getHermanoDerecho();
-                    while (hijo!=null && !resultado){
-                        resultado=buscarElem(nodo.getHermanoDerecho(),elemBuscado);
-                        hijo=hijo.getHermanoDerecho();
-                    }
-                    
+                //sino llama con los hijos
+                NodoGen hijo= nodo.getHijoIzquierdo();
+                while (hijo!=null && !resultado){
+                    resultado=buscarElem(hijo,elemBuscado);
+                    hijo=hijo.getHermanoDerecho();
                 }
             }
         }
@@ -243,8 +237,10 @@ public class ArbolGen {
             while (!q.esVacia()){
                 NodoGen nodo= (NodoGen) q.obtenerFrente();
                 q.sacar();
+                //insertamos el elemento
                 lista.insertar(nodo.getElem(), i);
                 i++;
+                //insertamos los hijos
                 NodoGen hijo=nodo.getHijoIzquierdo();
                 while (hijo!=null){
                     q.poner(hijo);
@@ -263,38 +259,33 @@ public class ArbolGen {
         return clone;
     }
     private void cloneAux(NodoGen nodo, NodoGen nodo2){
-        //la variable nodo tiene el puntero al arbol original
-        //la variable nodo2 tiene el puntero al arbol clon
         if (nodo.getHijoIzquierdo()!=null){
-            //si tiene hijo izquierdo lo copio en mi nuevo arbol
+            //creo al hijo izquierdo
+            nodo2.setHijoIzquierdo(new NodoGen (nodo.getHijoIzquierdo().getElem(),null,null));
+            //avanzo hacia el izquierdo en cada arbol
             nodo=nodo.getHijoIzquierdo();
-            nodo2.setHijoIzquierdo(new NodoGen (nodo.getElem(),null,null) );  
-            //avanzo hacia el hijo recien creado
             nodo2=nodo2.getHijoIzquierdo();
-            //me paro en la fila del nodo que recien copie para copiar a sus hermanos 
-            NodoGen hermano=nodo.getHermanoDerecho();
-            NodoGen auxHermano=nodo2;
-            while (hermano!=null){
-                auxHermano.setHermanoDerecho(new NodoGen (hermano.getElem(),null,null));
-                //avanzo en la fila 
-                hermano=hermano.getHermanoDerecho();
-                //muevo el puntero al ultimo hermano creado
-                auxHermano=auxHermano.getHermanoDerecho();
+            //creo a los demas hijos
+            NodoGen hijo= nodo.getHermanoDerecho();
+            NodoGen hijo2=nodo2;
+            while (hijo!=null){
+                hijo2.setHermanoDerecho(new NodoGen(hijo.getElem(),null,null));
+                hijo=hijo.getHermanoDerecho();
+                hijo2=hijo2.getHermanoDerecho();
             }
-            //vuelvo a setearlos punteros para llamar recursivamente con cada hermano
-            hermano=nodo.getHermanoDerecho();
-            auxHermano=nodo2.getHermanoDerecho();
-            while (hermano!=null){
-                //llamada con c/ hermano
-                cloneAux(hermano,auxHermano);
-                //avanza con los demas
-                hermano=hermano.getHermanoDerecho();
-                auxHermano=auxHermano.getHermanoDerecho();
+            //llamo recursivamente con cada hijo
+            hijo=nodo;
+            hijo2=nodo2;
+            while (hijo!=null){
+                cloneAux(hijo,hijo2);
+                hijo=hijo.getHermanoDerecho();
+                hijo2=hijo2.getHermanoDerecho();
             }
-        }  
             
-        
+        }
     }
+
+  
     @Override
     public String toString (){
         return toStringAux(this.raiz);

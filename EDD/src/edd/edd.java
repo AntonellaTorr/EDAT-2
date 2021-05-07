@@ -21,23 +21,36 @@ public class edd {
         ArbolGen a = new ArbolGen();
         a.insertar('A', null);
         a.insertar('B', 'A');
+        a.insertar('C', 'B');
         a.insertar('F', 'A');
         a.insertar('E', 'A');
-        a.insertar('C', 'B');
         a.insertar('D', 'B');
         a.insertar('G', 'F');
-        //a.insertar('M', 'G');
+        a.insertar('M', 'G');
+        a.insertar('N', 'M');
+        
+        
+        /* A
+         B  F E
+        C D G 
+            M 
+            N
+        */
+        
         System.out.println(a.listarInorden().toString()); 
         System.out.println(a.listarPosorden().toString()); 
         System.out.println(a.listarPorNiveles().toString()); 
         System.out.println(a.listarPreorden().toString()+"\n"); 
         
+ 
+        
         System.out.println (a.toString()+"\n");
         System.out.println ("Padre de B: " +a.padre('B'));
-        System.out.println("Nivel de D: "+a.nivel('D'));
+        System.out.println("Nivel de n: "+a.nivel('N'));
         ArbolGen b=a.clone();
         System.out.println(b.toString());
         System.out.println ("Altura del arbol" +a.altura());
+        System.out.println(a.pertenece('C'));
     }
     
 }
