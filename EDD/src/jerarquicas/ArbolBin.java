@@ -1,5 +1,6 @@
 package jerarquicas;
 
+import jerarquicas.NodoArbol;
 import lineales.dinamicas.Lista;
 import lineales.dinamicas.Cola;
 

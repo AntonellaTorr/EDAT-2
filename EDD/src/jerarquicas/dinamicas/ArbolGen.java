@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jerarquicas;
+package jerarquicas.dinamicas;
 
 import lineales.dinamicas.Lista;
 import lineales.dinamicas.Cola;
@@ -341,7 +341,7 @@ public class ArbolGen {
        int grado=-1;
        //si el arbol no esta vacio llamamos al metodo privado
        if (this.raiz!=null){
-           grado= calcularGrado2(this.raiz,0);
+           grado= calcularGrado(this.raiz,0);
        }
        return grado;
     }
@@ -360,25 +360,7 @@ public class ArbolGen {
         }
         return mayorGrado;
     }
-    private int calcularGrado2 (NodoGen nodo,int mayorGrado){
-        int grado=0;
-        //si el nodo no es hoja
-        if (nodo!=null && nodo.getHijoIzquierdo()!=null){
-            NodoGen hijo=nodo.getHijoIzquierdo();
-            //recorro la lista de hermanos contandolos
-            while(hijo!=null){
-               grado++;
-               hijo=hijo.getHermanoDerecho();
-            }
-            hijo=nodo.getHijoIzquierdo();
-            //llamo recursivamente con cada uno de ellos y voy guardando el mayorGrado hasta el momento
-            while (hijo!=null){
-                mayorGrado=Math.max(grado, calcularGrado(hijo,mayorGrado));
-                hijo=hijo.getHermanoDerecho();
-            }
-        }
-        return mayorGrado;
-    }
+  
     public int gradoSubarbol(Object elem){
         //este metodo devuelve el grado de el subarbol que tiene al elemento como raiz
         int grado=-1;
