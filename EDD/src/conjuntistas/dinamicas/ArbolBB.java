@@ -86,7 +86,7 @@ public class ArbolBB {
                     exito = false;
                 } else {
                     //si tiene hijo izq llama recursivamente con el 
-                    exito = insertarAux(nodo.getIzquierdo(), elem);
+                    exito = perteneceAux(nodo.getIzquierdo(), elem);
                 }
             } //si el elemento buscado es mayor que el elemento que se encuentra en el nodo bajamos a la derecha
             else {
@@ -94,7 +94,7 @@ public class ArbolBB {
                 if (nodo.getDerecho() == null) {
                     exito = false;
                 } else {
-                    exito = insertarAux(nodo.getDerecho(), elem);
+                    exito = perteneceAux(nodo.getDerecho(), elem);
                 }
 
             }
@@ -127,7 +127,7 @@ public class ArbolBB {
         return lista;
     }
 
-    public int listarAux(NodoArbol nodo, Lista lista, int pos) {
+    private int listarAux(NodoArbol nodo, Lista lista, int pos) {
         //este metodo privado y recursivo devuelve la posicion en la cual debemos insertar un elemento
         if (nodo != null) {
             //siempre que el nodo recibido sea distinto de null

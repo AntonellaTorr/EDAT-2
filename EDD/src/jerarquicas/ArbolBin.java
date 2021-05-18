@@ -214,7 +214,7 @@ public class ArbolBin {
         return lista;
     }
 
-    public int recursivoInorden(NodoArbol nodo, Lista lista, int pos) {
+    private int recursivoInorden(NodoArbol nodo, Lista lista, int pos) {
         //este metodo privado y recursivo devuelve la posicion en la cual debemos insertar un elemento
         if (nodo != null) {
             //siempre que el nodo recibido sea distinto de null
