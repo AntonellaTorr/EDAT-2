@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jerarquicas.dinamicas;
+package jerarquicas;
 
 import lineales.dinamicas.Lista;
 import lineales.dinamicas.Cola;
 
 /**
  *
- * @author Anto
+ * @author QuirogaNicolas FAI-2978, Torres Bianca Antonella FAI-2991
  */
 public class ArbolGen {
 
@@ -22,11 +22,12 @@ public class ArbolGen {
     }
 
     public boolean insertar(Object elemNuevo, Object elemPadre) {
+        //este metodo inserta un elemento en el arbol 
         boolean exito = false;
         //si el arbol esta vacio crea un nuevo nodo y lo define como raiz
         if (this.raiz == null) {
             this.raiz = new NodoGen(elemNuevo, null, null);
-            exito=true;
+            exito = true;
         } else {
             //sino busca al elemento padre y crea un hijo
             NodoGen padre = obtenerNodo(this.raiz, elemPadre);
@@ -44,7 +45,7 @@ public class ArbolGen {
         //este metodo busca un elemento en el arbol y retorna el nodo que lo contiene
         NodoGen resultado = null;
         if (nodo != null) {
-            //si el nodo recibido por parametro tiene al elemento buscado retornamos a ese nodo
+            //si el nodo recibido por parametro tiene al elemento buscado almacenamos ese nodo para luego retornarlo
             if (nodo.getElem().equals(elemPadre)) {
                 resultado = nodo;
             } else {
@@ -62,8 +63,9 @@ public class ArbolGen {
 
     public boolean pertenece(Object elem) {
         //este metodo devuelve true si el elemento recibido por parametro se encuentra en el arbol y false si no
-        return (obtenerNodo(this.raiz, elem)!=null);
+        return (obtenerNodo(this.raiz, elem) != null);
     }
+
     public Lista ancestros(Object elem) {
         //este metodo retorna una lista con los ancestros del elemento recibido por parametro
         Lista listaAncestros = new Lista();
@@ -79,8 +81,7 @@ public class ArbolGen {
             //si encontramos el elemento encontrado se vuelve true
             if (nodo.getElem().equals(elem)) {
                 encontrado = true;
-            }
-            else{
+            } else {
                 //sino insertamos en la lista el elemento
                 lista.insertar(nodo.getElem(), pos);
                 NodoGen hijo = nodo.getHijoIzquierdo();
@@ -89,10 +90,10 @@ public class ArbolGen {
                     hijo = hijo.getHermanoDerecho();
                 }
                 //si nunca se encontro el elemento eliminamos el elemento que habiamos insertado
-                if (!encontrado){
+                if (!encontrado) {
                     lista.eliminar(pos);
                 }
-                
+
             }
         }
 
@@ -109,26 +110,37 @@ public class ArbolGen {
         this.raiz = null;
     }
 
-     public int altura (){
+    public int altura() {
         //este metodo retorna la altura del arbol
-        return alturaRecursivo(this.raiz);        
+        return alturaRecursivo(this.raiz);
     }
+
     private int alturaRecursivo(NodoGen n) {
-           int alturaActual=-1, alturaDelHermano=-1;
-           if(n!=null) {
-               if(n.getHijoIzquierdo()==null) {
-                       alturaActual=0;
-               }
-               alturaActual=alturaRecursivo(n.getHijoIzquierdo())+1;
-               NodoGen nodoAux=n.getHermanoDerecho();
-               while(nodoAux!=null) {
-                       alturaDelHermano=alturaRecursivo(n.getHermanoDerecho());
-                       alturaActual=Math.max(alturaActual, alturaDelHermano);
-                       nodoAux=nodoAux.getHermanoDerecho();
-               }
-           }
-           return alturaActual;
-       }
+        //este metodo recursivo retorna la mayor altura encontrada en el arbol
+        //creamos dos variables de tipo int donde guardaremos las alturas
+        //inicializamos en -1 considerando que que se puede recibir un arbol vacio
+        int alturaActual = -1, alturaDelHermano = -1;
+        if (n != null) {
+            //mientras el nodo actual sea diferente de null
+            if (n.getHijoIzquierdo() == null) {
+                //si llegamos a una hoja asignamos 0 a la altura actual para devolverla
+                alturaActual = 0;
+            } else {
+                //si el nodo hijo no es null entonces llamaremos recursivamente con el y le sumaremos 1 a su retorno
+                alturaActual = alturaRecursivo(n.getHijoIzquierdo()) + 1;
+                //creamos una variable de tipo NodoGen que nos ayudara a recorrer todos los hermanos del nodo n
+                NodoGen nodoAux = n.getHermanoDerecho();
+                while (nodoAux != null) {
+                    //mientras que el hermano no sea null vamos a invocar recursivamente con el y asignarlo a la variable alturaDelHermano
+                    alturaDelHermano = alturaRecursivo(n.getHermanoDerecho());
+                    //compararemos ambas alturas obtenidas y nos quedaremos con la mayor
+                    alturaActual = Math.max(alturaActual, alturaDelHermano);
+                    nodoAux = nodoAux.getHermanoDerecho();
+                }
+            }
+        }
+        return alturaActual;
+    }
 
     public int nivel(Object elem) {
         //este metodo retorna el nivel del elemento buscado en arbol
@@ -158,7 +170,7 @@ public class ArbolGen {
         //este metodo devuelve el padre del elemento buscado
         Object padre = null;
         //si el arbol no esta vacio y ni tampoco es el elemento buscado llamamos al metodo
-        if (this.raiz!=null &&!this.raiz.getElem().equals(elem)) {
+        if (this.raiz != null && !this.raiz.getElem().equals(elem)) {
             padre = padreAux(this.raiz, elem);
         }
         return padre;
@@ -190,7 +202,6 @@ public class ArbolGen {
         return padre;
     }
 
-
     public Lista listarInorden() {
         //este metodo devuelve una lista con los elementos del arbol listados en inorden
         Lista lista = new Lista();
@@ -201,10 +212,13 @@ public class ArbolGen {
 
     private void listarInordenAux(NodoGen nodo, Lista lista) {
         if (nodo != null) {
+            //llama recursivamente con el primer hijo del nodo
             if (nodo.getHijoIzquierdo() != null) {
                 listarInordenAux(nodo.getHijoIzquierdo(), lista);
             }
+            //visita al nodo
             lista.insertar(nodo.getElem(), lista.longitud() + 1);
+            //llama recursivamente con los otros hijos de nodo
             if (nodo.getHijoIzquierdo() != null) {
                 NodoGen hijo = nodo.getHijoIzquierdo().getHermanoDerecho();
                 while (hijo != null) {
@@ -223,7 +237,6 @@ public class ArbolGen {
         return lista;
     }
 
-   
     private int listarPreordenAux(NodoGen nodo, Lista lista, int pos) {
         if (nodo != null) {
             //visitamos la raiz 
@@ -234,11 +247,10 @@ public class ArbolGen {
                 pos = listarPreordenAux(hijo, lista, pos + 1);
                 hijo = hijo.getHermanoDerecho();
             }
-            
+
         }
         return pos;
     }
-    
 
     public Lista listarPosorden() {
         //este metodo devuelve una lista con los elementos del arbol listados en posOrden
@@ -248,10 +260,10 @@ public class ArbolGen {
         return lista;
     }
 
-     private int listarPosordenAux(NodoGen nodo, Lista lista, int pos) {
+    private int listarPosordenAux(NodoGen nodo, Lista lista, int pos) {
         if (nodo != null) {
             //llama con los hijos
-            NodoGen hijo=nodo.getHijoIzquierdo();
+            NodoGen hijo = nodo.getHijoIzquierdo();
             while (hijo != null) {
                 pos = listarPosordenAux(hijo, lista, pos);
                 hijo = hijo.getHermanoDerecho();
@@ -287,25 +299,41 @@ public class ArbolGen {
         return lista;
     }
 
+    @Override
     public ArbolGen clone() {
+        //este metodo devuelve una copia exacta de un determinado arbol
+        //creamos el nuevo arbol
         ArbolGen clone = new ArbolGen();
         if (this.raiz != null) {
+            //si el arbol a copiar no esta vacio vamos a copiar el elemento en su raiz
             clone.raiz = new NodoGen(this.raiz.getElem(), null, null);
+            //y procederemos a copiar el resto llamando a un metodo recursivo
             clonarRecursivo(this.raiz, clone.raiz);
         }
         return clone;
     }
 
     private void clonarRecursivo(NodoGen n, NodoGen m) {
+        //este metodo recibe por parametro dos NodoGen e ira copiando para crear el clone
+        //siendo en un comienzo n la raiz del arbol a copiar y m la raiz de la copia
         if (n != null) {
+            //si el nodo n es diferente de null
             if (n.getHijoIzquierdo() != null) {
+                //si el hijo izquierdo es distinto de null
+                //seteamos el hijo izuierdo de m
                 m.setHijoIzquierdo(new NodoGen(n.getHijoIzquierdo().getElem(), null, null));
+                //llamaremos recursivamente con el hijo izquierdo de n y el hijo izquierdo recien seteado de m
                 clonarRecursivo(n.getHijoIzquierdo(), m.getHijoIzquierdo());
+                //creamos dos variables de tipo NodoGen que nos ayudaran a recorrer los hermanos del hijo de n y setear los hermanos del hijo de m
                 NodoGen nodoAux = n.getHijoIzquierdo().getHermanoDerecho();
                 NodoGen nodoAux2 = m.getHijoIzquierdo();
                 while (nodoAux != null) {
+                    //mientras que nodoAux no sea null
+                    //vamos a agregarle un hermano al hijo de m
                     nodoAux2.setHermanoDerecho(new NodoGen(nodoAux.getElem(), null, null));
+                    //llamaremos recursivamente
                     clonarRecursivo(nodoAux, nodoAux2.getHermanoDerecho());
+                    //y finalmente actualizaremos las variables nodoAux y nodoAux2
                     nodoAux = nodoAux.getHermanoDerecho();
                     nodoAux2 = nodoAux2.getHermanoDerecho();
                 }
@@ -315,6 +343,7 @@ public class ArbolGen {
 
     @Override
     public String toString() {
+        //este metodo devuelve una cadena con todos los elementos del arbol
         return toStringAux(this.raiz);
     }
 
@@ -322,12 +351,14 @@ public class ArbolGen {
         //este metodo retorna una cadena con todos los elementos del arbol
         String cadena = "";
         if (nodo != null) {
+            //visitamos al nodo
             cadena += nodo.getElem().toString() + "->";
             NodoGen hijo = nodo.getHijoIzquierdo();
             while (hijo != null) {
                 cadena += hijo.getElem().toString() + ",";
                 hijo = hijo.getHermanoDerecho();
             }
+            //llamadas recursivas para cada hijo
             hijo = nodo.getHijoIzquierdo();
             while (hijo != null) {
                 cadena += "\n" + toStringAux(hijo);
@@ -336,38 +367,40 @@ public class ArbolGen {
         }
         return cadena;
     }
-    public int grado(){
-       //este metodo retorna el grado del arbol
-       int grado=-1;
-       //si el arbol no esta vacio llamamos al metodo privado
-       if (this.raiz!=null){
-           grado= calcularGrado(this.raiz,0);
-       }
-       return grado;
+
+    public int grado() {
+        //este metodo retorna el grado del arbol
+        int grado = -1;
+        //si el arbol no esta vacio llamamos al metodo privado
+        if (this.raiz != null) {
+            grado = calcularGrado(this.raiz, 0);
+        }
+        return grado;
     }
-    private int calcularGrado(NodoGen nodo,int mayorGrado){
-        int grado=0;
+
+    private int calcularGrado(NodoGen nodo, int mayorGrado) {
+        int grado = 0;
         //si el nodo no es hoja
-        if(nodo!=null && nodo.getHijoIzquierdo()!=null){
-           NodoGen hijo=nodo.getHijoIzquierdo();
-           while(hijo!=null){
-               grado++;
-               //llama recursivamente con cada uno de ellos y obtiene el mayorGrado
-               mayorGrado=Math.max(grado, calcularGrado(hijo,mayorGrado));
-               //avanza con el hermano
-               hijo=hijo.getHermanoDerecho();
-           }
+        if (nodo != null && nodo.getHijoIzquierdo() != null) {
+            NodoGen hijo = nodo.getHijoIzquierdo();
+            while (hijo != null) {
+                grado++;
+                //llama recursivamente con cada uno de ellos y obtiene el mayorGrado
+                mayorGrado = Math.max(grado, calcularGrado(hijo, mayorGrado));
+                //avanza con el hermano
+                hijo = hijo.getHermanoDerecho();
+            }
         }
         return mayorGrado;
     }
-  
-    public int gradoSubarbol(Object elem){
+
+    public int gradoSubarbol(Object elem) {
         //este metodo devuelve el grado de el subarbol que tiene al elemento como raiz
-        int grado=-1;
-        NodoGen nodo=obtenerNodo(this.raiz,elem);
+        int grado = -1;
+        NodoGen nodo = obtenerNodo(this.raiz, elem);
         //si el elemento esta en el arbol llama al metodo para calcular el grado
-        if (nodo!=null){
-            grado=calcularGrado(nodo,0);
+        if (nodo != null) {
+            grado = calcularGrado(nodo, 0);
         }
         return grado;
     }

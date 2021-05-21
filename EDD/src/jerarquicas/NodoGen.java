@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jerarquicas.dinamicas;
+package jerarquicas;
 
 /**
  *
- * @author Anto
+ *  @author QuirogaNicolas FAI-2978, Torres Bianca Antonella FAI-2991
  */
 public class NodoGen {
     private Object elem;

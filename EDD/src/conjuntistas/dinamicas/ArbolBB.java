@@ -102,16 +102,111 @@ public class ArbolBB {
         }
         return exito;
     }
-    public boolean eliminar(Comparable elem){
-        boolean exito=false;
-        if (this.raiz!=null){
-            exito=eliminarAux(this.raiz, elem);
+
+    public boolean eliminar(Comparable elem) {
+        boolean exito = false;
+        if (this.raiz != null) {
+            if (this.raiz.getElem().compareTo(elem) == 0) {
+            } else {
+            }
         }
         return exito;
     }
-    private boolean eliminarAux(NodoArbol raiz, Comparable elem){
-        return false;
+//    Algoritmo eliminar (elemento)
+//Comparar el elemento a eliminar con el elemento en el nodo actual del árbol
+//Si es menor avanzar hacia el subárbol izquierdo
+//Si es mayor avanzar hacia el subárbol derecho
+//Repetir el paso anterior hasta que se llegue a un subárbol vacío o se encuentre el elemento
+//Si encontró el elemento
+//Si es hoja: eliminar según el caso 1
+//Si tiene un hijo: eliminar según el caso 2
+//Si tiene ambos hijos: eliminar según el caso 3
+//Si encontró un subárbol vacío, la operación culmina sin éxito y se devuelve error
+
+    private boolean eliminarAux(NodoArbol nodo, Comparable elem) {
+        int res = elem.compareTo(nodo.getElem());
+        boolean encontrado = false;
+        NodoArbol elemEliminar = null;
+        if (res == 0) {
+            encontrado = true;
+            elemEliminar = nodo;
+        } else {
+            if (res < 0) {
+                encontrado = eliminarAux(nodo.getIzquierdo(), elem);
+                if (encontrado) {
+                    elemEliminar = nodo.getIzquierdo();
+                }
+            } else {
+                encontrado = eliminarAux(nodo.getDerecho(), elem);
+                if (encontrado) {
+                    elemEliminar = nodo.getDerecho();
+                }
+            }
+        }
+        //si encontro el elemento que quiere eliminar llama con el caso que sea necesario 
+        if (elemEliminar != null) {
+            //es hoja
+            if (elemEliminar.getIzquierdo() == null && elemEliminar.getDerecho() == null) {
+                caso1(nodo,elemEliminar.getElem());
+            } else {
+                if (elemEliminar.getIzquierdo() != null && elemEliminar.getDerecho()==null) {
+                    caso2(nodo,elemEliminar, 'I');
+                }
+                else{ 
+                    if (elemEliminar.getDerecho() != null && elemEliminar.getIzquierdo()==null) {
+                        caso2(nodo,elemEliminar, 'D');
+                    }
+                    else{
+                        caso3(elemEliminar);
+                    }
+                    
+                }
+            }
+        }
+
+        return encontrado;
     }
+    private void caso1(NodoArbol nodoP,Comparable elemEliminar){
+        //es hoja
+        // busco si hay que eliminar el lado derecho o izquierdo
+        if (nodoP.getIzquierdo().equals(elemEliminar)){
+            nodoP.setIzquierdo(null);
+        }else{
+            if(nodoP.getDerecho().equals(elemEliminar)){
+                nodoP.setDerecho(null);
+            }
+        }
+    }
+    private void caso2(NodoArbol nodoP,NodoArbol elemEliminar, char hijo){
+        //la variable char almacena el hijo que tiene, sitiene un izquierdo o
+        //tiene un hijo
+        if (nodoP.getIzquierdo().equals(elemEliminar.getElem())){
+            //si el elemento que quiero eliminar tiene hijo izquierdo
+            if(hijo=='I'){
+                nodoP.setIzquierdo(elemEliminar.getIzquierdo());
+            }
+            //si el elemento que quiero eliminar tiene hijo derecho
+            else{
+                nodoP.setIzquierdo(elemEliminar.getDerecho());
+            }
+            
+        }else{
+            if(nodoP.getDerecho().equals(elemEliminar) ){
+               //si el elemento que quiero eliminar tiene hijo izquierdo
+                if(hijo=='I'){
+                    nodoP.setDerecho(elemEliminar.getIzquierdo());
+                }
+                //si el elemento que quiero eliminar tiene hijo derecho
+                else{
+                    nodoP.setDerecho(elemEliminar.getDerecho());
+                }
+            }
+        }
+    }
+    private boolean caso3(NodoArbol nodo){
+        
+    }
+
     public boolean esVacio(){
         return (this.raiz==null);
     }
@@ -190,6 +285,45 @@ public class ArbolBB {
             elem=buscarMaxElem(nodo.getDerecho());
         }
         return elem;
+    }
+    public Lista listarRango(Comparable elemMinimo, Comparable elemMaximo){
+        Lista listaRango= new Lista ();
+        listarRango(this.raiz, listaRango, 0, elemMinimo, elemMaximo);
+        return listaRango;
+        
+    }
+    private int listarRango(NodoArbol nodo, Lista lista, int pos,Comparable elemMin, Comparable elemMax){
+        if (nodo != null) {
+            //siempre que el nodo recibido sea distinto de null
+           
+            if (nodo.getIzquierdo() == null && (elemMin.compareTo(nodo.getElem())<0 || elemMin.compareTo(nodo.getElem())==0 )) {
+                //si llegamos a una hoja
+                //vamos a insertarlo e incrementar pos
+                lista.insertar(nodo.getElem(), pos);
+                pos++;
+            }
+            if (nodo.getDerecho()==null && (elemMax.compareTo(nodo.getElem())>0 || elemMax.compareTo(nodo.getElem())==0 )){
+                lista.insertar(nodo.getElem(), pos);
+                pos++;
+            }
+            else {
+                //si no estamos en una hoja
+                //seguimos recorriendo el arbol/subArbol por el lado izquierdo
+                if (elemMin.compareTo(nodo.getElem())<0 ){
+                    pos = listarRango(nodo.getIzquierdo(), lista, pos, elemMin,elemMax);
+                    //insertamos el nodo actual, que viene a ser el nodo padre
+                    lista.insertar(nodo.getElem(), pos);
+                    pos++;
+                }  
+                if (elemMax.compareTo(nodo.getElem())>0){
+                    //incrementamos pos y repetimos el proceso con el lado derecho
+                    pos = listarRango(nodo.getDerecho(), lista, pos, elemMin,elemMax);
+                }
+
+        }
+        
+     }
+        return pos;
     }
      public ArbolBB clone() {
         //este metodo devuelve un arbol identico al arbol original 
