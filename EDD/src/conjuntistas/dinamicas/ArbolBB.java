@@ -111,48 +111,54 @@ public class ArbolBB {
         return exito;
     }
 
-    private NodoArbol eliminarAux(NodoArbol nodo, Comparable elem, NodoArbol padre) {
+    private boolean eliminarAux(NodoArbol nodo, Comparable elem, NodoArbol padre) {
         int res = elem.compareTo(nodo.getElem());
         NodoArbol hijo = null;
+        boolean encontrado=false;
         if (nodo!=null){
+            //si se encontro el elemento que se quiere eliminar verifica que caso le aplica
             if (res == 0) {
                 hijo = nodo;
+                encontrado=true;
                 if (hijo.getIzquierdo() == null && hijo.getDerecho() == null) {
                 //es hoja
                 caso1(padre, hijo.getElem());
-            } 
-            else {
-                if (hijo.getIzquierdo() != null && hijo.getDerecho() == null) {
-                    //el elemento a eliminar tiene hijo izquierdo
-                    caso2(padre, hijo, 'I');
-                }
+                } 
                 else {
-                    //el elemento a eliminar tiene hijo derecho
-                    if (hijo.getDerecho() != null && hijo.getIzquierdo() == null) {
-                        caso2(padre, hijo, 'D');
-                    } 
-                    else {
-                        //el elemento tiene a los 2 hijos
-                        caso3(hijo);
+                    //padre.getIZ(hijo)
+                    if (hijo.getIzquierdo() != null && hijo.getDerecho() == null) {
+                        //el elemento a eliminar tiene hijo izquierdo
+                        caso2(padre, hijo, 'I');
                     }
-            }
-            }
-        } else {
-            if (res < 0) {
-                eliminarAux(nodo.getIzquierdo(), elem, nodo);
+                    else {
+                        //el elemento a eliminar tiene hijo derecho
+                        if (hijo.getDerecho() != null && hijo.getIzquierdo() == null) {
+                            caso2(padre, hijo, 'D');
+                        } 
+                        else {
+                            //el elemento tiene a los 2 hijos
+                            caso3(hijo);
+                        }
+                    }
+                }
             } else {
-                eliminarAux(nodo.getDerecho(), elem, nodo);
+                //sino llama al lado que corresponde
+                if (res < 0) {
+                    eliminarAux(nodo.getIzquierdo(), elem, nodo);
+                } else {
+                    eliminarAux(nodo.getDerecho(), elem, nodo);
+                }
             }
-        }
         
         
         }
-        return hijo;
+        return encontrado;
     }
+    
 
     private void caso1(NodoArbol nodoP,Comparable elemEliminar){
         //es hoja
-        // busco si hay que eliminar el lado derecho o izquierdo
+        //verifica desde el nodoPadre si el elemento a eliminar es el izquierdo o el derecho
         if (nodoP.getIzquierdo()!=null && nodoP.getIzquierdo().getElem().equals(elemEliminar)){
             nodoP.setIzquierdo(null);
         }else{
@@ -163,7 +169,7 @@ public class ArbolBB {
     }
     private void caso2(NodoArbol nodoP,NodoArbol elemEliminar, char hijo){
         //la variable char almacena el hijo que tiene, sitiene un izquierdo o
-        //tiene un hijo
+        //tiene un hijo derecho
         if (nodoP.getIzquierdo()!=null && nodoP.getIzquierdo().getElem().equals(elemEliminar.getElem())){
             //si el elemento que quiero eliminar tiene hijo izquierdo
             if(hijo=='I'){
@@ -187,6 +193,7 @@ public class ArbolBB {
             }
         }
     }
+    
     private void caso3(NodoArbol hijo){
         NodoArbol nuevoNodo=encontrarCandidato(hijo.getIzquierdo());
         eliminarAux(this.raiz, nuevoNodo.getElem(),null);
