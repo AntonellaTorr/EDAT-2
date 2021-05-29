@@ -67,9 +67,15 @@ public class ArbolAVL {
         return exito;
     }
     public boolean eliminar(Comparable elem) {
-        return eliminarAux(this.raiz, elem, null);
+        boolean exito=eliminarAux(this.raiz, elem, null);
+        this.raiz.recalcularAltura();
+        chequearBalanceo(this.raiz,null);
+        this.raiz.recalcularAltura();
+        return exito;
+        
     }
-    private boolean eliminarAux(NodoAVL nodo, Comparable elem, NodoAVL padre) {
+
+     private boolean eliminarAux(NodoAVL nodo, Comparable elem, NodoAVL padre){
         NodoAVL hijo = null;
         boolean encontrado = false;
         if (nodo != null) {
@@ -80,9 +86,8 @@ public class ArbolAVL {
                 encontrado = true;
                 if (hijo.getIzquierdo() == null && hijo.getDerecho() == null) {
                     //es hoja
-                    caso1(padre, hijo);
-                    padre.recalcularAltura();
-                    chequearBalanceo(padre,null);
+                    caso1(padre, hijo);                  
+                    
                 } else {
                     if (hijo.getIzquierdo() != null && hijo.getDerecho() != null) {
                         caso3(hijo);
@@ -98,8 +103,14 @@ public class ArbolAVL {
                 //sino llama al lado que corresponde
                 if (res < 0) {
                     encontrado = eliminarAux(nodo.getIzquierdo(), elem, nodo);
+                    nodo.recalcularAltura();
+                    chequearBalanceo(nodo,padre);
+                    nodo.recalcularAltura();
                 } else {
                     encontrado = eliminarAux(nodo.getDerecho(), elem, nodo);
+                    nodo.recalcularAltura();
+                    chequearBalanceo(nodo,padre);
+                    nodo.recalcularAltura();
 
                 }
 
@@ -109,7 +120,6 @@ public class ArbolAVL {
          return encontrado;
 
     }
-
     private void caso1(NodoAVL padre, NodoAVL hijo) {
         if (padre == null) {
             this.raiz = null;

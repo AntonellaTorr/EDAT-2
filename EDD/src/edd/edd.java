@@ -14,13 +14,13 @@ public class edd {
 //        a.insertar(22);
 //        a.insertar(23);
         ArbolAVL b= new ArbolAVL ();
-        b.insertar(12);
-        b.insertar(5);
-        b.insertar(23);
-        b.insertar(3);
-        b.insertar(8);
-        System.out.println (b.toString());
         b.insertar(10);
+        b.insertar(9);
+        b.insertar(15);
+        b.insertar(12);
+        b.insertar(17);
+        System.out.println (b.toString());
+        b.eliminar(15);
         
         
         System.out.println (b.toString());
