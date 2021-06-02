@@ -404,4 +404,63 @@ public class ArbolGen {
         }
         return grado;
     }
+    public boolean verificarCamino(Lista lista){
+        boolean exito=false;
+        NodoGen nodo=this.raiz.getHijoIzquierdo();
+        if (this.raiz!=null && this.raiz.getElem().equals(lista.recuperar(1))){
+            exito=verificarAux(lista, nodo, 2,lista.longitud());
+        }
+        return exito;
+              
+    }
+     public boolean verificarCamino2(Lista lista){
+        //en el caso en el que la raiz no sea nula y el elemento no coincida con el primer elemento de la lista
+        //llama con sus hermanos, aunque sabemos que la raiz no deberia tenerlos,esta bien?
+        return verificarAux(lista, this.raiz, 1,lista.longitud());   
+    }
+   
+    private boolean verificarAux(Lista lista, NodoGen nodo, int pos, int max){
+        boolean exito=false;
+        while (!exito && nodo!=null){
+            //si el elemento concide
+            if (nodo.getElem().equals(lista.recuperar(pos))){
+                //si esta en la ultima posicion de la lista y todo coincide hasta el momento debe salir y retorna true
+                if (pos==max){
+                    exito=true;
+                }else{
+                    //sino sigue verificando
+                    exito=verificarAux(lista, nodo.getHijoIzquierdo(),pos++,max);
+                }
+            }
+            else{
+                //sino busca entre los hermanos
+                nodo=nodo.getHermanoDerecho();
+                
+            }
+        }
+        return exito;
+    }
+    public Lista listarEntreNiveles (int niv1, int niv2){
+        Lista lista= new Lista();
+        return listarAux(this.raiz, lista, niv1,niv2,0);
+    }
+     private Lista listarAux(NodoGen nodo, Lista lista, int niv1, int niv2, int nivAct) {
+        if (nodo != null) {
+            if (nodo.getHijoIzquierdo() != null&& nivAct>=niv1 && nivAct<niv2) {
+                listarAux(nodo.getHijoIzquierdo(), lista,niv1,niv2,nivAct++);
+            }
+            if (nivAct>=niv1 && nivAct<=niv2){
+                lista.insertar(nodo.getElem(), lista.longitud() + 1);
+            }
+            
+            if (nodo.getHijoIzquierdo() != null && nivAct<niv2) {
+                NodoGen hijo = nodo.getHijoIzquierdo().getHermanoDerecho();
+                while (hijo != null) {
+                    listarAux(hijo, lista,niv1,niv2,nivAct++);
+                    hijo = hijo.getHermanoDerecho();
+                }
+            }
+        }
+        return lista;
+    }
 }

@@ -5,20 +5,13 @@
  */
 package conjuntistas.dinamicas;
 import lineales.dinamicas.Lista;
+import funciones.Funciones;
 
 /**
  *
  * @author Anto
  */
-public class TablaHash {
-    private static final int TAMANIO = 10;
-    private Nodo [] hash;
-    private int cant;
-    
-    public TablaHash (){
-        this.hash = new Nodo[this.TAMANIO];
-        cant=0;
-    }
+/*
     public boolean insertar (Object elem){
         int pos= elem.hashCode() % TAMANIO;
         Nodo aux=this.hash[pos];
@@ -33,9 +26,51 @@ public class TablaHash {
         }
         return !encontrado;
     }
+*/
+public class TablaHash {
+    private static final int TAMANIO = 10;
+    private Nodo [] hash;
+    private int cant;
+    
+    public TablaHash (){
+        this.hash = new Nodo[this.TAMANIO];
+        cant=0;
+    }
+    
+     public boolean insertarInt (Object elem){
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionHash2((int)elem, 7, TAMANIO);
+        Nodo aux=this.hash[pos];
+        boolean encontrado=false;
+        while (!encontrado && aux!=null){
+            encontrado=aux.getElem().equals(elem);
+            aux=aux.getEnlace();
+        }
+        if (!encontrado){
+            this.hash[pos]= new Nodo(elem,this.hash[pos]);//por que tiene que apuntar a hash en pos
+            this.cant++;
+        }
+        return !encontrado;
+    }
+     public boolean insertarString (Object elem){
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionH((String)elem, 7, TAMANIO);
+        Nodo aux=this.hash[pos];
+        boolean encontrado=false;
+        while (!encontrado && aux!=null){
+            encontrado=aux.getElem().equals(elem);
+            aux=aux.getEnlace();
+        }
+        if (!encontrado){
+            this.hash[pos]= new Nodo(elem,this.hash[pos]);//por que tiene que apuntar a hash en pos
+            this.cant++;
+        }
+        return !encontrado;
+    }
     public boolean pertenece (Object elem){
         //busca la posicion en la que se podria encontrar el elemento
-        int pos= elem.hashCode() % TAMANIO;
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionHash2((int)elem, 7, TAMANIO);
         Nodo aux=this.hash[pos];
         boolean encontrado=false;
         while (!encontrado && aux!=null){
@@ -45,15 +80,57 @@ public class TablaHash {
         //si lo encuentra va a retornar true y sino false
         return encontrado;
     }
-    public boolean eliminar (Object elem){
+     public boolean pertenece2 (Object elem){
+        //busca la posicion en la que se podria encontrar el elemento
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionH((String)elem, 7, TAMANIO);
+        Nodo aux=this.hash[pos];
+        boolean encontrado=false;
+        while (!encontrado && aux!=null){
+            encontrado=aux.getElem().equals(elem);
+            aux=aux.getEnlace();
+        }
+        //si lo encuentra va a retornar true y sino false
+        return encontrado;
+    }
+    public boolean eliminar2 (Object elem){
         //busca la posicion del elemento 
-        int pos= elem.hashCode() % TAMANIO;
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionH((String)elem, 7, TAMANIO);
         Nodo aux=this.hash[pos];
         boolean encontrado=false;
         //si el elemento se encuentra en la primer posicion
-        if (aux.getElem().equals(elem)){
-            //REVISAR
-            aux.setEnlace(aux.getEnlace());
+        if (aux!=null && aux.getElem().equals(elem)){
+            this.hash[pos]=this.hash[pos].getEnlace();
+        }
+        else{
+            while (!encontrado && aux!=null){
+            //verifica si el elemento siguiente tiene al elemento buscado
+            encontrado=aux.getEnlace().getElem().equals(elem);
+                if (encontrado){
+                    //si lo tenia borra dicho enlace 
+                    aux.setEnlace(aux.getEnlace().getEnlace());
+                    //disminuye la cantidad de elementos en la table
+                    this.cant--;
+                }
+                else{
+                    //sino no lo encontro sigue avanzando 
+                    aux=aux.getEnlace();
+                }
+            }
+        }
+        return encontrado;
+        
+    }
+    public boolean eliminar (Object elem){
+        //busca la posicion del elemento 
+        Funciones hash= new Funciones ();
+        int pos= hash.funcionHash2((int)elem, 7, TAMANIO);
+        Nodo aux=this.hash[pos];
+        boolean encontrado=false;
+        //si el elemento se encuentra en la primer posicion
+        if (aux!=null && aux.getElem().equals(elem)){
+            this.hash[pos]=this.hash[pos].getEnlace();
         }
         else{
             while (!encontrado && aux!=null){
@@ -77,13 +154,16 @@ public class TablaHash {
     public boolean esVacia(){
         return (cant==0);
     }
+ 
+    
     public Lista listar (){
         int pos=0, pos2=1;
         Lista lista= new Lista ();
-        Nodo aux=this.hash[pos];
-        //recorre la tabla hash
+        
+        //recorre la tabla hash0
         while(pos<TAMANIO){
             //recorre la lista de cada pos
+            Nodo aux=this.hash[pos];
             while(aux!=null){
             lista.insertar(aux.getElem(), pos2);
             pos2++;

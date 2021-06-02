@@ -369,5 +369,63 @@ public class ArbolBB {
         }
         return cadena;
     }
+    public void eliminarMinimo(){
+        if (this.raiz.getIzquierdo()==null){
+            if(this.raiz.getDerecho()!=null){
+                this.raiz=this.raiz.getDerecho();
+            }
+            else{
+                this.raiz=null;
+            }
+        }
+        else{
+            eliminarMinimoAux(this.raiz.getIzquierdo());
+        }
+    }
+    private void eliminarMinimoAux(NodoArbol nodo){
+        if (nodo.getIzquierdo()==null){
+            nodo.setIzquierdo(null);
+        }
+        else{
+            eliminarMinimoAux(nodo.getIzquierdo());
+        }
+    }
+    public ArbolBB clonInvertido(Comparable elem){
+        NodoArbol raiz=encontrarRaiz(this.raiz,elem);
+        ArbolBB clone= new ArbolBB ();
+        if (raiz!=null){
+            clone.raiz= new NodoArbol (raiz.getElem(),null,null);
+            clonarInvertido(raiz,clone.raiz);
+        }
+        return clone;
+    }
+    private NodoArbol encontrarRaiz(NodoArbol nodo, Comparable elem){
+        NodoArbol raiz=null;
+        if (nodo!=null){
+            if (elem.compareTo(nodo.getElem())==0){
+            raiz=nodo;
+            }
+            else{
+                if (elem.compareTo(nodo.getElem())<0){
+                    raiz=encontrarRaiz(nodo.getIzquierdo(),elem);
+                }
+                else{
+                     raiz=encontrarRaiz(nodo.getDerecho(),elem);
+                }
+            }
+        }
+        
+        return raiz;
+    }
+   private void clonarInvertido(NodoArbol nodo, NodoArbol nodoClon){
+      if (nodo.getIzquierdo()!=null){
+          nodoClon.setDerecho(new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
+          clonarInvertido(nodo.getIzquierdo(),nodoClon.getDerecho());
+      }
+      if(nodo.getDerecho()!=null){
+           nodoClon.setIzquierdo(new NodoArbol (nodo.getDerecho().getElem(),null,null));
+          clonarInvertido(nodo.getDerecho(),nodoClon.getIzquierdo());
+      }
+   }
 
 }

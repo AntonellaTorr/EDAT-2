@@ -234,7 +234,6 @@ public class ArbolAVL {
             }
     }
     private NodoAVL rotarIzquierda(NodoAVL r){
-        //añadir recalcularAltura
         NodoAVL h=r.getDerecho();
         NodoAVL temp=h.getIzquierdo();
         h.setIzquierdo(r);
@@ -255,7 +254,6 @@ public class ArbolAVL {
         return h;
     }
     private NodoAVL rotacionIzquierdaDerecha(NodoAVL r){
-        //esta bien que r cambie su hijo Izquierdo por la nueva raiz del subarbol
         r.setIzquierdo(rotarIzquierda(r.getIzquierdo()));
         return rotarDerecha(r);
     }
