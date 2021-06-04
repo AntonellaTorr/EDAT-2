@@ -238,15 +238,7 @@ public class ArbolBB {
         return elem;
     }
 
-    private Comparable buscarMinElem(NodoArbol nodo) {
-        Comparable elem = nodo.getElem();
-        //si llegamos a una hoja encontramos el minimo elemento y lo almaceneamos
-        if (nodo.getIzquierdo() != null) {
-            //sino seguimos bajando por el lado izquierdo del arbol
-            elem = buscarMinElem(nodo.getIzquierdo());
-        }
-        return elem;
-    }
+  
 
     public Comparable maxElem() {
         //este metodo devuelve el mayor elemento en el arbol
@@ -256,16 +248,7 @@ public class ArbolBB {
         }
         return elem;
     }
-
-    private Comparable buscarMaxElem(NodoArbol nodo) {
-        Comparable elem = nodo.getElem();
-        //si llegamos a una hoja encontramos el maximo elemento y lo almaceneamos
-        if (nodo.getDerecho() != null) {
-            //sino seguimos bajando por el lado derecho del arbol
-            elem = buscarMaxElem(nodo.getDerecho());
-        }
-        return elem;
-    }
+   
 
     public Lista listarRango(Comparable elemMinimo, Comparable elemMaximo) {
         //este metodo devuelve un listado con los elementos del arbol en el rango ingresado
@@ -390,33 +373,17 @@ public class ArbolBB {
             eliminarMinimoAux(nodo.getIzquierdo());
         }
     }
-    public ArbolBB clonInvertido(Comparable elem){
-        NodoArbol raiz=encontrarRaiz(this.raiz,elem);
-        ArbolBB clone= new ArbolBB ();
-        if (raiz!=null){
-            clone.raiz= new NodoArbol (raiz.getElem(),null,null);
-            clonarInvertido(raiz,clone.raiz);
-        }
-        return clone;
-    }
-    private NodoArbol encontrarRaiz(NodoArbol nodo, Comparable elem){
-        NodoArbol raiz=null;
-        if (nodo!=null){
-            if (elem.compareTo(nodo.getElem())==0){
-            raiz=nodo;
-            }
-            else{
-                if (elem.compareTo(nodo.getElem())<0){
-                    raiz=encontrarRaiz(nodo.getIzquierdo(),elem);
-                }
-                else{
-                     raiz=encontrarRaiz(nodo.getDerecho(),elem);
-                }
-            }
-        }
-        
-        return raiz;
-    }
+  
+   public ArbolBB clonarIn(Comparable elem){
+       NodoArbol nodo=obtenerNodo(this.raiz,elem);
+       ArbolBB clone= new ArbolBB();
+       if (nodo!=null){
+           clone.raiz= new NodoArbol (elem, null,null);
+           clonarInvertido(nodo,clone.raiz);
+       }
+       
+       return clone;
+   }
    private void clonarInvertido(NodoArbol nodo, NodoArbol nodoClon){
       if (nodo.getIzquierdo()!=null){
           nodoClon.setDerecho(new NodoArbol (nodo.getIzquierdo().getElem(),null,null));
@@ -427,5 +394,180 @@ public class ArbolBB {
           clonarInvertido(nodo.getDerecho(),nodoClon.getIzquierdo());
       }
    }
+   
+   public int diferenciaCandidatos(Comparable elem){
+       NodoArbol nodo=obtenerNodo(this.raiz, elem);
+       //si la raiz no tiene un candidato esta bien que ella misma se convierta en el que no tiene 
+       NodoArbol candidatoM=nodo;
+       NodoArbol candidatoMen=nodo;
+       int res=-1;
+       if (nodo!=null){
+           if (nodo.getIzquierdo()== null && nodo.getDerecho()==null){
+               res=-2;
+           }
+           else{
+               if (nodo.getDerecho()!=null){
+                    candidatoM=encontrarMayor (nodo.getDerecho());
+               }
+               if (nodo.getIzquierdo()!=null){
+                   candidatoMen=encontrarMenor(nodo.getIzquierdo());
+               }
+               res=(int)candidatoM.getElem()-(int)candidatoMen.getElem();
+           }
+       }
+       return res;
+   }
+  private NodoArbol obtenerNodo(NodoArbol nodo, Comparable elem){
+      NodoArbol n=null;
+      if(nodo!=null){
+          if (elem.compareTo(nodo.getElem())==0){
+              n=nodo;
+          }
+          else{
+              if (elem.compareTo(nodo.getElem())<0){
+                  n= obtenerNodo(nodo.getIzquierdo(),elem);
+              }
+              else
+                  n= obtenerNodo(nodo.getDerecho(),elem);
+          }
+      }
+      return n;
+  }
+  
+   public int amplitudSubarbol(Comparable elem){
+       NodoArbol nodo=obtenerNodo(this.raiz, elem);
+       int res=-1;
+       if (nodo!=null){
+           Comparable menorElem=nodo.getElem();
+           Comparable mayorElem=nodo.getElem();
+            if (nodo.getIzquierdo()== null && nodo.getDerecho()==null){
+               res=0;
+           }
+            else{
+                if (nodo.getIzquierdo()!=null){
+                    menorElem=buscarMinElem(nodo.getIzquierdo());
+                }
+                if (nodo.getDerecho()!=null){
+                    mayorElem=buscarMaxElem(nodo.getDerecho());
+                }
+                res=(int)mayorElem-(int)menorElem;
+            }
+       }
+       return res;
+   }
+    private Comparable buscarMinElem(NodoArbol nodo) {
+        Comparable elem = nodo.getElem();
+        //si llegamos a una hoja encontramos el minimo elemento y lo almaceneamos
+        if (nodo.getIzquierdo() != null) {
+            //sino seguimos bajando por el lado izquierdo del arbol
+            elem = buscarMinElem(nodo.getIzquierdo());
+        }
+        return elem;
+    }
+    private Comparable buscarMaxElem(NodoArbol nodo) {
+        Comparable elem = nodo.getElem();
+        //si llegamos a una hoja encontramos el maximo elemento y lo almaceneamos
+        if (nodo.getDerecho() != null) {
+            //sino seguimos bajando por el lado derecho del arbol
+            elem = buscarMaxElem(nodo.getDerecho());
+        }
+        return elem;
+    }
+    public int mejorCandidato(Comparable elem){
+        NodoArbol nodo=obtenerNodo(this.raiz, elem);
+        int res = 0;
+        if (nodo != null) {
+            if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
+                res = -1;
+            } else {
+                if (nodo.getIzquierdo() != null && nodo.getDerecho() != null) {
+                    Comparable men = encontrarMenor(nodo.getIzquierdo()).getElem();
+                    Comparable may = encontrarMayor(nodo.getDerecho()).getElem();
+                    res = (int) men;
+                    //si la diferencia entre el candidato mas grande y el elemento es menor a la de el candidato mas chico y el elem
+                    //entonces el mejor candidato es el mas grande
+                    if ((int) may - (int) elem < (int) elem - (int) men) {
+                        res = (int) may;
+                    }
+                } else {
+                    //si uno es nulo y el otro no retorna el candidato que no lo es 
+                    if (nodo.getIzquierdo() == null) {
+                        res = (int) encontrarMayor(nodo.getDerecho()).getElem();
+                    } else {
+                        res = (int) encontrarMenor(nodo.getIzquierdo()).getElem();
+                    }
+                }
+
+            }
+        }
+        return res;
+
+    }
+    private NodoArbol encontrarMayor(NodoArbol nodo){
+      NodoArbol nodoM=nodo;
+      if (nodo.getIzquierdo()!=null){
+          nodoM= encontrarMayor (nodo.getIzquierdo());
+      }
+      return nodoM;
+  }
+   private NodoArbol encontrarMenor(NodoArbol nodo){
+      NodoArbol nodoM=nodo;
+       if (nodo.getDerecho()!=null){
+          nodoM= encontrarMenor (nodo.getDerecho());
+      }
+      return nodoM;
+  }
+   public Lista listarMayores(Comparable elem) {
+        //este metodo devuelve una lista con los elementos de nuestro arbol listados en inOrden
+        //creamos la lista que vamos a usar
+        Lista lista = new Lista();
+        //invocamos al metodo recursivoInorden
+        inordenMod(this.raiz, lista, 1,elem);
+        return lista;
+    }
+
+    private int inordenMod(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
+        //este metodo privado y recursivo devuelve la posicion en la cual debemos insertar un elemento
+        if (nodo != null) {
+            if (nodo.getElem().compareTo(elem)>=0 && nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
+                lista.insertar(nodo.getElem(), pos);
+                pos++;
+            } else {
+                //si no estamos en una hoja
+                //seguimos recorriendo el arbol/subArbol por el lado izquierdo
+                pos = inordenMod(nodo.getDerecho(), lista, pos,elem);
+                if (nodo.getElem().compareTo(elem)>=0){
+                    lista.insertar(nodo.getElem(), pos);
+                    pos++;
+                    pos = inordenMod(nodo.getIzquierdo(), lista, pos,elem);
+                }
+            }
+
+        }
+        return pos;
+    }
+    public Lista listarMenores(Comparable elem) {
+        Lista lista = new Lista();
+        listarMenores(this.raiz, lista, 1, elem);
+        return lista;
+    }
+
+    public int listarMenores(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
+        if (nodo != null) {
+            if (nodo.getElem().compareTo(elem) <= 0 && nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
+                lista.insertar(nodo.getElem(), pos);
+                pos++;
+            } else {
+                pos = listarMenores(nodo.getIzquierdo(), lista, pos, elem);
+                if (nodo.getElem().compareTo(elem) <= 0) {
+                    lista.insertar(nodo.getElem(), pos);
+                    pos++;
+                    pos = listarMenores(nodo.getDerecho(), lista, pos, elem);
+                }
+
+            }
+        }
+        return pos;
+    }
 
 }

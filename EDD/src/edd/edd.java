@@ -9,13 +9,17 @@ import lineales.dinamicas.Lista;
 public class edd {
 
     public static void main(String args[]) {
-        /*    
+          
         ArbolBB a= new ArbolBB ();
-        a.insertar(30);
-        a.insertar(20);
-        a.insertar(40);
-        a.insertar(22);
-        a.insertar(23);
+        a.insertar(8);
+        a.insertar(3);
+        a.insertar(1);
+        a.insertar(6);
+        a.insertar(4);
+        a.insertar(7);
+        a.insertar(10);
+        a.insertar(14);
+       /*
         ArbolAVL b= new ArbolAVL ();
         b.insertar(10);
         b.insertar(9);
@@ -24,17 +28,25 @@ public class edd {
         b.insertar(17);
         System.out.println (b.toString());
         b.eliminar(15);
-*/
-        TablaHash a= new TablaHash();
-        a.insertar(1);
-        a.insertar(7);
-        a.insertar(28);//9
-        System.out.println (a.pertenece(1));
-        System.out.println (a.pertenece(7));
-        System.out.println (a.toString());
-          
-        
+
+      ArbolGen a= new ArbolGen();
+      a.insertar('A', null);
+      a.insertar('C', 'A');
+      a.insertar('F', 'A');
+      a.insertar('M', 'A');
+      a.insertar('N', 'C');
+      a.insertar('L', 'F');
+      a.insertar('O', 'L');
+      Lista lis= new Lista();
+      lis.insertar('A', 1);
+      lis.insertar('F', 2);
+      lis.insertar('L',3);
+      System.out.println (a.listarHastaNivel(2).toString());
+      */
        
+        System.out.println (a.toString());
+        System.out.println(a.clonarIn(3));
+        //System.out.println (a.toString());
         
                 
         

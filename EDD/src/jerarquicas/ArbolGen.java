@@ -404,18 +404,9 @@ public class ArbolGen {
         }
         return grado;
     }
-    public boolean verificarCamino(Lista lista){
-        boolean exito=false;
-        NodoGen nodo=this.raiz.getHijoIzquierdo();
-        if (this.raiz!=null && this.raiz.getElem().equals(lista.recuperar(1))){
-            exito=verificarAux(lista, nodo, 2,lista.longitud());
-        }
-        return exito;
-              
-    }
-     public boolean verificarCamino2(Lista lista){
-        //en el caso en el que la raiz no sea nula y el elemento no coincida con el primer elemento de la lista
-        //llama con sus hermanos, aunque sabemos que la raiz no deberia tenerlos,esta bien?
+      
+    
+     public boolean verificarCamino(Lista lista){
         return verificarAux(lista, this.raiz, 1,lista.longitud());   
     }
    
@@ -429,10 +420,36 @@ public class ArbolGen {
                     exito=true;
                 }else{
                     //sino sigue verificando
-                    exito=verificarAux(lista, nodo.getHijoIzquierdo(),pos++,max);
+                    exito=verificarAux(lista, nodo.getHijoIzquierdo(),pos+1,max);
                 }
             }
             else{
+                
+                //sino busca entre los hermanos
+                nodo=nodo.getHermanoDerecho();
+                
+            }
+        }
+        return exito;
+    }
+    public boolean verificarCamino2(Lista lista){
+        return verificarAux2(lista, this.raiz, 1,lista.longitud());   
+    }
+     private boolean verificarAux2(Lista lista, NodoGen nodo, int pos, int max){
+        boolean exito=false;
+        while (!exito && nodo!=null){
+            //si el elemento concide
+            if (nodo.getElem().equals(lista.recuperar(pos))){
+                //si esta en la ultima posicion de la lista y todo coincide hasta el momento debe salir y retorna true
+                if (pos==max && nodo.getHijoIzquierdo()==null){
+                    exito=true;
+                }else{
+                    //sino sigue verificando
+                    exito=verificarAux(lista, nodo.getHijoIzquierdo(),pos+1,max);
+                }
+            }
+            else{
+                
                 //sino busca entre los hermanos
                 nodo=nodo.getHermanoDerecho();
                 
@@ -447,7 +464,7 @@ public class ArbolGen {
      private Lista listarAux(NodoGen nodo, Lista lista, int niv1, int niv2, int nivAct) {
         if (nodo != null) {
             if (nodo.getHijoIzquierdo() != null&& nivAct>=niv1 && nivAct<niv2) {
-                listarAux(nodo.getHijoIzquierdo(), lista,niv1,niv2,nivAct++);
+                listarAux(nodo.getHijoIzquierdo(), lista,niv1,niv2,nivAct+1);
             }
             if (nivAct>=niv1 && nivAct<=niv2){
                 lista.insertar(nodo.getElem(), lista.longitud() + 1);
@@ -456,10 +473,33 @@ public class ArbolGen {
             if (nodo.getHijoIzquierdo() != null && nivAct<niv2) {
                 NodoGen hijo = nodo.getHijoIzquierdo().getHermanoDerecho();
                 while (hijo != null) {
-                    listarAux(hijo, lista,niv1,niv2,nivAct++);
+                    listarAux(hijo, lista,niv1,niv2,nivAct+1);
                     hijo = hijo.getHermanoDerecho();
                 }
             }
+        }
+        return lista;
+    }
+    public Lista listarHastaNivel (int nivMax) {
+        Lista lista= new Lista();
+        return listarNiv(this.raiz, lista, nivMax,-1,1);
+    } 
+    private Lista listarNiv(NodoGen nodo, Lista lista,int nivMax, int nivAct, int pos){
+        if (nodo != null && nivAct>=0) {
+            //visitamos la raiz 
+            if(nivAct<=nivMax){
+                lista.insertar(nodo.getElem(), pos);
+            }
+            if (nivAct<nivMax){
+                NodoGen hijo = nodo.getHijoIzquierdo();
+                while (hijo != null) {
+                listarNiv(hijo, lista, nivMax, nivAct+1,pos+1);
+                hijo = hijo.getHermanoDerecho();
+            }     
+            }
+           
+
+       
         }
         return lista;
     }

@@ -26,10 +26,8 @@ public class TablaHash {
     }
 
     public boolean pertenece(Object elem) {
-        Funciones hash = new Funciones();
-        //rehashing 
-        int incremento = hash.reHash((int) elem, 19, TAMANIO);
-        int pos = hash.funcionHash2((int) elem, 19, TAMANIO);
+        int incremento = elem.hashCode();
+        int pos = Funciones.rehash(elem)%this.TAMANIO;
         boolean encontrado = false;
         int intento = 1;
 
@@ -48,10 +46,8 @@ public class TablaHash {
     }
 
     public boolean insertar(Object elem) {
-        Funciones hash = new Funciones();
-        //rehashing 
-        int incremento = hash.reHash((int) elem, 19, TAMANIO);
-        int pos = hash.funcionHash2((int) elem, 19, TAMANIO);
+        int pos = elem.hashCode();
+        int incremento = Funciones.rehash(elem)% this.TAMANIO;
         boolean exito = false, salir = false;
         int intento = 1;
         while (!exito && !salir && intento < TAMANIO) {
@@ -83,10 +79,8 @@ public class TablaHash {
     }
 
     public boolean eliminar(Object elem) {
-        Funciones hash = new Funciones();
-        int incremento = hash.reHash((int) elem, 19, TAMANIO);
-        int pos = hash.funcionHash2((int) elem, 19, TAMANIO);
-
+        int pos = elem.hashCode();
+        int incremento = Funciones.rehash(elem)% this.TAMANIO;
         boolean encontrado = false;
         int intento = 1;
 
@@ -97,6 +91,7 @@ public class TablaHash {
                 if (encontrado) {
                     //no hace falta hacer set null?
                     this.hash[pos].setEstado(BORRADO);
+                    this.hash[pos].setElem(null);
                     this.cant--;
                 }
             }
