@@ -23,6 +23,9 @@ public class TablaHash {
     public TablaHash() {
         this.hash = new CeldaHash[this.TAMANIO];
         cant = 0;
+        for(int i=0;i<this.TAMANIO;i++){
+            this.hash[i]= new CeldaHash(null, VACIO);
+        }
     }
 
     public boolean pertenece(Object elem) {
@@ -37,7 +40,7 @@ public class TablaHash {
             //mientras que no encontremos el elemento, la celda en pos no esta vacia y no hicimos mas intentos 
             //que el tam de la tabla 
             while (!encontrado && this.hash[pos].getEstado() != VACIO && intento < TAMANIO) {
-                pos = (pos + incremento * intento) % this.TAMANIO;// es con %tam?
+                pos = (pos + incremento * intento) % this.TAMANIO;
                 encontrado = this.hash[pos].getElem().equals(elem);
                 intento++;
             }
@@ -50,30 +53,24 @@ public class TablaHash {
         int incremento = Funciones.rehash(elem)% this.TAMANIO;
         boolean exito = false, salir = false;
         int intento = 1;
-        while (!exito && !salir && intento < TAMANIO) {
-            //si no hay ningun elemento todavia en dicha posicion lo creamos
-            if (this.hash[pos] == null) {
-                this.hash[pos] = new CeldaHash(elem, OCUPADO);
-                this.cant++;
-                exito = true;
-            } else {
-                //si la celda no esta ocupada creamos el elemento
-                if (this.hash[pos].getEstado() != OCUPADO) {
-                    this.hash[pos] = new CeldaHash(elem, OCUPADO);
-                    this.cant++;
-                    exito = true;
-                } else {
-                    //si el elemento ya se encuentra en la tabla salimos
-                    if (this.hash[pos].equals(elem)) {
-                        exito = false;
-                        salir = true;
-                    }
-                }
-                pos = (pos + incremento * intento) % this.TAMANIO;
-                intento++;
-            }
+        while (!exito && !salir && intento < TAMANIO) {//añadir  this.hash[pos].getEstado()==BORRADO
+            //si la celda no esta ocupada creamos el elemento
+               if (this.hash[pos].getEstado() != OCUPADO) {
+                   this.hash[pos] = new CeldaHash(elem, OCUPADO);
+                   this.cant++;
+                   exito = true;
+               } else {
+                   //si el elemento ya se encuentra en la tabla salimos
+                   if (this.hash[pos].equals(elem)) {
+                       exito = false;
+                       salir = true;
+                   }
+               }
+               pos = (pos + incremento * intento) % this.TAMANIO;
+               intento++;
+           }
 
-        }
+        
 
         return exito;
     }
@@ -83,7 +80,6 @@ public class TablaHash {
         int incremento = Funciones.rehash(elem)% this.TAMANIO;
         boolean encontrado = false;
         int intento = 1;
-
         while (!encontrado && intento < this.TAMANIO && this.hash[pos].getEstado() != VACIO) {
             if (this.hash[pos].getEstado() == OCUPADO) {
                 encontrado = this.hash[pos].getElem().equals(elem);

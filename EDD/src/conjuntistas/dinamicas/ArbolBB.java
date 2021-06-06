@@ -522,11 +522,11 @@ public class ArbolBB {
         //creamos la lista que vamos a usar
         Lista lista = new Lista();
         //invocamos al metodo recursivoInorden
-        inordenMod(this.raiz, lista, 1,elem);
+        listarMay(this.raiz, lista, 1,elem);
         return lista;
     }
 
-    private int inordenMod(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
+    private int listarMay(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
         //este metodo privado y recursivo devuelve la posicion en la cual debemos insertar un elemento
         if (nodo != null) {
             if (nodo.getElem().compareTo(elem)>=0 && nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
@@ -535,11 +535,17 @@ public class ArbolBB {
             } else {
                 //si no estamos en una hoja
                 //seguimos recorriendo el arbol/subArbol por el lado izquierdo
-                pos = inordenMod(nodo.getDerecho(), lista, pos,elem);
-                if (nodo.getElem().compareTo(elem)>=0){
+                pos = listarMay(nodo.getDerecho(), lista, pos,elem);
+                if (nodo.getElem().compareTo(elem)>0){
                     lista.insertar(nodo.getElem(), pos);
                     pos++;
-                    pos = inordenMod(nodo.getIzquierdo(), lista, pos,elem);
+                    pos = listarMay(nodo.getIzquierdo(), lista, pos,elem);
+                }
+                else{
+                    if(nodo.getElem().compareTo(elem)==0){
+                        lista.insertar(nodo.getElem(), pos);
+                        pos++;
+                    }
                 }
             }
 
@@ -552,17 +558,25 @@ public class ArbolBB {
         return lista;
     }
 
-    public int listarMenores(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
+    private int listarMenores(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
         if (nodo != null) {
             if (nodo.getElem().compareTo(elem) <= 0 && nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
             } else {
                 pos = listarMenores(nodo.getIzquierdo(), lista, pos, elem);
-                if (nodo.getElem().compareTo(elem) <= 0) {
+                //si el elemento es menor al elemento significa que del lado derecho quizas haya algunos elemento p listar 
+                if (nodo.getElem().compareTo(elem) <0) {
                     lista.insertar(nodo.getElem(), pos);
                     pos++;
                     pos = listarMenores(nodo.getDerecho(), lista, pos, elem);
+                }
+                else{
+                    //si encontramos el elemento en el arbol paramos ahi no hay que llamar mas recursivamente 
+                    if(nodo.getElem().compareTo(elem)==0){
+                        lista.insertar(nodo.getElem(), pos);
+                        pos++;
+                    }
                 }
 
             }

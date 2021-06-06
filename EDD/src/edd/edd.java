@@ -44,8 +44,8 @@ public class edd {
       System.out.println (a.listarHastaNivel(2).toString());
       */
        
-        System.out.println (a.toString());
-        System.out.println(a.clonarIn(3));
+//        System.out.println (a.toString());
+        System.out.println(a.listarMayores(8));
         //System.out.println (a.toString());
         
                 
