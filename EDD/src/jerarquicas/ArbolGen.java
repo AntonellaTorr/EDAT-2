@@ -41,19 +41,19 @@ public class ArbolGen {
         return exito;
     }
 
-    private NodoGen obtenerNodo(NodoGen nodo, Object elemPadre) {
+    private NodoGen obtenerNodo(NodoGen nodo, Object elem) {
         //este metodo busca un elemento en el arbol y retorna el nodo que lo contiene
         NodoGen resultado = null;
         if (nodo != null) {
             //si el nodo recibido por parametro tiene al elemento buscado almacenamos ese nodo para luego retornarlo
-            if (nodo.getElem().equals(elemPadre)) {
+            if (nodo.getElem().equals(elem)) {
                 resultado = nodo;
             } else {
                 //sino lo buscamos en sus hijos llamando recursivamente con cada uno de ellos 
                 //hasta encontrarlo o hasta no tener mas hermanos
                 NodoGen hijo = nodo.getHijoIzquierdo();
                 while (hijo != null && resultado == null) {
-                    resultado = obtenerNodo(hijo, elemPadre);
+                    resultado = obtenerNodo(hijo, elem);
                     hijo = hijo.getHermanoDerecho();
                 }
             }
@@ -109,11 +109,14 @@ public class ArbolGen {
         //este metodo vacia el arbol
         this.raiz = null;
     }
-
+           
+     
     public int altura() {
         //este metodo retorna la altura del arbol
         return alturaRecursivo(this.raiz);
     }
+    
+
 
     private int alturaRecursivo(NodoGen n) {
         //este metodo recursivo retorna la mayor altura encontrada en el arbol
@@ -421,6 +424,9 @@ public class ArbolGen {
                 }else{
                     //sino sigue verificando
                     exito=verificarAux(lista, nodo.getHijoIzquierdo(),pos+1,max);
+                    if(!exito){
+                        exito=verificarAux(lista,nodo.getHermanoDerecho(),pos,max);
+                    }
                 }
             }
             else{
@@ -495,12 +501,39 @@ public class ArbolGen {
                 while (hijo != null) {
                 listarNiv(hijo, lista, nivMax, nivAct+1,pos+1);
                 hijo = hijo.getHermanoDerecho();
-            }     
+                }     
             }
            
 
        
         }
         return lista;
+    }
+    public boolean insertarEnPos(Object elem, Object padre, int pos) {
+        boolean exito = false;
+        if (this.raiz == null) {
+            this.raiz = new NodoGen(elem, null, null);
+            exito = true;
+        } else {
+            NodoGen nodo = obtenerNodo(this.raiz, padre);
+            if (pos == 1) {
+                nodo.setHijoIzquierdo(new NodoGen(elem, null, nodo.getHijoIzquierdo()));
+                exito = true;
+            } else {
+                NodoGen hijo = nodo.getHijoIzquierdo();
+                int posAct = 1;
+                while (hijo != null && posAct < pos - 1) {
+                    hijo = hijo.getHermanoDerecho();
+                    posAct++;
+                }
+                if (hijo != null) {
+                    //creo el enlace al nuevo elemento, el nuevo elemento se engancha con el otro hermano en la lista
+                    hijo.setHermanoDerecho(new NodoGen(elem, null, hijo.getHermanoDerecho()));
+                    exito = true;
+                }
+
+            }
+        }
+        return exito;
     }
 }

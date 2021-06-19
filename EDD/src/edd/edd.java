@@ -11,14 +11,21 @@ public class edd {
     public static void main(String args[]) {
           
         ArbolBB a= new ArbolBB ();
-        a.insertar(8);
-        a.insertar(3);
-        a.insertar(1);
-        a.insertar(6);
-        a.insertar(4);
-        a.insertar(7);
-        a.insertar(10);
-        a.insertar(14);
+        a.insertar('R');
+        a.insertar('M');
+        a.insertar('H');
+        a.insertar('L');
+        a.insertar('V');
+        a.insertar('T');
+        a.insertar('S');
+        a.insertar('U');
+        a.insertar('Y');
+        /*
+          8 
+         3   10
+        1 6    14
+         4 7
+        */
        /*
         ArbolAVL b= new ArbolAVL ();
         b.insertar(10);
@@ -28,25 +35,29 @@ public class edd {
         b.insertar(17);
         System.out.println (b.toString());
         b.eliminar(15);
-
+*/
+       /*
       ArbolGen a= new ArbolGen();
       a.insertar('A', null);
-      a.insertar('C', 'A');
-      a.insertar('F', 'A');
       a.insertar('M', 'A');
+      a.insertar('N', 'M');
+      a.insertar('C', 'A');
+      a.insertar('M', 'A');
+      a.insertar('P', 'M');
+      
       a.insertar('N', 'C');
       a.insertar('L', 'F');
       a.insertar('O', 'L');
+      */
+      
       Lista lis= new Lista();
       lis.insertar('A', 1);
-      lis.insertar('F', 2);
-      lis.insertar('L',3);
-      System.out.println (a.listarHastaNivel(2).toString());
-      */
-       
-//        System.out.println (a.toString());
-        System.out.println(a.listarMayores(8));
-        //System.out.println (a.toString());
+      lis.insertar('M', 2);
+      lis.insertar('N',3);
+      
+
+
+    System.out.println (a.concatenarInordenDesde('W', 3));
         
                 
         
@@ -57,5 +68,4 @@ public class edd {
       
       
     }
-
 }

@@ -417,21 +417,21 @@ public class ArbolBB {
        }
        return res;
    }
-  private NodoArbol obtenerNodo(NodoArbol nodo, Comparable elem){
-      NodoArbol n=null;
-      if(nodo!=null){
+  private NodoArbol obtenerNodo(NodoArbol n, Comparable elem){
+      NodoArbol nodo=null;
+      if(n!=null){
           if (elem.compareTo(nodo.getElem())==0){
-              n=nodo;
+              nodo=n;
           }
           else{
               if (elem.compareTo(nodo.getElem())<0){
-                  n= obtenerNodo(nodo.getIzquierdo(),elem);
+                  nodo= obtenerNodo(nodo.getIzquierdo(),elem);
               }
               else
-                  n= obtenerNodo(nodo.getDerecho(),elem);
+                  nodo= obtenerNodo(nodo.getDerecho(),elem);
           }
       }
-      return n;
+      return nodo;
   }
   
    public int amplitudSubarbol(Comparable elem){
@@ -518,30 +518,29 @@ public class ArbolBB {
       return nodoM;
   }
    public Lista listarMayores(Comparable elem) {
-        //este metodo devuelve una lista con los elementos de nuestro arbol listados en inOrden
-        //creamos la lista que vamos a usar
         Lista lista = new Lista();
-        //invocamos al metodo recursivoInorden
         listarMay(this.raiz, lista, 1,elem);
         return lista;
     }
 
     private int listarMay(NodoArbol nodo, Lista lista, int pos, Comparable elem) {
-        //este metodo privado y recursivo devuelve la posicion en la cual debemos insertar un elemento
         if (nodo != null) {
+            //si el elemento del nodo es mas grande que elem y es hoja hay que listarlo
             if (nodo.getElem().compareTo(elem)>=0 && nodo.getIzquierdo() == null && nodo.getDerecho() == null) {
                 lista.insertar(nodo.getElem(), pos);
                 pos++;
             } else {
-                //si no estamos en una hoja
-                //seguimos recorriendo el arbol/subArbol por el lado izquierdo
+                //si no es mayor hay que llamar con la derecha
                 pos = listarMay(nodo.getDerecho(), lista, pos,elem);
+                //si el elemento de nodo es mas grande que el elem hay que insertarlo 
                 if (nodo.getElem().compareTo(elem)>0){
                     lista.insertar(nodo.getElem(), pos);
                     pos++;
+                    //puede que el valor izquierdo sea mas grande al elem, por ella llama a la izquierda
                     pos = listarMay(nodo.getIzquierdo(), lista, pos,elem);
                 }
                 else{
+                    //si es igual inserta 
                     if(nodo.getElem().compareTo(elem)==0){
                         lista.insertar(nodo.getElem(), pos);
                         pos++;
@@ -582,6 +581,39 @@ public class ArbolBB {
             }
         }
         return pos;
+    }
+    public String concatenarInordenDesde (Comparable elem, int m){
+        String cadena="$$$";
+        NodoArbol nodo= obtenerNodo(this.raiz, elem);
+        if (nodo!=null && nodo.getIzquierdo()!=null && nodo.getDerecho()!=null ){
+            cadena=concatenarAux(nodo, "", m);
+            if (cadena.length()<m){
+                cadena= "$"+cadena;
+            }
+        }
+        return cadena;
+    }
+    private String concatenarAux(NodoArbol nodo, String cadena, int m){
+         if (nodo != null) {
+            if (nodo.getIzquierdo() == null && nodo.getDerecho() == null && cadena.length()<m) {
+                cadena=cadena+nodo.getElem();
+            } else {
+                if (cadena.length()<m){
+                    cadena=concatenarAux(nodo.getIzquierdo(), cadena,m);
+                    if (cadena.length()<m){
+                        cadena=cadena+nodo.getElem();
+                    }
+                    if (cadena.length()<m){
+                        cadena= concatenarAux(nodo.getDerecho(), cadena, m);
+                    }
+                           
+                    
+                }
+                
+            }
+
+        }
+         return cadena;
     }
 
 }

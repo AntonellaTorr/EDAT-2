@@ -51,24 +51,33 @@ public class TablaHash {
     public boolean insertar(Object elem) {
         int pos = elem.hashCode();
         int incremento = Funciones.rehash(elem)% this.TAMANIO;
-        boolean exito = false, salir = false;
-        int intento = 1;
-        while (!exito && !salir && intento < TAMANIO) {//añadir  this.hash[pos].getEstado()==BORRADO
-            //si la celda no esta ocupada creamos el elemento
-               if (this.hash[pos].getEstado() != OCUPADO) {
-                   this.hash[pos] = new CeldaHash(elem, OCUPADO);
-                   this.cant++;
-                   exito = true;
-               } else {
-                   //si el elemento ya se encuentra en la tabla salimos
-                   if (this.hash[pos].equals(elem)) {
+        boolean exito = true;
+        int intento = 1, posiblePos=-1;
+        while (exito  && intento < TAMANIO && 
+                this.hash[pos].getEstado()!=VACIO) {
+                if (this.hash[pos].getEstado()==BORRADO && posiblePos==-1){
+                   posiblePos=pos;
+                }
+                else{
+                    if (this.hash[pos].equals(elem)) {
                        exito = false;
-                       salir = true;
-                   }
-               }
-               pos = (pos + incremento * intento) % this.TAMANIO;
-               intento++;
-           }
+                    }
+                }
+                
+                pos = (pos + incremento * intento) % this.TAMANIO;
+                intento++;
+        }
+        if (this.hash[pos].getEstado()==VACIO){
+            if(posiblePos!=-1){
+                this.hash[posiblePos] = new CeldaHash(elem, OCUPADO);
+            }
+            else{
+                this.hash[pos] = new CeldaHash(elem, OCUPADO);
+            }
+            this.cant++;
+        }
+             
+           
 
         
 
