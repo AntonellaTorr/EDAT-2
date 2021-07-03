@@ -31,6 +31,7 @@ public class NodoVert {
     public void setSigVertice(NodoVert sigVertice){
         this.sigVertice=sigVertice;
     }
+    
     public NodoAdy getPrimerAdy(){
         return primerAdy;
     }

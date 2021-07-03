@@ -31,9 +31,6 @@ public class NodoAdy {
     public void setSigAdyacente(NodoAdy sigAdyacente){
        this.sigAdyacente=sigAdyacente;
     }
-    public void setPrimerAdy(NodoAdy sigAdyacente){
-        this.sigAdyacente=sigAdyacente;
-    }
     public int getEtiqueta() {
         return etiqueta;
     }
