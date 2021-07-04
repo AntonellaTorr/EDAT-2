@@ -20,12 +20,12 @@ public class TDB {
         cant = 0;
     }
 
-    public boolean insertar(Comparable clave, Object dato) {
-        int pos = clave.hashCode();
+    public boolean insertar(Object clave, Object dato) {
+        int pos = clave.hashCode()%TAMANIO;
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         while (!encontrado && aux != null) {
-            encontrado = aux.getClave().compareTo(clave) == 0;
+            encontrado = aux.getClave().equals(clave);
             aux = aux.getEnlace();
         }
         if (!encontrado) {
@@ -37,16 +37,16 @@ public class TDB {
 
     public boolean eliminar(Comparable clave) {
         //busca la posicion del elemento 
-        int pos = clave.hashCode();
+        int pos = clave.hashCode()%TAMANIO;
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         //si el elemento se encuentra en la primer posicion
-        if (aux != null && aux.getClave().compareTo(clave) == 0) {
+        if (aux != null && aux.getClave().equals(clave)) {
             this.hash[pos] = this.hash[pos].getEnlace();
         } else {
             while (!encontrado && aux != null) {
                 //verifica si el elemento siguiente tiene al elemento buscado
-                encontrado = aux.getEnlace().getClave().compareTo(clave) == 0;
+                encontrado = aux.getEnlace().getClave().equals(clave);
                 if (encontrado) {
                     //si lo tenia borra dicho enlace 
                     aux.setEnlace(aux.getEnlace().getEnlace());
@@ -64,11 +64,11 @@ public class TDB {
 
     public boolean existeClave(Comparable clave) {
         //busca la posicion en la que se podria encontrar el elemento
-        int pos = clave.hashCode();
+        int pos = clave.hashCode()%TAMANIO;
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         while (!encontrado && aux != null) {
-            encontrado = aux.getClave().compareTo(clave) == 0;
+            encontrado = aux.getClave().equals(clave);
             aux = aux.getEnlace();
         }
         //si lo encuentra va a retornar true y sino false
@@ -77,13 +77,13 @@ public class TDB {
 
     public Object obtenerDato(Comparable clave) {
         //busca la posicion en la que se podria encontrar el elemento
-        int pos = clave.hashCode();
+        int pos = clave.hashCode()%TAMANIO;
         NodoHashDic aux = this.hash[pos];
         Object dato = null;
 
         boolean encontrado = false;
         while (!encontrado && aux != null) {
-            encontrado = aux.getClave().compareTo(clave) == 0;
+            encontrado = aux.getClave().equals(clave);
             if (encontrado) {
                 dato = aux.getDato();
             }

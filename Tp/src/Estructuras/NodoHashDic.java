@@ -12,17 +12,17 @@ import java.util.Objects;
  * @author Anto
  */
 public class NodoHashDic {
-    private Comparable clave;
+    private Object clave;
     private Object dato;
     private NodoHashDic enlace;
 
-    public NodoHashDic(Comparable clave, Object dato, NodoHashDic enlace) {
+    public NodoHashDic(Object clave, Object dato, NodoHashDic enlace) {
         this.clave = clave;
         this.dato = dato;
         this.enlace=enlace;
     }
 
-    public Comparable getClave() {
+    public Object getClave() {
         return clave;
     }
 

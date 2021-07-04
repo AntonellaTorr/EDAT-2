@@ -11,7 +11,7 @@ package Estructuras;
  */
 public class Lista {
 
-    Nodo cabecera;
+    private Nodo cabecera;
 
     public Lista() {
         //atributo de la clase
