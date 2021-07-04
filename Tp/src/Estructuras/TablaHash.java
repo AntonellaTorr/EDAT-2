@@ -5,17 +5,13 @@
  */
 package Estructuras;
 
-/**
- *
- * @author Anto
- */
-public class TDB {
-    
+public class TablaHash {
+
     private static final int TAMANIO = 100;
     private NodoHashDic[] hash;
     private int cant;
 
-    public TDB () {
+    public TablaHash() {
         this.hash = new NodoHashDic[this.TAMANIO];
         cant = 0;
     }
@@ -133,8 +129,8 @@ public class TDB {
 
     }
 
-    public TDB clone() {
-        TDB clone = new TDB();
+    public TablaHash clone() {
+        TablaHash clone = new TablaHash();
         int pos = 0;
         while (pos < this.TAMANIO) {
             clone.hash[pos] = new NodoHashDic(this.hash[pos].getClave(), this.hash[pos].getDato(), null);
@@ -148,4 +144,6 @@ public class TDB {
         return clone;
 
     }
+    
+    
 }
