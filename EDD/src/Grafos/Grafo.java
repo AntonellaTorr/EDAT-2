@@ -140,30 +140,9 @@ public class Grafo {
         }
         return encontrado;
     }
-    private boolean buscarCaminoMasCorto(NodoVert n, Object destino,HashSet visitados,HashSet camino, int intento){
-        boolean encontrado=false;
-        if (n!=null){
-            visitados.add(n.getElem());
-            NodoAdy ad=n.getPrimerAdy();
-            if (ad.getVertice().getElem().equals(destino)){
-                encontrado=true;
-                intento=intento+1;
-            }
-            while (ad!=null){
-                if(!visitados.contains(ad.getVertice().getElem())){
-                        encontrado= buscarCaminoMasCorto(ad.getVertice(),destino, visitados,camino, intento);
-                        if (encontrado){
-                            if (intento==1){
-                                camino=(HashSet)visitados.clone();
-                            }
-                        }
-                }
-                ad=ad.getSigAdyacente();
-            }
-        }
-        return encontrado;
-    }
-    public HashSet buscarCaminoMasCorto(Object origen, Object destino){
+
+    
+    public void buscarCaminoMasCorto(Object origen, Object destino){
         
     }
     
