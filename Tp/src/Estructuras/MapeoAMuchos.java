@@ -55,7 +55,7 @@ public class MapeoAMuchos {
         boolean exito=false,encontrado=false;
         //busca el nodo que contiene al dominio
         while (!encontrado && aux!=null){
-            encontrado=aux.equals(dominio);
+            encontrado=aux.getDominio().equals(dominio);
             if (!encontrado){
                 aux=aux.getEnlace();
             }
@@ -68,13 +68,41 @@ public class MapeoAMuchos {
                 aux.getRango().eliminar(res);
                 //si luego de eliminar el rango la lista queda vacia tmbn se elimina el dominio
                 if (aux.getRango().esVacia()){
-                   aux=aux.getEnlace();//VERIFICAR 
+                   eliminar(aux.getDominio());
                 }
                 exito=true;
             }
             
         }    
         return exito;
+        
+    }
+     private boolean eliminar (Object dominio){
+        //busca la posicion del elemento 
+        int pos= dominio.hashCode()%TAMANIO;
+        NodoHashMapeo aux=this.hash[pos];
+        boolean encontrado=false;
+        //si el elemento se encuentra en la primer posicion
+        if (aux!=null && aux.getDominio().equals(dominio)){
+            this.hash[pos]=this.hash[pos].getEnlace();
+        }
+        else{
+            while (!encontrado && aux!=null){
+            //verifica si el elemento siguiente tiene al elemento buscado
+            encontrado=aux.getEnlace().getDominio().equals(dominio);
+                if (encontrado){
+                    //si lo tenia borra dicho enlace 
+                    aux.setEnlace(aux.getEnlace().getEnlace());
+                    //disminuye la cantidad de elementos en la table
+                    this.cant--;
+                }
+                else{
+                    //sino no lo encontro sigue avanzando 
+                    aux=aux.getEnlace();
+                }
+            }
+        }
+        return encontrado;
         
     }
 
@@ -86,7 +114,7 @@ public class MapeoAMuchos {
         Lista valores= new Lista ();
         //busca el nodo que contiene al dominio
         while (!encontrado && aux!=null){
-            encontrado=aux.equals(dominio);
+            encontrado=aux.getDominio().equals(dominio);
             if (!encontrado){
                 aux=aux.getEnlace();
             }
