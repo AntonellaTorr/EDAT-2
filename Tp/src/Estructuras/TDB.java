@@ -21,7 +21,7 @@ public class TDB {
     }
 
     public boolean insertar(Object clave, Object dato) {
-        int pos = clave.hashCode()%TAMANIO;
+        int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         while (!encontrado && aux != null) {

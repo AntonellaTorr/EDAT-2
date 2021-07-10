@@ -14,4 +14,12 @@ public class Desafio {
     private int puntajeAOtorgar;
     private String nombre;
     private String  tipo;
+
+    public Desafio(int codigo, int puntajeAOtorgar, String nombre, String tipo) {
+        this.codigo = codigo;
+        this.puntajeAOtorgar = puntajeAOtorgar;
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
+   
 }

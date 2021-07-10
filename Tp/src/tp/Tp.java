@@ -7,6 +7,17 @@ package tp;
 import Estructuras.MapeoAMuchos;
 import Estructuras.TDB;
 import Estructuras.TablaDeBusqueda;
+import Estructuras.Grafo;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.StringTokenizer;
+import Dominio.Desafio;
+import Dominio.Equipo;
+import Dominio.Habitacion;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 
 /**
@@ -14,12 +25,104 @@ import Estructuras.TablaDeBusqueda;
  * @author Anto
  */
 public class Tp {
+  
+    public static void escribirABM(String texto){
+         try {
+            PrintWriter writer = new PrintWriter("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\ABM.txt", "UTF-8");
+            writer.println(texto);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+        public static void agregarPuerta (String codOrigen, String codDestino, String puntaje, TablaDeBusqueda h, Grafo g){
+        int codO= Integer.parseInt(codOrigen);
+        int codD=Integer.parseInt(codDestino);
+        int pun=Integer.parseInt(puntaje);
+        Object hab=h.obtenerDato(codO);
+        Object habD=h.obtenerDato(codD);
+        g.insertarArco(hab, habD, pun);
+    }
+    public static void agregarHabitacion (String codigo, String nombre, String planta, String mCuadrados, String tieneSalida,
+        TablaDeBusqueda h, Grafo g){
+       int codigoH= Integer.parseInt(codigo);
+       int plantaH= Integer.parseInt(planta);
+       double cantM=Double.parseDouble(mCuadrados);
+       boolean tieneS=Boolean.parseBoolean(tieneSalida);
+       Habitacion nuevaH= new Habitacion (codigoH, nombre, plantaH, cantM, tieneS);
+       h.insertar(codigoH, nuevaH);//PREGUNTAR SI ESTA BIEN HACERLO ASI
+       g.insertarVertice(nuevaH);
+    }
+    public static void agregarDesafio(String codigo, String puntajeAOtorgar, String nombre, String tipo, TablaDeBusqueda d){
+       int codigoD= Integer.parseInt(codigo);
+       int puntajeO= Integer.parseInt(puntajeAOtorgar);
+       Desafio nuevoD= new Desafio (codigoD, puntajeO, nombre, tipo);
+       d.insertar(codigo, nuevoD);
+       
+    }
+    public static void agregarEquipo(String nombre, String puntajeExigido, String habitacionActual, TDB e){
+        //AÑADIR TRIM
+       int puntE= Integer.parseInt(puntajeExigido);
+       int habAct= Integer.parseInt(habitacionActual);
+       Equipo nuevoE= new Equipo(nombre, puntE, habAct);
+       e.insertar(nombre, nuevoE);
+    }
+    public static String leerTxt (String direccion){
+        String texto="";
+        try{
+            BufferedReader bf= new BufferedReader (new FileReader(direccion));
+            String temp="";
+            String bfRead;
+            while ((bfRead=bf.readLine())!=null){
+                temp=temp +bfRead;
+            }
+            texto=temp;
+         } catch (Exception e){System.out.println ("No se encontro el archivo");}
+        return texto;
+    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void leerArchivo(String texto, Grafo g, TablaDeBusqueda hab, TablaDeBusqueda desafios,TDB equipos){
+        StringTokenizer st = new StringTokenizer(texto, "|");   
+        String cad="", cod, abm="", codD;
+        while (st.hasMoreTokens()){
+            cad=st.nextToken();
+            switch (cad){
+                case "H": 
+                    cod=st.nextToken();
+                    agregarHabitacion(cod,st.nextToken(),st.nextToken(),st.nextToken(),st.nextToken(), hab, g);
+                    abm+="Carga de Habitacion "+cod +"\n";
+                break;
+                case "D": 
+                    cod=st.nextToken();
+                    agregarDesafio(cod,st.nextToken(),st.nextToken(),st.nextToken(), desafios);
+                    abm+="Carga de Desafio  "+cod +"\n";
+                break;
+                case "E": 
+                    cod=st.nextToken();
+                    agregarEquipo(cod,st.nextToken(),st.nextToken(), equipos);
+                    abm+="Carga de Equipo  "+cod +"\n";
+                break;
+                case "P": 
+                    cod=st.nextToken();
+                    codD=st.nextToken();
+                    agregarPuerta(cod,codD,st.nextToken(),hab, g);
+                    abm+="Puerta añadida, Origen "+cod +" Destino " +codD+"\n";
+                break;
+            }
+        }
+        escribirABM(abm);
+       }
+    public static void iniciarPrograma(String direccion){
+        //creacion de las estructuras que almacenaran la informacion 
+        Grafo plano= new Grafo ();
+        TablaDeBusqueda infoH= new TablaDeBusqueda ();
+        TablaDeBusqueda infoD= new TablaDeBusqueda ();
+        TDB infoE= new TDB ();
+        MapeoAMuchos desafiosR= new MapeoAMuchos ();//DEBE USARSE AL COMPLETAR DESAFIOS
+        String texto= leerTxt(direccion);
+        leerArchivo(texto,plano,infoH,infoD,infoE);
+    }
+    public static void prueba (){
         MapeoAMuchos n= new MapeoAMuchos ();
         n.insertar(1,"ENERO" );
         n.insertar(1,"LUNES" );
@@ -71,7 +174,30 @@ public class Tp {
         n.desasociar(3, "MARZO");
         System.out.println ("Desasocia miercoles y marzo del nro 3");
         System.out.println (n.obtenerValores(3).toString());
-       
+        
+        System.out.println ("INICIO TESTING TDB");
+        System.out.println ("Lista las claves espera: [ABB,ACC, CCA,MMM,NNJ,XXX]");
+        System.out.println (p.listarClaves().toString());
+        System.out.println ("Lista las datos espera: [brunoktr,bantonella, crozas, karinarozas,takki,jose123]");
+        System.out.println (p.listarDatos().toString());
+        System.out.println ("Busca dato de clave XXX, espera jose123");
+        System.out.println (p.obtenerDato("XXX"));
+        p.eliminar("ABB");
+        p.eliminar("ACC");
+        p.eliminar("CCA");
+        p.eliminar("MMM");
+        p.eliminar("NNJ");
+        p.eliminar("XXX");
+        System.out.println ("Elimina todas las claves");
+        System.out.println (p.listarClaves());
+        System.out.println (p.esVacia()+"es vacia? Espera true"); 
+        
+        
+        
+    }
+    public static void main(String[] args) {
+        // TODO code application logic here
+       iniciarPrograma("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
         
         
         
