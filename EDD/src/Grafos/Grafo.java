@@ -50,6 +50,9 @@ public class Grafo {
             while (aux!=null && !exito){
                 //si el vertice siguiente al que estoy parado tiene el vertice a eliminar le seteo el siguiente al proximo
                 if(aux.getSigVertice().getElem().equals(vertice)){
+                    //elimino todos los arcos que tenian a vertice
+                    eliminarArcos(aux.getSigVertice());
+                    //elimino al vertice de la lista
                     aux.setSigVertice(aux.getSigVertice().getSigVertice());
                     exito=false;
                 }
@@ -57,6 +60,14 @@ public class Grafo {
             }
         }
         return exito;
+    }
+    private void eliminarArcos(NodoVert n){
+        NodoAdy adyacente=n.getPrimerAdy();
+        while(adyacente!=null){
+            eliminar(n, adyacente.getVertice());
+            eliminar(adyacente.getVertice(),n);
+            adyacente=adyacente.getSigAdyacente();
+        }
     }
     public boolean existeVertice(Object verticeBuscado){
         return ubicarVertice(verticeBuscado)!=null;
@@ -297,42 +308,55 @@ public class Grafo {
     public void vaciar(){
         this.inicio=null;
     }
-        @Override
+    @Override
     public Grafo clone(){
         Grafo clone= new Grafo();
         if (this.inicio!=null){
-            //copia el inicio de la lista de nodos
+            //copia el inicio de la lista de vertices
             clone.inicio=new NodoVert(this.inicio.getElem(), null);
             NodoVert c=clone.inicio;
             NodoVert n=this.inicio;
-            //copia los nodos adyacentes del inicio
-            copiaNodosAdy(n,c);
-            //copia de los demas nodos de la lista y de sus nodos adyacentes
+            //copia de todos los vertices en la lista
             n=n.getSigVertice();
             while (n!=null){
                 c.setSigVertice(new NodoVert (n.getElem(),null));
                 c=c.getSigVertice();
-                copiaNodosAdy (n,c);
                 n=n.getSigVertice();
-                
             }
+            c=clone.inicio;
+            n=this.inicio;
+            //copia de los vertices adyacentes
+            while(n!=null){
+                copiaNodosAdy(n,c,clone.inicio);
+                n=n.getSigVertice();
+                c=c.getSigVertice();
+            }
+            
+            
         }
      
         return clone;
     }
-    private void copiaNodosAdy (NodoVert n, NodoVert c){
+    private void copiaNodosAdy (NodoVert n, NodoVert c, NodoVert inicioClone){
         NodoAdy aux=n.getPrimerAdy();
         //copia de los ndos adyacentes
         if (aux!=null){
-            c.setPrimerAdy(new NodoAdy (aux.getVertice(),null,aux.getEtiqueta()));
+            c.setPrimerAdy(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
             NodoAdy auxC=c.getPrimerAdy();
             aux=aux.getSigAdyacente();
             while (aux!=null){
-                auxC.setSigAdyacente(new NodoAdy (aux.getVertice(),null,aux.getEtiqueta()));
+                auxC.setSigAdyacente(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
                 aux=aux.getSigAdyacente();
                 auxC=auxC.getSigAdyacente();
             }
         }
+    }
+    private NodoVert ubicarVertice(Object elem, NodoVert n){
+        NodoVert aux= n;
+        while (aux!=null && !aux.getElem().equals(elem)){
+            aux=aux.getSigVertice();
+        }
+        return aux;
     }
 
 }
