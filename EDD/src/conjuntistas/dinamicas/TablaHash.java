@@ -9,7 +9,7 @@ import funciones.Funciones;
 
 
 public class TablaHash {
-    private static final int TAMANIO = 10;
+    private static final int TAMANIO = 100;
     private Nodo [] hash;
     private int cant;
     
