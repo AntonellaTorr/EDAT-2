@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Estructuras;
+import Dominio.Desafio;
 
 
 
@@ -410,6 +411,28 @@ public class TablaDeBusqueda {
             }
         }
         return cadena;
+    }
+    public String buscarDesafiosTipo(String tipo, int puntMin, int puntMax){
+        return mostrarAux(this.raiz,tipo,puntMin,puntMax);
+    }
+    private String mostrarAux(NodoAVLDic nodo,String tipo, int puntMin, int puntMax) {
+        String cad="",cadAux;
+        if (nodo != null) {
+            Desafio d=(Desafio)nodo.getDato();
+            if (d.getTipo().equalsIgnoreCase(tipo) && d.getPuntajeAOtorgar()>=puntMin &&  d.getPuntajeAOtorgar()<=puntMax){
+                cad=d.toString();
+            }
+           
+            if (nodo.getIzquierdo() != null) {
+                cadAux = mostrarAux(nodo.getIzquierdo(),tipo,puntMin,puntMax);
+                cad+=cadAux;
+            }
+            if (nodo.getDerecho() != null) {
+               cadAux = mostrarAux(nodo.getDerecho(),tipo,puntMin,puntMax);
+               cad+=cadAux;
+            }
+        }
+        return cad;
     }
     
 }

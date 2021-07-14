@@ -452,6 +452,25 @@ public class Grafo {
         }
         return encontrado;
     }
-
+    public boolean puedePasar(Object hA,Object hD, int puntajeAc){
+        NodoVert o=ubicarVertice(hA);
+        boolean exito=false, cortar=false;
+        if (o!=null){
+            NodoAdy ad=o.getPrimerAdy();
+            while (!exito && cortar && ad!=null){
+                if (ad.getVertice().getElem().equals(hD)){
+                    if (ad.getEtiqueta()>=puntajeAc){
+                        exito=true;
+                    }
+                    else{
+                        cortar=true;
+                    }
+                }
+                ad=ad.getSigAdyacente();
+            }
+        }
+        return exito;
+        
+    }
 
 }
