@@ -147,6 +147,7 @@ public class TablaDeBusqueda {
     }
 
     private void caso3(NodoAVLDic hijo,NodoAVLDic padre) {
+        //cambiar por un set clave
         NodoAVLDic nuevoNodo = encontrarCandidato(hijo.getIzquierdo(), hijo);
         NodoAVLDic nuevoHijo=new NodoAVLDic (nuevoNodo.getClave(),nuevoNodo.getDato(),hijo.getIzquierdo(),hijo.getDerecho(),hijo.getAltura());//VERIFICAR
         //al crear un nuevo nodo necesito que el padre lo apunte de nuevo, de esa manera el que queremos eliminar deja de estar apuntado por
@@ -167,6 +168,7 @@ public class TablaDeBusqueda {
     }
 
     private NodoAVLDic encontrarCandidato(NodoAVLDic hijoIzquierdo, NodoAVLDic padre) {
+        //actualizar las alturas a la vuelta
         //busco el mayor elemento del lado izquierdo der arbol
         NodoAVLDic candidato = null;
         if (hijoIzquierdo.getDerecho() == null) {

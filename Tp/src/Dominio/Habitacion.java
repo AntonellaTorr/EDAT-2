@@ -10,6 +10,8 @@ package Dominio;
  * @author Anto
  */
 public class Habitacion {
+
+    
     private int codigo;
     private String nombre;
     private int planta;
@@ -81,5 +83,9 @@ public class Habitacion {
             return false;
         }
         return true;
+    }
+    @Override
+    public String toString() {
+        return " Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida ;
     }
 }

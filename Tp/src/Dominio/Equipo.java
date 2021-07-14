@@ -13,8 +13,8 @@ import java.util.Objects;
  */
 public class Equipo {
 
+
     private String nombre;
-    private int cantParticipantes;
     private int puntajeExigido;
     private int puntajeTotal;
     private int habitacionActual;
@@ -56,6 +56,8 @@ public class Equipo {
     public void setHabitacionActual(int habitacionActual) {
         this.habitacionActual = habitacionActual;
     }
+    
+    
 
     public int getPuntajeActual() {
         return puntajeActual;
@@ -88,6 +90,10 @@ public class Equipo {
             return false;
         }
         return true;
+    }
+    @Override
+    public String toString() {
+        return "Equipo" + "nombre=" + nombre + ", puntajeExigido=" + puntajeExigido + ", puntajeTotal=" + puntajeTotal + ", habitacionActual=" + habitacionActual + ", puntajeActual=" + puntajeActual + '}';
     }
     
  
