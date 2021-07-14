@@ -5,7 +5,7 @@
  */
 package Estructuras;
 import java.util.HashSet;
-
+import Dominio.Habitacion;
 /**
  *
  * @author Anto
@@ -370,6 +370,87 @@ public class Grafo {
             aux=aux.getSigVertice();
         }
         return aux;
+    }
+    public String mostrarContiguas(Object h){
+        NodoVert u= ubicarVertice(h);
+        String cad="";
+        if (u!=null){
+            NodoAdy ad= u.getPrimerAdy();
+            while (ad!=null){
+                cad+="Habitacion "+ ad.getVertice().getElem()+"puntaje necesario: "+ad.getEtiqueta();
+                ad=ad.getSigAdyacente();
+            }
+        }
+        return cad;
+    }
+    public boolean esPosibleLlegar (Object  h, Object h2, int puntaje){
+        NodoVert o=ubicarVertice(h);
+        HashSet visitados= new HashSet ();
+        return esPosibleLlegar(o, h2,visitados,puntaje,0);
+    }
+    
+    
+
+    private boolean esPosibleLlegar(NodoVert n, Object destino,HashSet visitados,int puntaje, int puntajeTot){
+        boolean encontrado=false;
+        if (n!=null){
+            //añade en visitados el nodo actual
+            visitados.add(n.getElem());
+            //busca los caminos en los nodos adyacentes
+            NodoAdy ad=n.getPrimerAdy();
+            //si el elemento del adyacente coincide con el de destino se encontro un camino
+            if (ad.getVertice().getElem().equals(destino)){
+                    puntajeTot+=ad.getEtiqueta();
+                    if (puntaje==puntajeTot ){
+                         encontrado=true;
+                    }
+                   
+            }
+            //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
+            while (ad!=null && !encontrado){
+                if(!visitados.contains(ad.getVertice().getElem())){
+                        puntajeTot+=ad.getEtiqueta();
+                        encontrado= esPosibleLlegar(ad.getVertice(),destino, visitados,puntaje,puntajeTot);
+                }
+                ad=ad.getSigAdyacente();
+            }
+        }
+        return encontrado;
+    }
+    public boolean sinPasarPor (Habitacion h, Habitacion h2, Habitacion h3, int puntaje){
+        NodoVert o=ubicarVertice(h);
+        HashSet visitados= new HashSet ();
+        return sinPasarPor(o, h2,h3,visitados,puntaje,0);
+    }
+    private boolean sinPasarPor(NodoVert n, Object destino,Object h3,HashSet visitados,int puntaje, int puntajeTot){
+        boolean encontrado=false;
+        if (n!=null){
+            //añade en visitados el nodo actual
+            visitados.add(n.getElem());
+            //busca los caminos en los nodos adyacentes
+            NodoAdy ad=n.getPrimerAdy();
+            //si el elemento del adyacente coincide con el de destino se encontro un camino
+            //hay que verificar que no sea h3?
+            if ( ad.getVertice().getElem().equals(destino)){
+                    puntajeTot+=ad.getEtiqueta();
+                    if (puntaje<=puntajeTot ){
+                         encontrado=true;
+                    }
+            }
+            //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
+            while (ad!=null && !encontrado){
+                //si el vertice con el que vamos a llamar no contiene a la habitacion por la que no queremos pasar 
+                if(!visitados.contains(ad.getVertice().getElem()) && !ad.getVertice().getElem().equals(h3)){
+                        puntajeTot+=ad.getEtiqueta();
+                        //si el puntaje total no supera al puntaje establecido
+                        if (puntaje<puntajeTot){
+                             encontrado= sinPasarPor(ad.getVertice(),destino,h3, visitados,puntaje,puntajeTot);
+                        }
+                }
+                ad=ad.getSigAdyacente();
+            }
+        }
+        return encontrado;
     }
 
 
