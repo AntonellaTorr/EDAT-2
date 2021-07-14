@@ -170,6 +170,10 @@ public class Tp {
                 ABM(plano, infoH, infoD, infoE, desafiosR);
                 break;
             case 3:
+                consultasSobreHabitaciones(infoH,plano);
+            break;
+            case 4:
+                consultasSobreDesafios(infoD,desafiosR,infoE);
         }
 
     }
@@ -198,7 +202,7 @@ public class Tp {
     public static void ABM(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR) {
         System.out.println("Ingrese H- si desea operar con las habitaciones");
         System.out.println("Ingrese D- si desea operar con los desafios");
-        System.out.println("Ingrese E- si desea operar con losequipos");
+        System.out.println("Ingrese E- si desea operar con los equipos");
         System.out.println("Ingrese P- si desea operar con las puertas");
         char n;
         String res;
@@ -546,20 +550,20 @@ public class Tp {
         int n = leer.nextInt();
         switch (n) {
             case 1:
-                Habitacion h = verificacionHabitacion(infoH);
+                Habitacion h = obtenerHabitacion(infoH);
                 if (h != null) {
                     System.out.println(h.toString());
                 }
                 break;
             case 2:
-                h = verificacionHabitacion(infoH);
+                h = obtenerHabitacion(infoH);
                 if (h != null) {
                     plano.mostrarContiguas(h);
                 }
                 break;
             case 3:
-                h = verificacionHabitacion(infoH);
-                Habitacion h2 = verificacionHabitacion(infoH);
+                h = obtenerHabitacion(infoH);
+                Habitacion h2 = obtenerHabitacion(infoH);
                 if (h != null && h2 != null) {
                     System.out.println("Ingrese el puntaje");
                     int pun = leer.nextInt();
@@ -570,9 +574,9 @@ public class Tp {
                 }
                 break;
             case 4:
-                h = verificacionHabitacion(infoH);
-                h2 = verificacionHabitacion(infoH);
-                Habitacion h3=verificacionHabitacion(infoH);
+                h = obtenerHabitacion(infoH);
+                h2 = obtenerHabitacion(infoH);
+                Habitacion h3=obtenerHabitacion(infoH);
                 if (h != null && h2 != null && h3!=null) {
                     System.out.println("Ingrese el puntaje");
                     int pun = leer.nextInt();
@@ -589,13 +593,140 @@ public class Tp {
         }
     }
 
-    private static Habitacion verificacionHabitacion(TablaDeBusqueda infoH) {
+    private static Habitacion obtenerHabitacion(TablaDeBusqueda infoH) {
         Scanner leer = new Scanner(System.in);
         System.out.println("Ingrese el codigo de habitacion destino");
         int cod = leer.nextInt();
         Habitacion h = (Habitacion) infoH.obtenerDato(cod);
         return h;
     }
+    
+    public static void consultasSobreDesafios (TablaDeBusqueda infoD, MapeoAMuchos desafiosR,TDB infoE){
+        System.out.println("Ingrese que desea hacer");
+        System.out.println("1-Mostrar un desafio");
+        System.out.println("2-Dado un equipo mostrar los desafios que resolvio");
+        System.out.println("3-Dado dos puntajes y un tipo, mostrar los desafios de ese tipo y en el rango de los puntajes");
+        
+        Scanner leer = new Scanner(System.in);
+        int n = leer.nextInt();
+        switch (n) {
+            case 1:
+                Desafio d = obtenerDesafio(infoD);
+                if (d != null) {
+                    System.out.println(d.toString());
+                }
+                break;
+            case 2:
+                System.out.println ("Ingrese el codigo de el equipo");
+                int codE= leer.nextInt();
+                Equipo e= (Equipo)infoE.obtenerDato(codE);
+                if (e!=null){
+                    System.out.println (desafiosR.obtenerValores(infoD).toString());
+                }
+                break;
+            case 3:
+                System.out.println("Ingrese el tipo");
+                String tipo= leer.nextLine();
+                System.out.println("Ingrese el puntajeMinimo");
+                int puntMin= leer.nextInt();
+                System.out.println("Ingrese el puntajeMaximo");
+                int puntMax= leer.nextInt();
+                String cad=infoD.buscarDesafiosTipo(tipo,puntMin,puntMax);
+                if (cad.equals("")){
+                    System.out.println ("No existe ningun desafio con los datos ingresados, por favor intentelo de nuevo");
+                }
+                else{
+                    System.out.println (cad);
+                }
+                break;
+           
+            default:
+                System.out.println ("Respuesta ingresa incorrecta");
+                
+
+        }
+    }
+     private static Desafio obtenerDesafio(TablaDeBusqueda infoD) {
+        Scanner leer = new Scanner(System.in);
+        System.out.println("Ingrese el codigo de habitacion destino");
+        int cod = leer.nextInt();
+        Desafio d = (Desafio) infoD.obtenerDato(cod);
+        return d;
+    }
+    public static void consultasSobreEquipos(Grafo plano, TDB infoE, MapeoAMuchos desafiosR, TablaDeBusqueda infoD,TablaDeBusqueda infoH){
+        System.out.println("Ingrese que desea hacer");
+        System.out.println("1-Mostrar la informacion de un equipo");
+        System.out.println("2-Jugar un desafio");
+        System.out.println("3-Dado un equipo y una habitacion, averiguar si puede pasar a la habitacion, si es posible avanza");
+        System.out.println("4-Dado un equipo averiguar si puede salir");
+        
+        Scanner leer = new Scanner(System.in);
+        int n = leer.nextInt();
+        // Equipo e = obtenerEquipo(infoE);
+        switch (n) {
+            case 1:
+                Equipo e = obtenerEquipo(infoE);
+                if (e!= null) {
+                    System.out.println(e.toString());
+                }
+                break;
+            case 2:
+                e = obtenerEquipo(infoE);
+                Desafio d=obtenerDesafio(infoD);
+                if (e!=null && d!=null){
+                    desafiosR.insertar(e, d);
+                    e.setPuntajeTotal(e.getPuntajeTotal()+d.getPuntajeAOtorgar());
+                    e.setPuntajeActual(d.getPuntajeAOtorgar());
+                }
+                break;
+            case 3:
+                e = obtenerEquipo(infoE);
+                Habitacion h2= obtenerHabitacion(infoH);
+                if (e!=null && h2!=null){
+                    Habitacion h=(Habitacion) infoH.obtenerDato(e.getHabitacionActual());
+                    //HAY QUE PASAR EL ACTUAL O EL TOTAL
+                    boolean exito=plano.puedePasar(h, h2, e.getPuntajeActual());
+                    if (exito){
+                        //FALTA ALGO MAS?
+                        e.setHabitacionActual(h2.getCodigo());                       
+                    }
+                }
+                
+                break;
+            case 4:
+                 e = obtenerEquipo(infoE);
+                 boolean puedeSalir=false;
+                 Habitacion hac=(Habitacion) infoH.obtenerDato(e.getHabitacionActual());
+                 if (e.getPuntajeTotal()>= e.getPuntajeExigido()){
+                     System.out.println ("Puede salir");
+                 }
+                 else{
+                     //ESTA BIEN CON EL ELSE O HAY QUE MOSTRARLO SIEMPRE
+                     int puntajeAObtener=e.getPuntajeExigido()-e.getPuntajeTotal();
+                     System.out.println ("El puntaje que debe obtener para ganar el juego es de: "+puntajeAObtener);
+                 }
+                 if (hac.tieneSalida()){
+                     System.out.println ("La habitacion en la que se encuentra el equipo actualmente tiene salida al exterior");
+                 }
+                 else{
+                     System.out.println ("La habitacion en la que se encuentra el equipo actualmente NO tiene salida al exterior");
+                 }
+                 
+           
+            default:
+                System.out.println ("Respuesta ingresada incorrecta");
+                
+
+        }
+    }
+     private static Equipo obtenerEquipo(TDB infoE) {
+        Scanner leer = new Scanner(System.in);
+        System.out.println ("Ingrese el nombre de el equipo");
+        String codE= leer.nextLine();
+        Equipo e= (Equipo)infoE.obtenerDato(codE);
+        return e;
+    }
+    
 
     public static void main(String[] args) {
         // TODO code application logic here
