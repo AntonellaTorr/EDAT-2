@@ -19,7 +19,7 @@ public class MapeoAMuchos {
         cant = 0;
     }
     public boolean insertar (Object dominio, Object dato){
-        int pos = dominio.hashCode()%TAMANIO,res;
+        int pos = Math.abs(dominio.hashCode()%TAMANIO),res;
         NodoHashMapeo aux = this.hash[pos];
         boolean exito = false;
         while (!exito && aux != null) {
@@ -50,7 +50,7 @@ public class MapeoAMuchos {
     }
     
     public boolean desasociar(Object dominio,Object rango){
-        int pos=dominio.hashCode()%TAMANIO;
+        int pos = Math.abs(dominio.hashCode()%TAMANIO);
         NodoHashMapeo aux=this.hash[pos];
         boolean exito=false,encontrado=false;
         //busca el nodo que contiene al dominio
@@ -79,7 +79,7 @@ public class MapeoAMuchos {
     }
      private boolean eliminar (Object dominio){
         //busca la posicion del elemento 
-        int pos= dominio.hashCode()%TAMANIO;
+        int pos = Math.abs(dominio.hashCode()%TAMANIO);
         NodoHashMapeo aux=this.hash[pos];
         boolean encontrado=false;
         //si el elemento se encuentra en la primer posicion
@@ -108,7 +108,7 @@ public class MapeoAMuchos {
 
    public Lista obtenerValores(Object dominio){
        //busca la posicion de el elemento en la tabla 
-        int pos=dominio.hashCode()%TAMANIO;
+        int pos = Math.abs(dominio.hashCode()%TAMANIO);
         NodoHashMapeo aux=this.hash[pos];
         boolean encontrado=false;
         Lista valores= new Lista ();
@@ -118,11 +118,28 @@ public class MapeoAMuchos {
             if (!encontrado){
                 aux=aux.getEnlace();
             }
+            
+            
         }
         //si se encuentra almacena la lista que contiene a los rangos para luego retonarla 
         if (encontrado){
             valores= aux.getRango();
         }
         return valores;
+   }
+   public String toString (){
+       int pos=0;
+       String cadena="";
+       NodoHashMapeo aux;
+       while (pos<TAMANIO){
+           aux=this.hash[pos];
+           if (aux!=null){
+                cadena+="Dominio "+this.hash[pos].getDominio() +"rango "+this.hash[pos].getRango() +"\n";
+           }
+           pos++;
+           
+       }
+       return cadena;
+       
    }
 }

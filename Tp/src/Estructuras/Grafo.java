@@ -41,13 +41,14 @@ public class Grafo {
         //si el vertice a eliminar se encuentra al principio de la lista seteo el inicio al siguiente
         if (this.inicio.getElem().equals(vertice)){
             this.inicio=this.inicio.getSigVertice();
+            eliminarArcos(aux.getSigVertice());
             exito=true;
         }
         else{
             //sino busco el vertice
             while (aux!=null && !exito){
                 //si el vertice siguiente al que estoy parado tiene el vertice a eliminar le seteo el siguiente al proximo
-                if(aux.getSigVertice().getElem().equals(vertice)){
+                if(aux.getSigVertice()!=null && aux.getSigVertice().getElem().equals(vertice)){
                     //elimino todos los arcos que tenian a vertice
                     eliminarArcos(aux.getSigVertice());
                     //elimino al vertice de la lista
@@ -303,10 +304,10 @@ public class Grafo {
         NodoVert aux=this.inicio;
         String cadena="";
         while (aux!=null){
-           cadena+= "Vertice= "+aux.getElem();
+           cadena+= "Vertice-> "+aux.getElem() +",";
            NodoAdy ad=aux.getPrimerAdy();
            while (ad!=null){
-               cadena+= " adyacente= "+ad.getVertice().getElem() +" etiqueta= "+ad.getEtiqueta();
+               cadena+= " adyacente= "+ad.getVertice().getElem() +" etiqueta= "+ad.getEtiqueta()+ ",";
                ad=ad.getSigAdyacente();
            }
            cadena+="\n";
@@ -377,7 +378,7 @@ public class Grafo {
         if (u!=null){
             NodoAdy ad= u.getPrimerAdy();
             while (ad!=null){
-                cad+="Habitacion "+ ad.getVertice().getElem()+"puntaje necesario: "+ad.getEtiqueta();
+                cad+= ad.getVertice().getElem()+" puntaje necesario: "+ad.getEtiqueta() +"\n";
                 ad=ad.getSigAdyacente();
             }
         }
@@ -394,74 +395,86 @@ public class Grafo {
     private boolean esPosibleLlegar(NodoVert n, Object destino,HashSet visitados,int puntaje, int puntajeTot){
         boolean encontrado=false;
         if (n!=null){
-            //añade en visitados el nodo actual
+             //añade en visitados el nodo actual
             visitados.add(n.getElem());
-            //busca los caminos en los nodos adyacentes
-            NodoAdy ad=n.getPrimerAdy();
-            //si el elemento del adyacente coincide con el de destino se encontro un camino
-            if (ad.getVertice().getElem().equals(destino)){
-                    puntajeTot+=ad.getEtiqueta();
-                    if (puntaje==puntajeTot ){
-                         encontrado=true;
-                    }
-                   
+            if(n.getElem().equals(destino)){
+                encontrado=true;
             }
-            //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
-            while (ad!=null && !encontrado){
-                if(!visitados.contains(ad.getVertice().getElem())){
-                        puntajeTot+=ad.getEtiqueta();
-                        encontrado= esPosibleLlegar(ad.getVertice(),destino, visitados,puntaje,puntajeTot);
+            else{
+                NodoAdy ad=n.getPrimerAdy();
+                //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
+                int puntajeAnt=puntajeTot;
+                while (ad!=null && !encontrado){
+                    if(!visitados.contains(ad.getVertice().getElem()) ){
+                            puntajeTot+=ad.getEtiqueta();
+                            //si el puntaje acumulado no supera el puntaje que se paso parametro llamamos
+                            if (puntajeTot<=puntaje){
+                                encontrado= esPosibleLlegar(ad.getVertice(),destino, visitados,puntaje,puntajeTot);
+                            }
+                    }   
+                    puntajeTot=puntajeAnt;
+                    ad=ad.getSigAdyacente();
                 }
-                ad=ad.getSigAdyacente();
-            }
+            }  
         }
-        return encontrado;
+         return encontrado;
     }
-    public boolean sinPasarPor (Habitacion h, Habitacion h2, Habitacion h3, int puntaje){
+    public Lista sinPasarPor (Object h, Object h2, Object h3, int puntaje){
+        //ubica el vertice origen
         NodoVert o=ubicarVertice(h);
-        HashSet visitados= new HashSet ();
-        return sinPasarPor(o, h2,h3,visitados,puntaje,0);
+        Lista visitados= new Lista ();
+        Lista camA=new Lista();
+        Lista caminos=new Lista();
+        sinPasarPor(o, h2,h3,visitados,puntaje,0,camA,caminos);
+        return caminos;
     }
-    private boolean sinPasarPor(NodoVert n, Object destino,Object h3,HashSet visitados,int puntaje, int puntajeTot){
-        boolean encontrado=false;
+    
+    private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int puntaje, int puntajeTot,Lista camA,Lista caminos){
         if (n!=null){
-            //añade en visitados el nodo actual
-            visitados.add(n.getElem());
-            //busca los caminos en los nodos adyacentes
-            NodoAdy ad=n.getPrimerAdy();
-            //si el elemento del adyacente coincide con el de destino se encontro un camino
-            //hay que verificar que no sea h3?
-            if ( ad.getVertice().getElem().equals(destino)){
-                    puntajeTot+=ad.getEtiqueta();
-                    if (puntaje<=puntajeTot ){
-                         encontrado=true;
+            visitados.insertar(n.getElem(),visitados.longitud()+1);
+            //inserta en la lista de camino actual
+            camA.insertar(n.getElem(), camA.longitud()+1);
+            //si se encontro un camino se inserta en la lista de caminos
+            if(n.getElem().equals(destino)){
+               caminos.insertar(camA, caminos.longitud()+1);
+            }
+            else{
+                NodoAdy ad=n.getPrimerAdy();
+                //se almacena la lista antes de llamar recursivamente con cada nodo 
+                Lista cadA=camA.clone();
+                //se almacena el puntaje antes de llamar recursivamente 
+                int puntajeAnt=puntajeTot;
+                while (ad!=null){
+                    if(visitados.localizar(ad.getVertice().getElem())<0 && !ad.getVertice().getElem().equals(h3)){
+                            puntajeTot+=ad.getEtiqueta();
+                            if (puntajeTot<=puntaje){
+                                 sinPasarPor(ad.getVertice(),destino,h3, visitados,puntaje,puntajeTot,cadA,caminos);
+                                 visitados.eliminar(visitados.longitud());
+                            }
                     }
-            }
-            //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
-            while (ad!=null && !encontrado){
-                //si el vertice con el que vamos a llamar no contiene a la habitacion por la que no queremos pasar 
-                if(!visitados.contains(ad.getVertice().getElem()) && !ad.getVertice().getElem().equals(h3)){
-                        puntajeTot+=ad.getEtiqueta();
-                        //si el puntaje total no supera al puntaje establecido
-                        if (puntaje<puntajeTot){
-                             encontrado= sinPasarPor(ad.getVertice(),destino,h3, visitados,puntaje,puntajeTot);
-                        }
+                    //restablecemos el puntaje al acumulado hasta llegar al nodo n
+                    puntajeTot=puntajeAnt;
+                    ad=ad.getSigAdyacente();
                 }
-                ad=ad.getSigAdyacente();
             }
+            
         }
-        return encontrado;
+     
     }
+
     public boolean puedePasar(Object hA,Object hD, int puntajeAc){
         NodoVert o=ubicarVertice(hA);
         boolean exito=false, cortar=false;
         if (o!=null){
             NodoAdy ad=o.getPrimerAdy();
-            while (!exito && cortar && ad!=null){
+            while (!exito && !cortar && ad!=null){
+                //si encuentra el vertice 
                 if (ad.getVertice().getElem().equals(hD)){
+                    //y el puntaje alcanza hay exito
                     if (ad.getEtiqueta()>=puntajeAc){
                         exito=true;
                     }
+                    //sino deja de recorrer
                     else{
                         cortar=true;
                     }

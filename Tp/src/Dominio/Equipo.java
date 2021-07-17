@@ -93,7 +93,7 @@ public class Equipo {
     }
     @Override
     public String toString() {
-        return "Equipo" + "nombre=" + nombre + ", puntajeExigido=" + puntajeExigido + ", puntajeTotal=" + puntajeTotal + ", habitacionActual=" + habitacionActual + ", puntajeActual=" + puntajeActual + '}';
+        return "Equipo" + " nombre=" + nombre + ", puntajeExigido=" + puntajeExigido + ", puntajeTotal=" + puntajeTotal + ", habitacionActual=" + habitacionActual + ", puntajeActual=" + puntajeActual ;
     }
     
  

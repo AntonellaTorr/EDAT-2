@@ -37,7 +37,7 @@ public class TDB {
 
     public boolean eliminar(Comparable clave) {
         //busca la posicion del elemento 
-        int pos = clave.hashCode()%TAMANIO;
+        int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         //si el elemento se encuentra en la primer posicion
@@ -64,7 +64,7 @@ public class TDB {
 
     public boolean existeClave(Comparable clave) {
         //busca la posicion en la que se podria encontrar el elemento
-        int pos = clave.hashCode()%TAMANIO;
+        int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         while (!encontrado && aux != null) {
@@ -77,7 +77,7 @@ public class TDB {
 
     public Object obtenerDato(Comparable clave) {
         //busca la posicion en la que se podria encontrar el elemento
-        int pos = clave.hashCode()%TAMANIO;
+        int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         Object dato = null;
 
@@ -131,6 +131,21 @@ public class TDB {
         }
         return lista;
 
+    }
+    public String toString (){
+        int pos = 0;
+        String cadena="";
+        //recorre la tabla hash0
+        while (pos < TAMANIO) {
+            //recorre la lista de cada pos
+            NodoHashDic aux = this.hash[pos];
+            while (aux != null) {
+                cadena+="Clave "+aux.getClave()+" Dato "+aux.getDato()+"\n";
+                aux = aux.getEnlace();
+            }
+            pos++;
+        }
+        return cadena;
     }
 
     public TDB clone() {
