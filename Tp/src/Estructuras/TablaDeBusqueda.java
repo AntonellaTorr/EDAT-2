@@ -150,20 +150,9 @@ public class TablaDeBusqueda {
     private void caso3(NodoAVLDic hijo,NodoAVLDic padre) {
         //cambiar por un set clave
         NodoAVLDic nuevoNodo = encontrarCandidato(hijo.getIzquierdo(), hijo);
-        NodoAVLDic nuevoHijo=new NodoAVLDic (nuevoNodo.getClave(),nuevoNodo.getDato(),hijo.getIzquierdo(),hijo.getDerecho(),hijo.getAltura());//VERIFICAR
-        //al crear un nuevo nodo necesito que el padre lo apunte de nuevo, de esa manera el que queremos eliminar deja de estar apuntado por
-        //su padre y el garbage collector se lo lleva
-        if (padre==null){
-            this.raiz=nuevoHijo;
-        }
-        else{
-            if(padre.getDerecho().getClave().compareTo(hijo.getClave())==0){
-                padre.setDerecho(nuevoHijo);
-            }
-            else{
-                padre.setIzquierdo(nuevoHijo);
-            }
-        }
+        hijo.setClave(nuevoNodo.getClave());
+        hijo.setDato(nuevoNodo.getDato());
+
        
         
     }
@@ -235,18 +224,19 @@ public class TablaDeBusqueda {
                     if (balanceoHijo == 0 || balanceoHijo == -1) {
                         //hay que setear el nodo padre a la nueva Raiz
                         if (padre==null){
-                            this.raiz= rotarIzquierda(nodo); //OK
+                            this.raiz= rotarIzquierda(nodo); 
                         }
                         else{
-                            padre.setDerecho(rotarIzquierda(nodo)); //OK
+                            padre.setDerecho(rotarIzquierda(nodo)); 
                         }
                         
                     } else {
+                         //hay que setear el nodo padre a la nueva Raiz
                         if (padre==null){
-                           this.raiz = rotacionDerechaIzquierda(nodo); //OK
+                           this.raiz = rotacionDerechaIzquierda(nodo); 
                         }
                         else{
-                            padre.setDerecho(rotacionDerechaIzquierda(nodo)); //OK
+                            padre.setDerecho(rotacionDerechaIzquierda(nodo)); 
                         }
                     }
                 }
@@ -338,10 +328,13 @@ public class TablaDeBusqueda {
 
     public int listarClavesAux(NodoAVLDic nodo, Lista lista, int pos) {
         if (nodo != null) {
+            //inserta la clave en la lista
             lista.insertar(nodo.getClave(), pos);
+            //llama recursivamente con el hijo izquierdo
             if (nodo.getIzquierdo() != null) {
                 pos = listarClavesAux(nodo.getIzquierdo(), lista, pos + 1);
             }
+            //llama recursivamente con el hijo derecho 
             if (nodo.getDerecho() != null) {
                 pos = listarClavesAux(nodo.getDerecho(), lista, pos + 1);
             }
@@ -357,10 +350,13 @@ public class TablaDeBusqueda {
     
     private int listarDatosAux(NodoAVLDic nodo, Lista lista,int pos){
         if (nodo!=null){
+            //inserta el dato en la lista
             lista.insertar(nodo.getDato(), pos);
+            //llama recursivamente con el hijo izquierdo
             if (nodo.getIzquierdo() != null) {
                 pos = listarDatosAux(nodo.getIzquierdo(), lista, pos + 1);
             }
+            //llama recursivamente con el hijo derecho
             if (nodo.getDerecho() != null) {
                 pos = listarDatosAux(nodo.getDerecho(), lista, pos + 1);
             }
@@ -378,16 +374,11 @@ public class TablaDeBusqueda {
     }
 
     private String concatenar(NodoAVLDic n) {
-        //MOSTRAR ALTURA DEL NODO TAMBIEN 
         //este metodo privado y recursivo devuelve un String con el contenido del arbol/subArbol
-        //creamos e inicializamos las cadenas auxiliares
         String cadenaAux = "", cadena = "arbol vacio";
         if (n != null) {
-            //si el nodo ingresado no es null
             cadena = "";
-            //pondremos el padre primero 
             cadena += "\nNodo padre Clave:" + n.getClave() + " Dato:"+n.getDato()+" Altura:"+n.getAltura() +"\n";
-            //luego pondremos si tiene o no tiene hijos izquierdo o derecho
             if (n.getIzquierdo() != null) {
                 cadena += "HI:" + " Clave:" + n.getIzquierdo().getClave() + " Dato:"+n.getIzquierdo().getDato()+" Altura:"+n.getIzquierdo().getAltura()+ "\n";
             } else {
@@ -399,12 +390,10 @@ public class TablaDeBusqueda {
             } else {
                 cadena += "HD:-" +"\n";
             }
-            //si tenia hijo izquierdo iremos repitiendo hasta que ya no hayan mas elementos del lado derecho del arbol 
             if (n.getIzquierdo() != null) {
                 cadenaAux = concatenar(n.getIzquierdo());
                 cadena += cadenaAux;
             }
-            //repetimos el mismo procedimiento para el lado derecho
             if (n.getDerecho() != null) {
                 cadenaAux = concatenar(n.getDerecho());
                 cadena += cadenaAux;
@@ -413,9 +402,9 @@ public class TablaDeBusqueda {
         return cadena;
     }
     public String buscarDesafiosTipo(String tipo, int puntMin, int puntMax){
-        return mostrarAux(this.raiz,tipo,puntMin,puntMax);
+        return buscarDesafiosAux(this.raiz,tipo,puntMin,puntMax);
     }
-    private String mostrarAux(NodoAVLDic nodo,String tipo, int puntMin, int puntMax) {
+    private String buscarDesafiosAux(NodoAVLDic nodo,String tipo, int puntMin, int puntMax) {
         String cad="",cadAux;
         if (nodo != null) {
             Desafio d=(Desafio)nodo.getDato();
@@ -424,11 +413,11 @@ public class TablaDeBusqueda {
             }
            
             if (nodo.getIzquierdo() != null) {
-                cadAux = mostrarAux(nodo.getIzquierdo(),tipo,puntMin,puntMax);
+                cadAux = buscarDesafiosAux(nodo.getIzquierdo(),tipo,puntMin,puntMax);
                 cad+=cadAux;
             }
             if (nodo.getDerecho() != null) {
-               cadAux = mostrarAux(nodo.getDerecho(),tipo,puntMin,puntMax);
+               cadAux = buscarDesafiosAux(nodo.getDerecho(),tipo,puntMin,puntMax);
                cad+=cadAux;
             }
         }

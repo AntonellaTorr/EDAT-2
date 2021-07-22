@@ -1,4 +1,4 @@
-package tp;
+package Juego;
 
 
 import java.io.*;

@@ -56,7 +56,7 @@ public class Desafio {
     }
      @Override
     public String toString() {
-        return "Desafio" + " codigo=" + codigo + ", puntajeAOtorgar=" + puntajeAOtorgar + ", nombre=" + nombre + ", tipo=" + tipo ;
+        return "Desafio->" + " codigo=" + codigo + ", puntajeAOtorgar=" + puntajeAOtorgar + ", nombre=" + nombre + ", tipo=" + tipo ;
     }
     
    

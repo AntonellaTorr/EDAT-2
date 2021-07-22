@@ -28,6 +28,7 @@ public class MapeoAMuchos {
                  aux = aux.getEnlace();
             }  
         }
+        //si ya se encontraba el dominio
         if (exito){
             res=aux.getRango().localizar(dato);
             //si no estaba el dato en la lista de rango
@@ -40,6 +41,7 @@ public class MapeoAMuchos {
                 exito=false;
             }
         }
+        //si no se encontraba el dominio entonces inserta un nuevo nodo
         else{
             this.hash[pos] = new NodoHashMapeo(dominio, this.hash[pos]);
             this.hash[pos].añadirElementoRango(dato);
@@ -51,12 +53,14 @@ public class MapeoAMuchos {
     
     public boolean desasociar(Object dominio,Object rango){
         int pos = Math.abs(dominio.hashCode()%TAMANIO);
-        NodoHashMapeo aux=this.hash[pos];
+        //almaceno el enlace anterior a aux, asi si tengo que eliminar el nodo puedo hacerlo facilmente
+        NodoHashMapeo aux=this.hash[pos], enlaceAnt=null;
         boolean exito=false,encontrado=false;
         //busca el nodo que contiene al dominio
         while (!encontrado && aux!=null){
             encontrado=aux.getDominio().equals(dominio);
             if (!encontrado){
+                enlaceAnt=aux;
                 aux=aux.getEnlace();
             }
         }
@@ -68,7 +72,7 @@ public class MapeoAMuchos {
                 aux.getRango().eliminar(res);
                 //si luego de eliminar el rango la lista queda vacia tmbn se elimina el dominio
                 if (aux.getRango().esVacia()){
-                   eliminar(aux.getDominio());
+                    eliminarNodo(aux,enlaceAnt);
                 }
                 exito=true;
             }
@@ -77,34 +81,17 @@ public class MapeoAMuchos {
         return exito;
         
     }
-     private boolean eliminar (Object dominio){
-        //busca la posicion del elemento 
-        int pos = Math.abs(dominio.hashCode()%TAMANIO);
-        NodoHashMapeo aux=this.hash[pos];
-        boolean encontrado=false;
+    private void eliminarNodo(NodoHashMapeo nodoActual, NodoHashMapeo nodoAnterior){
         //si el elemento se encuentra en la primer posicion
-        if (aux!=null && aux.getDominio().equals(dominio)){
-            this.hash[pos]=this.hash[pos].getEnlace();
+        if (nodoAnterior==null){
+            nodoActual=nodoActual.getEnlace();
         }
         else{
-            while (!encontrado && aux!=null){
-            //verifica si el elemento siguiente tiene al elemento buscado
-            encontrado=aux.getEnlace().getDominio().equals(dominio);
-                if (encontrado){
-                    //si lo tenia borra dicho enlace 
-                    aux.setEnlace(aux.getEnlace().getEnlace());
-                    //disminuye la cantidad de elementos en la table
-                    this.cant--;
-                }
-                else{
-                    //sino no lo encontro sigue avanzando 
-                    aux=aux.getEnlace();
-                }
-            }
+            nodoAnterior.setEnlace(nodoActual.getEnlace());
         }
-        return encontrado;
-        
+        this.cant--;
     }
+    
 
    public Lista obtenerValores(Object dominio){
        //busca la posicion de el elemento en la tabla 
@@ -117,9 +104,7 @@ public class MapeoAMuchos {
             encontrado=aux.getDominio().equals(dominio);
             if (!encontrado){
                 aux=aux.getEnlace();
-            }
-            
-            
+            }            
         }
         //si se encuentra almacena la lista que contiene a los rangos para luego retonarla 
         if (encontrado){
@@ -141,5 +126,25 @@ public class MapeoAMuchos {
        }
        return cadena;
        
+   }
+   public MapeoAMuchos clone (){
+       int pos=0;
+       MapeoAMuchos mapeoClone= new MapeoAMuchos ();
+       NodoHashMapeo aux, auxClone=mapeoClone.hash[pos];
+       
+        while (pos<TAMANIO){
+           aux=this.hash[pos];
+           if (aux!=null){
+              auxClone= new NodoHashMapeo (aux.getDominio(),aux.getRango(),null);
+              aux=aux.getEnlace();
+              while (aux!=null){
+                  auxClone.setEnlace(new NodoHashMapeo (aux.getDominio(),aux.getRango(),null));
+                  auxClone=auxClone.getEnlace();
+                  aux=aux.getEnlace();
+              }
+           }
+          pos++;
+        }
+        return mapeoClone;
    }
 }

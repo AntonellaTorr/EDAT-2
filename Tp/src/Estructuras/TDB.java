@@ -28,6 +28,7 @@ public class TDB {
             encontrado = aux.getClave().equals(clave);
             aux = aux.getEnlace();
         }
+        //si no se encontraba el elemento lo inserta en la tabla
         if (!encontrado) {
             this.hash[pos] = new NodoHashDic(clave, dato, this.hash[pos]);
             this.cant++;
@@ -35,14 +36,15 @@ public class TDB {
         return !encontrado;
     }
 
-    public boolean eliminar(Comparable clave) {
+    public boolean eliminar(Object clave) {
         //busca la posicion del elemento 
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
         //si el elemento se encuentra en la primer posicion
         if (aux != null && aux.getClave().equals(clave)) {
-            this.hash[pos] = this.hash[pos].getEnlace();
+            aux = aux.getEnlace();
+            this.cant--;
         } else {
             while (!encontrado && aux != null) {
                 //verifica si el elemento siguiente tiene al elemento buscado
@@ -62,7 +64,7 @@ public class TDB {
 
     }
 
-    public boolean existeClave(Comparable clave) {
+    public boolean existeClave(Object clave) {
         //busca la posicion en la que se podria encontrar el elemento
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
@@ -75,7 +77,7 @@ public class TDB {
         return encontrado;
     }
 
-    public Object obtenerDato(Comparable clave) {
+    public Object obtenerDato(Object clave) {
         //busca la posicion en la que se podria encontrar el elemento
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
@@ -89,7 +91,6 @@ public class TDB {
             }
             aux = aux.getEnlace();
         }
-        //si lo encuentra va a retornar true y sino false
         return dato;
     }
 

@@ -21,6 +21,11 @@ public class NodoHashMapeo {
         this.rango = new Lista ();
         this.enlace = enlace;
     }
+     public NodoHashMapeo(Object dominio,Lista rango,NodoHashMapeo enlace) {
+        this.dominio = dominio;
+        this.rango = rango;
+        this.enlace = enlace;
+    }
     public void añadirElementoRango(Object elemRango){
         this.rango.insertar(elemRango, 1);
     }

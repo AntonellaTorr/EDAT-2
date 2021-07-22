@@ -47,6 +47,9 @@ public class NodoAVLDic {
         this.altura = (Math.max(alturaIzq, alturaDer)) + 1;
 
     }
+     public void setClave(Comparable clave) {
+        this.clave = clave;
+    }
 
     public Comparable getClave() {
         return clave;
