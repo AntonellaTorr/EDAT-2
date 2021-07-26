@@ -170,68 +170,57 @@ public class ArbolAVL {
     
   
     private int chequearBalanceo(NodoAVL nodo, NodoAVL padre) {
-        int balanceo=-1;
-        int altIzq=-1, altDer=-1;
-        if (nodo!=null){
-            if (nodo.getIzquierdo()!=null){
-                altIzq=nodo.getIzquierdo().getAltura();
-            }
-            if (nodo.getDerecho()!=null){
-                altDer=nodo.getDerecho().getAltura();
-            }
-            balanceo= altIzq-altDer;
-            //si esta desbalanceado ya sea a la izquierda o a la derecha llama a rebalancear
-            if (balanceo==2 || balanceo==-2){
-                rebalancear(balanceo, nodo, padre);
-            }   
-        }
-        return balanceo;
+     int balanceo=-1;
+     int altIzq=-1, altDer=-1;
+     if (nodo!=null){
+         if (nodo.getIzquierdo()!=null){
+             altIzq=nodo.getIzquierdo().getAltura();
+         }
+         if (nodo.getDerecho()!=null){
+             altDer=nodo.getDerecho().getAltura();
+         }
+         balanceo= altIzq-altDer;
+         //si esta desbalanceado ya sea a la izquierda o a la derecha llama a rebalancear
+         if (balanceo==2 || balanceo==-2){
+             rebalancear(balanceo, nodo, padre);
+         }   
+     }
+     return balanceo;
     }
-   private void rebalancear (int balanceo,NodoAVL nodo, NodoAVL padre){
+    private void rebalancear (int balanceo,NodoAVL nodo, NodoAVL padre){
        int balanceoHijo;
-        //si esta desbalanceado hacia la izquierda verifico el balanceo de su hijo ziq
-            if (balanceo == 2) {
-                balanceoHijo = chequearBalanceo(nodo.getIzquierdo(),nodo);
-                if (balanceoHijo == 0 || balanceoHijo == 1) {
-                   if (padre==null){
-                       this.raiz = rotarDerecha(nodo); //OK 
-                   }
-                   else{
-                       padre.setDerecho(rotarDerecha(nodo)); //OK
-                   }
-                   
-                } else {
-                    if (padre==null){
-                       this.raiz= rotacionIzquierdaDerecha(nodo); //OK
-                   }
-                    else{
-                        padre.setIzquierdo(rotacionIzquierdaDerecha(nodo)); //OK
-                    }
-                }
-            } else {
-                //si esta desbalanceado hacia la derecha verifico el balanceo de su hijo der
-                if (balanceo == -2) {
-                    balanceoHijo = chequearBalanceo(nodo.getDerecho(),nodo);
-                    if (balanceoHijo == 0 || balanceoHijo == -1) {
-                        //hay que setear el nodo padre a la nueva Raiz
-                        if (padre==null){
-                            this.raiz= rotarIzquierda(nodo); //OK
-                        }
-                        else{
-                            padre.setDerecho(rotarIzquierda(nodo)); //OK
-                        }
-                        
-                    } else {
-                        if (padre==null){
-                           this.raiz = rotacionDerechaIzquierda(nodo); //OK
-                        }
-                        else{
-                            padre.setDerecho(rotacionDerechaIzquierda(nodo)); //OK
-                        }
-                    }
-                }
-
+       NodoAVL n=null;
+        if (balanceo == 2) {
+            balanceoHijo = chequearBalanceo(nodo.getIzquierdo(),nodo);
+            if (balanceoHijo == 0 || balanceoHijo == 1) {
+               n=rotarDerecha(nodo); //OK
+            } 
+            else {
+                n=rotacionIzquierdaDerecha(nodo);
             }
+        } 
+        else {
+            balanceoHijo = chequearBalanceo(nodo.getDerecho(),nodo);
+            if (balanceoHijo == 0 || balanceoHijo == -1) {
+                n= rotarIzquierda(nodo); //OK
+            } 
+            else {
+                n=rotacionDerechaIzquierda(nodo); //OK
+            }
+        }
+        
+        if (padre==null){
+            this.raiz=n;
+        }
+        else{
+            if (padre.getIzquierdo().equals(nodo)){
+            padre.setIzquierdo(n);
+            }
+            else{
+                padre.setDerecho(n);
+            }
+        }
+            
     }
     private NodoAVL rotarIzquierda(NodoAVL r){
         NodoAVL h=r.getDerecho();
@@ -249,8 +238,8 @@ public class ArbolAVL {
         h.setDerecho(r);
         r.setIzquierdo(temp);
         
-        h.recalcularAltura();
         r.recalcularAltura();
+        h.recalcularAltura();
         return h;
     }
     private NodoAVL rotacionIzquierdaDerecha(NodoAVL r){
