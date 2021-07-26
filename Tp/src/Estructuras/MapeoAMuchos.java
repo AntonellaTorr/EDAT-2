@@ -131,7 +131,6 @@ public class MapeoAMuchos {
        int pos=0;
        MapeoAMuchos mapeoClone= new MapeoAMuchos ();
        NodoHashMapeo aux, auxClone=mapeoClone.hash[pos];
-       
         while (pos<TAMANIO){
            aux=this.hash[pos];
            if (aux!=null){
@@ -145,6 +144,7 @@ public class MapeoAMuchos {
            }
           pos++;
         }
+        mapeoClone.cant= this.cant;
         return mapeoClone;
    }
 }

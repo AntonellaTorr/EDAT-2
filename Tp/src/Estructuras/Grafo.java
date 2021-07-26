@@ -5,7 +5,6 @@
  */
 package Estructuras;
 import java.util.HashSet;
-import Dominio.Habitacion;
 /**
  *
  * @author Anto
@@ -18,7 +17,7 @@ public class Grafo {
     }
     public boolean insertarVertice(Object nuevoVertice){
         //busca si el vertice ya esta presente en el grafo
-        NodoVert n= ubicarVertice(nuevoVertice);
+        NodoVert n= ubicarVertice(nuevoVertice,this.inicio);
         boolean exito=false;
         //si no lo esta lo inserta
         if (n==null){
@@ -27,9 +26,9 @@ public class Grafo {
         }
         return exito;
     }
-    private NodoVert ubicarVertice(Object elem){
+    private NodoVert ubicarVertice(Object elem,NodoVert n){
         //busca el vertice que tiene al elem 
-        NodoVert aux= this.inicio;
+        NodoVert aux= n;
         while (aux!=null && !aux.getElem().equals(elem)){
             aux=aux.getSigVertice();
         }
@@ -63,18 +62,18 @@ public class Grafo {
     private void eliminarArcos(NodoVert n){
         NodoAdy adyacente=n.getPrimerAdy();
         while(adyacente!=null){
-            eliminar(n, adyacente.getVertice());
-            eliminar(adyacente.getVertice(),n);
+            eliminarArcoAux(n, adyacente.getVertice());
+            eliminarArcoAux(adyacente.getVertice(),n);
             adyacente=adyacente.getSigAdyacente();
         }
     }
     public boolean existeVertice(Object verticeBuscado){
-        return ubicarVertice(verticeBuscado)!=null;
+        return ubicarVertice(verticeBuscado,this.inicio)!=null;
     }
     public boolean insertarArco (Object origen, Object destino, int etiqueta){
         boolean exito=false;
-        NodoVert nodoO=ubicarVertice(origen);
-        NodoVert nodoD=ubicarVertice(destino);
+        NodoVert nodoO=ubicarVertice(origen,this.inicio);
+        NodoVert nodoD=ubicarVertice(destino,this.inicio);
         //si ambos vertices se encuentran en el grafo
         if (nodoO!=null && nodoD!=null){
             
@@ -85,19 +84,19 @@ public class Grafo {
         return exito;
     }
     public boolean eliminarArco(Object origen, Object destino){
-        NodoVert nodoO=ubicarVertice(origen);
-        NodoVert nodoD=ubicarVertice(destino);
+        NodoVert nodoO=ubicarVertice(origen,this.inicio);
+        NodoVert nodoD=ubicarVertice(destino,this.inicio);
         boolean exito=false;
         //si existen ambos vertices llama al metodo eliminar
         if (nodoO!=null && nodoD!=null){
-           exito= eliminar(nodoO, nodoD);
-           eliminar(nodoD, nodoO);
+           exito= eliminarArcoAux(nodoO, nodoD);
+           eliminarArcoAux(nodoD, nodoO);
             
             
         }
         return exito;
     }
-    private boolean eliminar(NodoVert nodoO,NodoVert nodoD){
+    private boolean eliminarArcoAux(NodoVert nodoO,NodoVert nodoD){
         boolean encontrado=false;
         NodoAdy aux=nodoO.getPrimerAdy();
         if (aux.getVertice().equals(nodoD)){
@@ -116,8 +115,8 @@ public class Grafo {
     }
     
     public boolean existeArco(Object origen, Object destino){
-        NodoVert nodoO=ubicarVertice(origen);
-        NodoVert nodoD=ubicarVertice(destino);
+        NodoVert nodoO=ubicarVertice(origen,this.inicio);
+        NodoVert nodoD=ubicarVertice(destino,this.inicio);
         return verificarArco(nodoO, nodoD);
         
     }
@@ -133,24 +132,10 @@ public class Grafo {
         }
         return encontrado;
     }
-    public boolean cambiarEtiqueta(Object origen, Object destino, int nuevaEtiqueta){
-        boolean encontrado=false;
-        NodoVert o=ubicarVertice(origen);
-        if (o!=null){
-            NodoAdy ad=o.getPrimerAdy();
-            while (!encontrado && ad!=null){
-                if (ad.getVertice().getElem().equals(destino)){
-                    ad.setEtiqueta(nuevaEtiqueta);
-                    encontrado=true;
-                }
-            }
-                   
-        }
-        return encontrado;
-    }
+
     public boolean existeCamino (Object origen, Object destino){
         //busca el nodo origen de el camino
-        NodoVert o=ubicarVertice(origen);
+        NodoVert o=ubicarVertice(origen,this.inicio);
         HashSet visitados= new HashSet ();
         return buscarCamino(o, destino,visitados);
     }
@@ -205,7 +190,7 @@ public class Grafo {
        
     }
     public Lista caminoMasLargo(Object origen, Object destino){
-        NodoVert n=ubicarVertice(origen);
+        NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMax= new Lista();
         Lista visitados= new Lista();
         return  profundidadCaminoMasLargo(n, visitados, destino, 0, caminoMax);
@@ -238,7 +223,7 @@ public class Grafo {
        
     }
      public Lista caminoMasCorto(Object origen, Object destino){
-        NodoVert n=ubicarVertice(origen);
+        NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMin= new Lista();
         Lista visitados= new Lista();
         return  profundidadCaminoMasCorto(n, visitados, destino, 0, caminoMin);
@@ -365,15 +350,9 @@ public class Grafo {
             }
         }
     }
-    private NodoVert ubicarVertice(Object elem, NodoVert n){
-        NodoVert aux= n;
-        while (aux!=null && !aux.getElem().equals(elem)){
-            aux=aux.getSigVertice();
-        }
-        return aux;
-    }
+
     public String mostrarContiguas(Object h){
-        NodoVert u= ubicarVertice(h);
+        NodoVert u= ubicarVertice(h,this.inicio);
         String cad="";
         if (u!=null){
             NodoAdy ad= u.getPrimerAdy();
@@ -385,7 +364,7 @@ public class Grafo {
         return cad;
     }
     public boolean esPosibleLlegar (Object  h, Object h2, int puntaje){
-        NodoVert o=ubicarVertice(h);
+        NodoVert o=ubicarVertice(h,this.inicio);
         HashSet visitados= new HashSet ();
         return esPosibleLlegar(o, h2,visitados,puntaje,0);
     }
@@ -421,7 +400,7 @@ public class Grafo {
     }
     public Lista sinPasarPor (Object h, Object h2, Object h3, int puntaje){
         //ubica el vertice origen
-        NodoVert o=ubicarVertice(h);
+        NodoVert o=ubicarVertice(h,this.inicio);
         Lista visitados= new Lista ();
         Lista camA=new Lista();
         Lista caminos=new Lista();
@@ -463,7 +442,7 @@ public class Grafo {
     }
 
     public boolean puedePasar(Object hA,Object hD, int puntajeAc){
-        NodoVert o=ubicarVertice(hA);
+        NodoVert o=ubicarVertice(hA,this.inicio);
         boolean exito=false, cortar=false;
         if (o!=null){
             NodoAdy ad=o.getPrimerAdy();
@@ -484,6 +463,21 @@ public class Grafo {
         }
         return exito;
         
+    }
+    public boolean cambiarEtiqueta(Object origen, Object destino, int nuevaEtiqueta){
+    boolean encontrado=false;
+    NodoVert o=ubicarVertice(origen,this.inicio);
+    if (o!=null){
+        NodoAdy ad=o.getPrimerAdy();
+        while (!encontrado && ad!=null){
+            if (ad.getVertice().getElem().equals(destino)){
+                ad.setEtiqueta(nuevaEtiqueta);
+                encontrado=true;
+            }
+        }
+
+    }
+    return encontrado;
     }
 
 }
