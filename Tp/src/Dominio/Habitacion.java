@@ -11,12 +11,15 @@ package Dominio;
  */
 public class Habitacion {
 
+ 
+
     
     private int codigo;
     private String nombre;
     private int planta;
     private double mCuadrados;
     private boolean tieneSalida;
+    private int cantEquiposOcupandola;
     
     public Habitacion(int codigo, String nombre, int planta, double mCuadrados, boolean tieneSalida) {
         this.codigo = codigo;
@@ -59,6 +62,13 @@ public class Habitacion {
 
     public void setTieneSalida(boolean tieneSalida) {
         this.tieneSalida = tieneSalida;
+    }
+    public int getCantEquiposOcupandola() {
+        return cantEquiposOcupandola;
+    }
+
+    public void setCantEquiposOcupandola(int cantEquiposOcupandola) {
+        this.cantEquiposOcupandola = cantEquiposOcupandola;
     }
     @Override
     public int hashCode() {
