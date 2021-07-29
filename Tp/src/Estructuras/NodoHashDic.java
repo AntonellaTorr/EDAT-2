@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author Anto
  */
-public class NodoHashDic {
+class NodoHashDic {
     private Object clave;
     private Object dato;
     private NodoHashDic enlace;

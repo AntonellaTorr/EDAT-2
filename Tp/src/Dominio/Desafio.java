@@ -11,25 +11,17 @@ package Dominio;
  */
 public class Desafio {
 
-   
-
-    private int codigo;
     private int puntajeAOtorgar;
     private String nombre;
     private String  tipo;
 
-    public Desafio(int codigo, int puntajeAOtorgar, String nombre, String tipo) {
-        this.codigo = codigo;
+    public Desafio(int puntajeAOtorgar, String nombre, String tipo) {
         this.puntajeAOtorgar = puntajeAOtorgar;
         this.nombre = nombre;
         this.tipo = tipo;
     }
     
-    public int getCodigo() {
-        return codigo;
-    }
-
-    
+ 
 
     public int getPuntajeAOtorgar() {
         return puntajeAOtorgar;
@@ -56,7 +48,7 @@ public class Desafio {
     }
      @Override
     public String toString() {
-        return "Desafio->" + " codigo=" + codigo + ", puntajeAOtorgar=" + puntajeAOtorgar + ", nombre=" + nombre + ", tipo=" + tipo ;
+        return "Desafio->" + " puntajeAOtorgar=" + puntajeAOtorgar + ", nombre=" + nombre + ", tipo=" + tipo ;
     }
     
    

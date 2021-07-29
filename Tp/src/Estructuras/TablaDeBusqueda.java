@@ -141,7 +141,6 @@ public class TablaDeBusqueda {
     }
 
     private void caso2(NodoAVLDic padre, NodoAVLDic hijo, NodoAVLDic nieto) {
-
         //nos fijamos si el elemento a eliminar es hijo izquierdo o derecho
         if (padre.getIzquierdo() != null && padre.getIzquierdo().getClave().equals(hijo.getClave())) {
             //procedemos a eliminar
@@ -154,13 +153,14 @@ public class TablaDeBusqueda {
     private void caso3(NodoAVLDic hijo, NodoAVLDic padre) {
         //cambiar por un set clave
         NodoAVLDic nuevoNodo = encontrarCandidato(hijo.getIzquierdo(), hijo);
+        //lllamos al chequear balanceo por si se produjo un desbalanceo al eliminar al candidato
+        chequearBalanceo(hijo,padre);
         hijo.setClave(nuevoNodo.getClave());
         hijo.setDato(nuevoNodo.getDato());
 
     }
 
     private NodoAVLDic encontrarCandidato(NodoAVLDic hijoIzquierdo, NodoAVLDic padre) {
-        //actualizar las alturas a la vuelta
         //busco el mayor elemento del lado izquierdo der arbol
         NodoAVLDic candidato = null;
         if (hijoIzquierdo.getDerecho() == null) {
@@ -170,6 +170,7 @@ public class TablaDeBusqueda {
             } else {
                 caso2(padre, candidato, candidato.getIzquierdo());
             }
+            padre.recalcularAltura();
         } else {
             //si el hijo derecho no es null avanzo
             candidato = encontrarCandidato(hijoIzquierdo.getDerecho(), hijoIzquierdo);
@@ -202,16 +203,16 @@ public class TablaDeBusqueda {
         if (balanceo == 2) {
             balanceoHijo = chequearBalanceo(nodo.getIzquierdo(), nodo);
             if (balanceoHijo == 0 || balanceoHijo == 1) {
-                n = rotarDerecha(nodo); //OK
+                n = rotarDerecha(nodo); 
             } else {
                 n = rotacionIzquierdaDerecha(nodo);
             }
         } else {
             balanceoHijo = chequearBalanceo(nodo.getDerecho(), nodo);
             if (balanceoHijo == 0 || balanceoHijo == -1) {
-                n = rotarIzquierda(nodo); //OK
+                n = rotarIzquierda(nodo); 
             } else {
-                n = rotacionDerechaIzquierda(nodo); //OK
+                n = rotacionDerechaIzquierda(nodo); 
             }
         }
 
@@ -314,7 +315,7 @@ public class TablaDeBusqueda {
         return lista;
     }
 
-    public int listarClavesAux(NodoAVLDic nodo, Lista lista, int pos) {
+    private int listarClavesAux(NodoAVLDic nodo, Lista lista, int pos) {
         if (nodo != null) {
             //inserta la clave en la lista
             lista.insertar(nodo.getClave(), pos);
@@ -388,29 +389,60 @@ public class TablaDeBusqueda {
         }
         return cadena;
     }
+     public TablaDeBusqueda clone() {
+        //creamos e inicializamos el arbol clone
+        TablaDeBusqueda clone = new TablaDeBusqueda();
+        if (this.raiz != null) {
+            clone.raiz = new NodoAVLDic(this.raiz.getClave(),this.raiz.getDato(), null, null,this.raiz.getAltura());
+            //invocamos al metodo auxClon
+            auxClon(this.raiz, clone.raiz);
 
-    public String buscarDesafiosTipo(String tipo, int puntMin, int puntMax) {
-        return buscarDesafiosAux(this.raiz, tipo, puntMin, puntMax);
+        }
+        return clone;
+
     }
 
-    private String buscarDesafiosAux(NodoAVLDic nodo, String tipo, int puntMin, int puntMax) {
-        String cad = "", cadAux;
-        if (nodo != null) {
-            Desafio d = (Desafio) nodo.getDato();
-            if (d.getTipo().equalsIgnoreCase(tipo) && d.getPuntajeAOtorgar() >= puntMin && d.getPuntajeAOtorgar() <= puntMax) {
-                cad = d.toString();
-            }
+    private void auxClon(NodoAVLDic nodo, NodoAVLDic aux2) {
+        //este metodo privado y recursivo crea el clone del arbol original
+        //precondicion nodo distinto de null
+        if (nodo.getIzquierdo() != null) {
+            //si existe un nodo izquierdo
+            //creamos un nodo nuevo a la izquierda del nodo actual del clon
+            aux2.setIzquierdo(new NodoAVLDic(nodo.getIzquierdo().getClave(),nodo.getIzquierdo().getDato(), null, null,nodo.getIzquierdo().getAltura()));
+            //invocamos recursivamente al metodo
+            auxClon(nodo.getIzquierdo(), aux2.getIzquierdo());
 
-            if (nodo.getIzquierdo() != null) {
-                cadAux = buscarDesafiosAux(nodo.getIzquierdo(), tipo, puntMin, puntMax);
-                cad += cadAux;
+        }
+        if (nodo.getDerecho() != null) {
+            //si existe un nodo derecho
+            //creamos un nodo nuevo a la derecha del nodo actual del clon
+            aux2.setDerecho(new NodoAVLDic(nodo.getDerecho().getClave(),nodo.getDerecho().getDato(), null, null,nodo.getDerecho().getAltura()));
+            //invocamos recursivamente al metodo
+            auxClon(nodo.getDerecho(), aux2.getDerecho());
+        }
+
+    }
+
+    public Lista listarRango(Comparable elemMinimo, Comparable elemMaximo) {
+        Lista listaRango = new Lista();
+        listarRangoAux(this.raiz, listaRango, elemMinimo, elemMaximo,1);
+        return listaRango;
+    }
+
+     private int listarRangoAux(NodoAVLDic n, Lista lista, Comparable elemMin, Comparable elemMaximo,int pos) {
+        if (n != null) {
+            if ((elemMin.compareTo(n.getClave()) <= 0) && (elemMaximo.compareTo(n.getClave()) >= 0)) {
+                lista.insertar(n.getClave(),pos);
+                pos++;
             }
-            if (nodo.getDerecho() != null) {
-                cadAux = buscarDesafiosAux(nodo.getDerecho(), tipo, puntMin, puntMax);
-                cad += cadAux;
+            if (elemMin.compareTo(n.getClave()) < 0) {
+                pos=listarRangoAux(n.getIzquierdo(), lista, elemMin, elemMaximo,pos);
+            }
+            if (elemMaximo.compareTo(n.getClave()) > 0) {
+               pos=listarRangoAux(n.getDerecho(), lista, elemMin, elemMaximo,pos);
             }
         }
-        return cad;
+        return pos;
     }
 
 }

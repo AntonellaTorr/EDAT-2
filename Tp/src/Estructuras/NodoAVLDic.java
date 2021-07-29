@@ -9,7 +9,7 @@ package Estructuras;
  *
  * @author Anto
  */
-public class NodoAVLDic {
+class NodoAVLDic {
 
     private Comparable clave;
     private Object dato;

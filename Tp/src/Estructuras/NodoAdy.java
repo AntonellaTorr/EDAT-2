@@ -9,7 +9,7 @@ package Estructuras;
  *
  * @author Anto
  */
-public class NodoAdy {
+class NodoAdy {
     private NodoVert vertice;
     private NodoAdy sigAdyacente;
     private int etiqueta;

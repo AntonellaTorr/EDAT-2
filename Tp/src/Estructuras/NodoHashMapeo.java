@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author Anto
  */
-public class NodoHashMapeo {
+class NodoHashMapeo {
     private Object dominio;
     private Lista rango;
     private NodoHashMapeo enlace;

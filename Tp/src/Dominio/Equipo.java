@@ -19,7 +19,6 @@ public class Equipo {
     private int puntajeTotal;
     private int habitacionActual;
     private int puntajeActual;
-    //hay que agregar los desafios que hicieron?
     //
     public Equipo(String nombre, int puntajeExigido, int habitacionActual) {
         this.nombre = nombre;

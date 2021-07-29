@@ -88,4 +88,7 @@ public class Habitacion {
     public String toString() {
         return "Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida ;
     }
+    public String toStringModificado() {
+        return "Habitacion " + "codigo=" + codigo +"-" ;
+    }
 }

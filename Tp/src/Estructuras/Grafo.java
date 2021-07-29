@@ -27,7 +27,6 @@ public class Grafo {
         return exito;
     }
     private NodoVert ubicarVertice(Object elem,NodoVert n){
-        //busca el vertice que tiene al elem 
         NodoVert aux= n;
         while (aux!=null && !aux.getElem().equals(elem)){
             aux=aux.getSigVertice();
@@ -40,7 +39,6 @@ public class Grafo {
         //si el vertice a eliminar se encuentra al principio de la lista seteo el inicio al siguiente
         if (this.inicio.getElem().equals(vertice)){
             this.inicio=this.inicio.getSigVertice();
-            eliminarArcos(aux.getSigVertice());
             exito=true;
         }
         else{
@@ -48,18 +46,22 @@ public class Grafo {
             while (aux!=null && !exito){
                 //si el vertice siguiente al que estoy parado tiene el vertice a eliminar le seteo el siguiente al proximo
                 if(aux.getSigVertice()!=null && aux.getSigVertice().getElem().equals(vertice)){
-                    //elimino todos los arcos que tenian a vertice
-                    eliminarArcos(aux.getSigVertice());
                     //elimino al vertice de la lista
                     aux.setSigVertice(aux.getSigVertice().getSigVertice());
-                    exito=false;
+                    exito=true;
                 }
                 aux=aux.getSigVertice();
             }
         }
+        //si se encontro el vertice que se queria eliminar se eliminan todos los arcos que este tenia
+        if (exito){
+            eliminarArcos(aux.getSigVertice());
+        }
+        
         return exito;
     }
     private void eliminarArcos(NodoVert n){
+        //este metodo elimina todos los arcos que tiene como origen/destino al nodo recibido por parametro
         NodoAdy adyacente=n.getPrimerAdy();
         while(adyacente!=null){
             eliminarArcoAux(n, adyacente.getVertice());
@@ -67,22 +69,23 @@ public class Grafo {
             adyacente=adyacente.getSigAdyacente();
         }
     }
-    public boolean existeVertice(Object verticeBuscado){
-        return ubicarVertice(verticeBuscado,this.inicio)!=null;
-    }
-    public boolean insertarArco (Object origen, Object destino, int etiqueta){
+     public boolean insertarArco (Object origen, Object destino, int etiqueta){
         boolean exito=false;
+        //se ubican los vertices de origen y destino
         NodoVert nodoO=ubicarVertice(origen,this.inicio);
         NodoVert nodoD=ubicarVertice(destino,this.inicio);
         //si ambos vertices se encuentran en el grafo
         if (nodoO!=null && nodoD!=null){
-            
             nodoO.setPrimerAdy(new NodoAdy (nodoD, nodoO.getPrimerAdy(),etiqueta));
             nodoD.setPrimerAdy(new NodoAdy (nodoO, nodoD.getPrimerAdy(),etiqueta));
             exito=true;
         }
         return exito;
     }
+    public boolean existeVertice(Object verticeBuscado){
+        return ubicarVertice(verticeBuscado,this.inicio)!=null;
+    }
+ 
     public boolean eliminarArco(Object origen, Object destino){
         NodoVert nodoO=ubicarVertice(origen,this.inicio);
         NodoVert nodoD=ubicarVertice(destino,this.inicio);
@@ -91,12 +94,11 @@ public class Grafo {
         if (nodoO!=null && nodoD!=null){
            exito= eliminarArcoAux(nodoO, nodoD);
            eliminarArcoAux(nodoD, nodoO);
-            
-            
         }
         return exito;
     }
     private boolean eliminarArcoAux(NodoVert nodoO,NodoVert nodoD){
+        //este metodo elimina el arco entre el nodoO y el nodoD
         boolean encontrado=false;
         NodoAdy aux=nodoO.getPrimerAdy();
         if (aux.getVertice().equals(nodoD)){
@@ -125,6 +127,7 @@ public class Grafo {
         NodoAdy aux=nodoO.getPrimerAdy();
         //busca en la lista de nodos adyacentes de el nodoO al nodoD 
         while(!encontrado && aux!=null){
+            //si lo encuentra entonces hay un arco entre ambos nodos y retorna true
             if(aux.getVertice().equals(nodoD)){
                 encontrado=true;
             }
@@ -151,23 +154,25 @@ public class Grafo {
             if (ad.getVertice().getElem().equals(destino)){
                     encontrado=true;
             }
-            //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
-            while (ad!=null && !encontrado){
-                if(!visitados.contains(ad.getVertice().getElem())){
+            else{
+                //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
+                while (ad!=null && !encontrado){
+                    if(!visitados.contains(ad.getVertice().getElem())){
                         encontrado= buscarCamino(ad.getVertice(),destino, visitados);
-                }
-                ad=ad.getSigAdyacente();
+                    }
+                    ad=ad.getSigAdyacente();
+                 }
             }
+            
         }
         return encontrado;
     }
-
-    
 
     public HashSet listarEnProfundidad(){
         HashSet visitados= new HashSet ();
         NodoVert u= this.inicio;
         while (u!=null){
+            //si el visitados no contiene al nodo entonces llama a profundidad
             if(!visitados.contains(u)){
                 profundidadDesde(u,visitados);
             }
@@ -180,6 +185,7 @@ public class Grafo {
         if (n!=null){
             visitados.add(n.getElem());
             NodoAdy v=n.getPrimerAdy();
+            //si v es distinto de null y visitados no lo contiene entonces llama recursivamente
             while (v!=null){
                 if(!visitados.contains(v.getVertice().getElem())){
                     profundidadDesde(v.getVertice(), visitados);
@@ -193,10 +199,10 @@ public class Grafo {
         NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMax= new Lista();
         Lista visitados= new Lista();
-        return  profundidadCaminoMasLargo(n, visitados, destino, 0, caminoMax);
+        return  caminoMasLargoAux(n, visitados, destino, 0, caminoMax);
         
     }
-     private Lista profundidadCaminoMasLargo(NodoVert n, Lista visitados, Object destino, int longitudMayor, Lista caminoMax){
+     private Lista caminoMasLargoAux(NodoVert n, Lista visitados, Object destino, int longitudMayor, Lista caminoMax){
          //intentar mejorar los llamados a longitud
         int longitudActual;
         if (n!=null){
@@ -210,9 +216,11 @@ public class Grafo {
             else{
                 NodoAdy v=n.getPrimerAdy();
                 while (v!=null){
+                    //si el nodo no se encuentra en visitados llama recursivamente 
                     if(visitados.localizar(v.getVertice().getElem())<0){
-                        caminoMax=profundidadCaminoMasLargo(v.getVertice(), visitados,destino,longitudMayor,caminoMax);
+                        caminoMax=caminoMasLargoAux(v.getVertice(), visitados,destino,longitudMayor,caminoMax);
                         longitudMayor=caminoMax.longitud();
+                        //restablecemos la lista a lo que era antes de el llamado recursivo 
                         visitados.eliminar(visitados.longitud());
                     }
                     v=v.getSigAdyacente();
@@ -226,15 +234,18 @@ public class Grafo {
         NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMin= new Lista();
         Lista visitados= new Lista();
-        return  profundidadCaminoMasCorto(n, visitados, destino, 0, caminoMin);
+        return  caminoMasCortoAux(n, visitados, destino, 0, caminoMin);
         
     }
-     private Lista profundidadCaminoMasCorto(NodoVert n, Lista visitados, Object destino, int longitudMin, Lista caminoMin){
+     private Lista caminoMasCortoAux(NodoVert n, Lista visitados, Object destino, int longitudMin, Lista caminoMin){
         int longitudActual;
         if (n!=null){
             longitudActual=visitados.longitud();
             visitados.insertar(n.getElem(),longitudActual+1);
+            //si llegamos al nodo destino entonces se ha encontrado un camino
             if(n.getElem().equals(destino)){
+                //si todavia no habia ningun camino almacenado en caminoMin o si la longitud del camino actual es menor a la de el almacenado
+                //almacenamos los nodos visitados hasta ahora
                 if (longitudMin==0 || (longitudActual<longitudMin)){
                     caminoMin=visitados.clone();  
                 }
@@ -243,8 +254,9 @@ public class Grafo {
                 NodoAdy v=n.getPrimerAdy();
                 while (v!=null){
                     if(visitados.localizar(v.getVertice().getElem())<0){
-                        caminoMin=profundidadCaminoMasCorto(v.getVertice(), visitados,destino,longitudMin,caminoMin);
+                        caminoMin=caminoMasCortoAux(v.getVertice(), visitados,destino,longitudMin,caminoMin);
                         longitudMin=caminoMin.longitud();
+                        //se reestablece la lista a lo que era antes de llamar recursivamente 
                         visitados.eliminar(visitados.longitud());
                     }
                     v=v.getSigAdyacente();
@@ -258,6 +270,7 @@ public class Grafo {
         Lista visitados= new Lista ();
         NodoVert u= this.inicio;
         while (u!=null){
+            //si el nodo no fue visitado se llama en ancchura
             if(visitados.localizar(u.getElem())<0){
                 anchuraDesde(u,visitados);
             }
@@ -273,16 +286,17 @@ public class Grafo {
             NodoVert u=(NodoVert) q.obtenerFrente();
             q.sacar();
             NodoAdy v=u.getPrimerAdy();
+            //mientras u tenga nodos adyacentes
             while (v!=null){
+                //si no fueron visitados 
                 if (visitados.localizar(v.getVertice().getElem())<0){
+                    //se insertan en la lista y en la cola
                     visitados.insertar(v.getVertice().getElem(), visitados.longitud()+1);
                     q.poner(v.getVertice());
                 }
                 v=v.getSigAdyacente();
             }
-        
-           
-     }
+        }
      }
     @Override
     public String toString (){
@@ -291,11 +305,13 @@ public class Grafo {
         while (aux!=null){
            cadena+= "Vertice-> "+aux.getElem() +",";
            NodoAdy ad=aux.getPrimerAdy();
+           //mientras hayan adyacentes
            while (ad!=null){
                cadena+= " adyacente= "+ad.getVertice().getElem() +" etiqueta= "+ad.getEtiqueta()+ ",";
                ad=ad.getSigAdyacente();
            }
            cadena+="\n";
+           //avanza en la lista de vertices
            aux=aux.getSigVertice();
         }
         return cadena;
@@ -331,18 +347,19 @@ public class Grafo {
                 c=c.getSigVertice();
             }
             
-            
         }
      
         return clone;
     }
     private void copiaNodosAdy (NodoVert n, NodoVert c, NodoVert inicioClone){
+        //este metodo clona los nodos adyacentes del nodo c recibido por parametro
         NodoAdy aux=n.getPrimerAdy();
-        //copia de los ndos adyacentes
         if (aux!=null){
+            //copia el primer nodo adyacente
             c.setPrimerAdy(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
             NodoAdy auxC=c.getPrimerAdy();
             aux=aux.getSigAdyacente();
+            //si tiene mas adyacentes los copia
             while (aux!=null){
                 auxC.setSigAdyacente(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
                 aux=aux.getSigAdyacente();
@@ -351,88 +368,89 @@ public class Grafo {
         }
     }
 
-    public String mostrarContiguas(Object h){
+    public Lista buscarAdyacentes(Object h){
+        //este metodo almacena en una lista todos los nodos adyacentes y su respectiva etiqueta
+        //agregar arreglo de vertice y 
         NodoVert u= ubicarVertice(h,this.inicio);
-        String cad="";
+        Lista adyacentes= new Lista ();
+        int pos=1;
         if (u!=null){
             NodoAdy ad= u.getPrimerAdy();
             while (ad!=null){
-                cad+= ad.getVertice().getElem()+" puntaje necesario: "+ad.getEtiqueta() +"\n";
+                adyacentes.insertar(ad.getVertice().getElem(),pos);
+                pos++;
+                adyacentes.insertar(ad.getEtiqueta(),pos);
+                pos++;
                 ad=ad.getSigAdyacente();
             }
         }
-        return cad;
+        return adyacentes;
     }
-    public boolean esPosibleLlegar (Object  h, Object h2, int puntaje){
+    public boolean esPosibleLlegar (Object  h, Object h2, int peso){
+        //este metodo averigua si es posible llegar de h a h2 sin superar el puntaje recibido por parametro
         NodoVert o=ubicarVertice(h,this.inicio);
-        HashSet visitados= new HashSet ();
-        return esPosibleLlegar(o, h2,visitados,puntaje,0);
+        Lista visitados= new Lista ();
+        //llamada a metodo auxiliar
+        return esPosibleLlegar(o, h2,visitados,peso,0);
     }
-    
-    
-
-    private boolean esPosibleLlegar(NodoVert n, Object destino,HashSet visitados,int puntaje, int puntajeTot){
+    private boolean esPosibleLlegar(NodoVert n, Object destino,Lista visitados,int peso, int pesoTot){
         boolean encontrado=false;
         if (n!=null){
-             //añade en visitados el nodo actual
-            visitados.add(n.getElem());
+            visitados.insertar(n.getElem(),1);
             if(n.getElem().equals(destino)){
                 encontrado=true;
             }
             else{
                 NodoAdy ad=n.getPrimerAdy();
-                //sino llama recursivamente con cada adyacente hasta encontrarlo o hasta que se termine la lista de los mismos
-                int puntajeAnt=puntajeTot;
+                //si todavia no se encontro el camino y existen mas adyacentes
                 while (ad!=null && !encontrado){
-                    if(!visitados.contains(ad.getVertice().getElem()) ){
-                            puntajeTot+=ad.getEtiqueta();
-                            //si el puntaje acumulado no supera el puntaje que se paso parametro llamamos
-                            if (puntajeTot<=puntaje){
-                                encontrado= esPosibleLlegar(ad.getVertice(),destino, visitados,puntaje,puntajeTot);
-                            }
-                    }   
-                    puntajeTot=puntajeAnt;
+                    //si no visitamos al nodo todavia
+                    if(visitados.localizar(ad.getVertice().getElem())<0 ){
+                        //si el puntaje acumulado no supera el puntaje que se paso parametro llamamos
+                        if (pesoTot+ad.getEtiqueta()<=peso){
+                            encontrado= esPosibleLlegar(ad.getVertice(),destino, visitados,peso,pesoTot+ad.getEtiqueta());
+                            visitados.eliminar(1);
+                        }
+                    }
                     ad=ad.getSigAdyacente();
                 }
             }  
         }
          return encontrado;
     }
-    public Lista sinPasarPor (Object h, Object h2, Object h3, int puntaje){
-        //ubica el vertice origen
+    public Cola sinPasarPor (Object h, Object h2, Object h3, int peso){
+        //este metodo devuelve todos los caminos entre h y h2 sin pasar por h3 y sin superar el peso recibido por parametro
+        //ubicamos el nodo que contiene a h
         NodoVert o=ubicarVertice(h,this.inicio);
+        //creacion de listas auxiliares
         Lista visitados= new Lista ();
         Lista camA=new Lista();
-        Lista caminos=new Lista();
-        sinPasarPor(o, h2,h3,visitados,puntaje,0,camA,caminos);
+        Cola caminos=new Cola();
+        sinPasarPor(o, h2,h3,visitados,peso,0,camA,caminos);
         return caminos;
     }
     
-    private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int puntaje, int puntajeTot,Lista camA,Lista caminos){
+    private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int peso, int pesoTot,Lista camA,Cola caminos){
         if (n!=null){
             visitados.insertar(n.getElem(),visitados.longitud()+1);
-            //inserta en la lista de camino actual
             camA.insertar(n.getElem(), camA.longitud()+1);
             //si se encontro un camino se inserta en la lista de caminos
             if(n.getElem().equals(destino)){
-               caminos.insertar(camA, caminos.longitud()+1);
+               caminos.poner(camA);
             }
             else{
                 NodoAdy ad=n.getPrimerAdy();
                 //se almacena la lista antes de llamar recursivamente con cada nodo 
                 Lista cadA=camA.clone();
-                //se almacena el puntaje antes de llamar recursivamente 
-                int puntajeAnt=puntajeTot;
                 while (ad!=null){
+                    //si no visitamos al nodo todavia y si no es igual al h3 
                     if(visitados.localizar(ad.getVertice().getElem())<0 && !ad.getVertice().getElem().equals(h3)){
-                            puntajeTot+=ad.getEtiqueta();
-                            if (puntajeTot<=puntaje){
-                                 sinPasarPor(ad.getVertice(),destino,h3, visitados,puntaje,puntajeTot,cadA,caminos);
+                            //si para pasar al nodo adyacente no se supera el puntaje maximo llamamos recursivamente
+                            if (pesoTot+ad.getEtiqueta()<=peso){
+                                 sinPasarPor(ad.getVertice(),destino,h3, visitados,peso,pesoTot+ad.getEtiqueta(),cadA,caminos);
                                  visitados.eliminar(visitados.longitud());
                             }
                     }
-                    //restablecemos el puntaje al acumulado hasta llegar al nodo n
-                    puntajeTot=puntajeAnt;
                     ad=ad.getSigAdyacente();
                 }
             }
@@ -441,7 +459,7 @@ public class Grafo {
      
     }
 
-    public boolean puedePasar(Object hA,Object hD, int puntajeAc){
+    public boolean puedePasar(Object hA,Object hD, int pesoAct){
         NodoVert o=ubicarVertice(hA,this.inicio);
         boolean exito=false, cortar=false;
         if (o!=null){
@@ -449,8 +467,8 @@ public class Grafo {
             while (!exito && !cortar && ad!=null){
                 //si encuentra el vertice 
                 if (ad.getVertice().getElem().equals(hD)){
-                    //y el puntaje alcanza hay exito
-                    if (ad.getEtiqueta()>=puntajeAc){
+                    //y si el peso es suficiente 
+                    if (ad.getEtiqueta()<=pesoAct){
                         exito=true;
                     }
                     //sino deja de recorrer
@@ -464,14 +482,14 @@ public class Grafo {
         return exito;
         
     }
-    public boolean cambiarEtiqueta(Object origen, Object destino, int nuevaEtiqueta){
+    public boolean cambiarPeso(Object origen, Object destino, int nuevoPeso){
     boolean encontrado=false;
     NodoVert o=ubicarVertice(origen,this.inicio);
     if (o!=null){
         NodoAdy ad=o.getPrimerAdy();
         while (!encontrado && ad!=null){
             if (ad.getVertice().getElem().equals(destino)){
-                ad.setEtiqueta(nuevaEtiqueta);
+                ad.setEtiqueta(nuevoPeso);
                 encontrado=true;
             }
         }
