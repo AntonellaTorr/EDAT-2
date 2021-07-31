@@ -166,7 +166,7 @@ public class Juego {
                     consultasSobreEquipos(plano, infoE, desafiosR, infoD, infoH, puertasCompletadas);
                     break;
                 case 6:
-                    mostrarSistema(plano, infoH, infoD, infoE, desafiosR);
+                    mostrarSistema(plano, infoH, infoD, infoE, desafiosR,puertasCompletadas);
                     break;
                 default:
                     System.out.println("El numero ingresado es incorrecto por favor intentelo de nuevo");
@@ -188,13 +188,14 @@ public class Juego {
         return n;
     }
 
-    public static void mostrarSistema(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR) {
+    public static void mostrarSistema(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR,MapeoAMuchos puertasSuperadas) {
         System.out.println("Ingrese que desea ver");
         System.out.println("P-Plano de la casa");
         System.out.println("H-Informacion de las habitaciones");
         System.out.println("D-Informacion de los desafios");
         System.out.println("E-Informacion de los equipos");
         System.out.println("R-Los desafios resueltos por cada equipo");
+        System.out.println("C-Las puertas por las que paso cada equipo");
         char res= TecladoIn.readLineNonwhiteChar();
         switch (res){
             case 'P':
@@ -211,6 +212,9 @@ public class Juego {
                 break;
             case 'R':
                 System.out.println(desafiosR.toString());
+                break;
+            case 'C':
+                System.out.println(puertasSuperadas.toString());
                 break;
             default:
                  System.out.println("La letra ingresada es incorrecta por favor intentelo de nuevo");
@@ -590,7 +594,6 @@ public class Juego {
         boolean exito = false;
         if (d != null) {
             if (desafiosR.asociar(e, d)) {
-                e.setPuntajeTotal(e.getPuntajeActual() + d.getPuntajeAOtorgar());
                 e.setPuntajeActual(d.getPuntajeAOtorgar());
                 exito = true;
                 escribirLog("El equipo con nombre " + e.getNombre() + "resolvio el desafio con puntaje " + d.getPuntajeAOtorgar() + "\n");
@@ -858,10 +861,10 @@ public class Juego {
                 consultasReducidasEquipo(e);
             } else {
                 System.out.println("Seleccione que desea hacer");
-                System.out.println("1-Mostrar la informacion de un equipo");
+                System.out.println("1-Mostrar la informacion del equipo");
                 System.out.println("2-Jugar un desafio");
-                System.out.println("3-Dado un equipo y una habitacion, averiguar si puede pasar a la habitacion, si es posible avanza");
-                System.out.println("4-Dado un equipo averiguar si puede salir");
+                System.out.println("3-Dado el equipo y una habitacion, averiguar si puede pasar a la habitacion, si es posible avanza");
+                System.out.println("4-Dado el equipo averiguar si puede salir");
 
                 int n = TecladoIn.readLineInt();
                 switch (n) {
@@ -885,7 +888,7 @@ public class Juego {
                             if (sePuedePasar(puertasCompletadas, e, h2, plano, infoH)) {
                                 System.out.println("El equipo puede pasar a la habitacion ingresada");
                             } else {
-                                System.out.println("El equipo NO puede psar a la habitacion ingresada");
+                                System.out.println("El equipo NO puede pasar a la habitacion ingresada");
                             }
                         } else {
                             System.out.println("Lo sentimos la habitacion ingresada no existe,por favor intentelo de nuevo");
@@ -919,7 +922,7 @@ public class Juego {
     public static void consultasReducidasEquipo(Equipo e) {
         System.out.println("Dado que el equipo no se encuentra en una habitacion de la casa, podra solo pedir que se muestre la info del mismo. \n"
                 + "Si desea realiziar otro tipo de consultas por favor asegurese que el equipo se encuentre en una habitacion valida. ");
-        System.out.println("Ingrese SI-Si desea mostrar la informacion,NO-Si desea volver al menu princripal");
+        System.out.println("Ingrese SI-Si desea mostrar la informacion,NO-Si desea volver al menu principal");
         String res = TecladoIn.readLine();
         if (res.equalsIgnoreCase("SI")) {
             System.out.println(e.toString());
@@ -931,7 +934,7 @@ public class Juego {
         //si ese desafio todavia no habia sido resuelto
         if (exito) {
             e.setPuntajeActual(e.getPuntajeActual() + d.getPuntajeAOtorgar());
-            escribirLog("El equipo con nombre " + e.getNombre() + "jugo el desafio con puntaje " + d.getPuntajeAOtorgar());
+            escribirLog("El equipo con nombre " + e.getNombre() + " jugo el desafio con puntaje " + d.getPuntajeAOtorgar());
         }
         return exito;
     }
@@ -940,6 +943,7 @@ public class Juego {
         int nroH = e.getHabitacionActual();
         Habitacion h = (Habitacion) infoH.obtenerDato(nroH);
         Puerta p = new Puerta(nroH, h2.getCodigo());
+        Puerta pVuelta = new Puerta(h2.getCodigo(),nroH);
         boolean exito = false;
 
         Lista puertas = puertasCompletadas.obtenerValores(e);
@@ -950,6 +954,7 @@ public class Juego {
                 e.setPuntajeTotal(e.getPuntajeTotal() + e.getPuntajeActual());
                 e.setPuntajeActual(0);
                 puertasCompletadas.asociar(e, p);
+                puertasCompletadas.asociar(e, pVuelta);
                 exito = true;
             }
         } else {

@@ -10,6 +10,8 @@ package Dominio;
  * @author Anto
  */
 public class Puerta {
+
+    
     private int codHabDestino;
     private int codHabOrigen;
 
@@ -61,6 +63,10 @@ public class Puerta {
             return false;
         }
         return true;
+    }
+    @Override
+    public String toString() {
+        return "Puerta{" + "codHabDestino=" + codHabDestino + ", codHabOrigen=" + codHabOrigen + '}';
     }
     
 }
