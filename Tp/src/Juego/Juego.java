@@ -178,7 +178,7 @@ public class Juego {
     public static int mostrarMenu() {
         System.out.println("Ingrese que desea hacer");
         System.out.println("1-Carga Inicial del Sistema");
-        System.out.println("2-Modificaciones de Habitaciones,desafios y equipos");
+        System.out.println("2-Modificaciones de Habitaciones,desafios,equipos y puertas");
         System.out.println("3-Consultas sobre habitaciones");
         System.out.println("4-Consultas sobre desafios");
         System.out.println("5-Consultas sobre equipos");
@@ -189,21 +189,37 @@ public class Juego {
     }
 
     public static void mostrarSistema(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR) {
-        System.out.println("Plano de la casa");
-        System.out.println(plano.toString());
-        System.out.println("Informacion de las habitaciones");
-        System.out.println(infoH.toString());
-        System.out.println("Informacion de los desafios");
-        System.out.println(infoD.toString());
-        System.out.println("Informacion de los equipos");
-        System.out.println(infoE.toString());
-        System.out.println("Informacion de los desafios realizados por equipo");
-        System.out.println(desafiosR.toString());
+        System.out.println("Ingrese que desea ver");
+        System.out.println("P-Plano de la casa");
+        System.out.println("H-Informacion de las habitaciones");
+        System.out.println("D-Informacion de los desafios");
+        System.out.println("E-Informacion de los equipos");
+        System.out.println("R-Los desafios resueltos por cada equipo");
+        char res= TecladoIn.readLineNonwhiteChar();
+        switch (res){
+            case 'P':
+                 System.out.println(plano.toString());
+            break;
+            case 'H':
+                System.out.println(infoH.toString());
+                break;
+            case 'D':
+                System.out.println(infoD.toString());
+                break;
+            case 'E':
+                 System.out.println(infoE.toString());
+                break;
+            case 'R':
+                System.out.println(desafiosR.toString());
+                break;
+            default:
+                 System.out.println("La letra ingresada es incorrecta por favor intentelo de nuevo");
+        }
+        
 
     }
 
     public static void iniciarPrograma(String direccion, Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE) {
-        //creacion de las estructuras que almacenaran la informacion 
         String texto = leerTxt("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
         leerArchivo(texto, plano, infoH, infoD, infoE);
 
@@ -495,7 +511,9 @@ public class Juego {
                     modificarPuntajeTotal(e);
                     break;
                 case 'H':
-                    modificarHabitacionActual(e, infoH);
+                    if (!modificarHabitacionActual(e, infoH)){
+                        System.out.println ("Lo sentimos la habitacion ingresada es invalida por favor intente de nuevo");
+                    }
                     break;
                 case 'A':
                     modificarPuntajeHabitacionActual(e);
@@ -539,19 +557,24 @@ public class Juego {
         escribirLog("Al equipo con nombre " + e.getNombre() + " se le modifico el puntaje total" + "\n");
     }
 
-    public static void modificarHabitacionActual(Equipo e, TablaDeBusqueda infoH) {
+    public static boolean modificarHabitacionActual(Equipo e, TablaDeBusqueda infoH) {
         System.out.println("Ingrese el nro de habitacion");
         int nroH = TecladoIn.readLineInt();
         Habitacion habActual = (Habitacion) infoH.obtenerDato(e.getHabitacionActual());
         Habitacion nuevaHabActual = (Habitacion) infoH.obtenerDato(nroH);
         //si existe la habitacion ingresada
-        if (nuevaHabActual != null) {
+        
+        if (nuevaHabActual != null){
+            if (e.getHabitacionActual()!=0){
+                //si el equipo se encuentra en una habitacion valida entonces le seteamos la cantidad de equipos que la estan ocupadno
+                habActual.setCantEquiposOcupandola(habActual.getCantEquiposOcupandola() - 1);
+            }
             //cambiamos al equipo de habitacion
             e.setHabitacionActual(nroH);
-            habActual.setCantEquiposOcupandola(habActual.getCantEquiposOcupandola() - 1);
             nuevaHabActual.setCantEquiposOcupandola(nuevaHabActual.getCantEquiposOcupandola() + 1);
             escribirLog("Al equipo con nombre " + e.getNombre() + " se le modifico la habitacion en la que se encuentra actualmente" + "\n");
         }
+        return nuevaHabActual!=null;
 
     }
 
@@ -599,6 +622,7 @@ public class Juego {
         System.out.println("Ingrese el codigo de la habitacion origen");
         int n = TecladoIn.readLineInt();
         Habitacion habO = (Habitacion) infoH.obtenerDato(n);
+        boolean encontrado=false;
 
         System.out.println("Ingrese el codigo de la habitacion destino");
         int nD = TecladoIn.readLineInt();
@@ -609,10 +633,10 @@ public class Juego {
             int puntaje;
             System.out.println("Ingrese el puntaje exigido para pasar de la habitacion origen a la de destino");
             puntaje = TecladoIn.readLineInt();
-            plano.insertarArco(habO, habD, puntaje);
+            encontrado=plano.insertarArco(habO, habD, puntaje);
             escribirLog("Se agrego nueva puerta entre la habitacion con codigo " + habO.getCodigo() + " y la habitacion con codigo " + habD.getCodigo() + "puntaje necesario " + puntaje + "\n");
         }
-        return !plano.existeArco(habO, habD);
+        return encontrado;
 
     }
 
@@ -623,27 +647,28 @@ public class Juego {
         System.out.println("Ingrese el codigo de la habitacion destino");
         int nD = TecladoIn.readLineInt();
         Habitacion habD = (Habitacion) infoH.obtenerDato(nD);
-
-        if (habO != null && habD != null && plano.existeArco(n, nD)) {
+        boolean exito=false;
+        if (habO != null && habD != null && plano.existeArco(habO, habD)) {
             System.out.println("Ingrese E- si desea eliminar la puerta");
             System.out.println("Ingrese P- si desea modificar el puntaje para pasar de una habitacion a la otra");
             char m = TecladoIn.readLineNonwhiteChar();
             switch (m) {
                 case 'E':
-                    plano.eliminarArco(n, nD);
+                    exito=plano.eliminarArco(habO, habD);
                     escribirLog("Se elimino la puerta entre la habitacion con codigo " + n + "y la habitacion con codigo " + nD + "\n");
                     break;
                 case 'P':
                     System.out.println("Ingrese el nuevo puntaje");
                     int nro = TecladoIn.readLineInt();
-                    plano.cambiarPeso(n, nD, nro);
+                    exito=plano.cambiarPeso(habO, habD, nro);
+                    plano.cambiarPeso(habD, habO, nro);
                     escribirLog("Se modifo el puntaje en la puerta entre la habitacion con codigo " + n + " y la habitacion con codigo " + nD + "\n");
                     break;
                 default:
                     System.out.println("La letra ingresada es incorrecta");
             }
         }
-        return plano.existeArco(n, nD);
+        return exito;
     }
 
     //Consultas sobre habitaciones
@@ -706,19 +731,23 @@ public class Juego {
     }
 
     public static void mostrarCaminos(Cola caminos) {
-        while (!caminos.esVacia()) {
+        if(caminos.esVacia()){
+             System.out.println("No existen caminos bajo las condiciones indicadas");
+        }
+        else{
+            while (!caminos.esVacia()) {
             Lista caminoActual = (Lista) caminos.obtenerFrente();
             int i = 1, maxLongitud = caminoActual.longitud();
             while (i <= maxLongitud) {
                 Habitacion h = (Habitacion) caminoActual.recuperar(i);
-                System.out.print(h.toStringModificado());
+                System.out.print(" H" + "codigo=" + h.getCodigo());
                 i++;
             }
             System.out.println("\n");
 
             caminos.sacar();
+            }
         }
-        System.out.print("No existen caminos bajo las condiciones indicadas");
     }
 
     public static Habitacion obtenerHabitacion(TablaDeBusqueda infoH) {
@@ -737,7 +766,7 @@ public class Juego {
                 Habitacion a = (Habitacion) habitacionesContiguas.recuperar(i);
                 System.out.print(a.toString());
                 i++;
-                System.out.println("Puntaje Necesario " + habitacionesContiguas.recuperar(i));
+                System.out.println(" Puntaje Necesario " + habitacionesContiguas.recuperar(i));
                 i++;
             }
         }

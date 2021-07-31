@@ -96,9 +96,7 @@ public class Habitacion {
     }
     @Override
     public String toString() {
-        return "Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida ;
+        return "Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida +" cantEquiposOcupandola=" + cantEquiposOcupandola;
     }
-    public String toStringModificado() {
-        return "Habitacion " + "codigo=" + codigo +"-" ;
-    }
+  
 }

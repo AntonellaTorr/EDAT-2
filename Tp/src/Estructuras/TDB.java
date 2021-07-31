@@ -11,7 +11,7 @@ package Estructuras;
  */
 public class TDB {
     
-    private static final int TAMANIO = 100;
+    private static final int TAMANIO = 70;
     private NodoHashDic[] hash;
     private int cant;
 
@@ -43,7 +43,7 @@ public class TDB {
         boolean encontrado = false;
         //si el elemento se encuentra en la primer posicion
         if (aux != null && aux.getClave().equals(clave)) {
-            aux = aux.getEnlace();
+            this.hash[pos] = this.hash[pos].getEnlace();
             this.cant--;
         } else {
             while (!encontrado && aux != null) {
