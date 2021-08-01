@@ -11,7 +11,7 @@ package Estructuras;
  */
 public class TDB {
     
-    private static final int TAMANIO = 70;
+    private static final int TAMANIO = 50;
     private NodoHashDic[] hash;
     private int cant;
 
@@ -21,9 +21,14 @@ public class TDB {
     }
 
     public boolean insertar(Object clave, Object dato) {
+        /*este metodo inserta el elemento con la clave y los datos recibidos
+        devuelve true en el caso en el que la clave no estuviera previamente en la table
+        false en el caso contrario
+        */
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         boolean encontrado = false;
+        //busqueda de la clave en la tabla
         while (!encontrado && aux != null) {
             encontrado = aux.getClave().equals(clave);
             aux = aux.getEnlace();
@@ -37,6 +42,10 @@ public class TDB {
     }
 
     public boolean eliminar(Object clave) {
+        /*este metodo elimina el elemento con la clave y los datos recibidos
+        devuelve true en el caso en el que la clave exista
+        false en el caso contrario
+        */
         //busca la posicion del elemento 
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
@@ -65,6 +74,9 @@ public class TDB {
     }
 
     public boolean existeClave(Object clave) {
+        /*este metodo devuelve true en el caso de que la clave ingresada por parametro exista
+        false en el caso contrario
+        */
         //busca la posicion en la que se podria encontrar el elemento
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
@@ -78,11 +90,14 @@ public class TDB {
     }
 
     public Object obtenerDato(Object clave) {
+        /*este metodo devuelve el objeto asociada a la clave ingresada por parametro
+        devuelve null en el caso en que la clave no exista 
+        */
         //busca la posicion en la que se podria encontrar el elemento
         int pos = Math.abs(clave.hashCode()%TAMANIO);
         NodoHashDic aux = this.hash[pos];
         Object dato = null;
-
+        //busca la clave
         boolean encontrado = false;
         while (!encontrado && aux != null) {
             encontrado = aux.getClave().equals(clave);
@@ -99,6 +114,8 @@ public class TDB {
     }
 
     public Lista listarClaves() {
+        /* este metodo devuelve una lista con todas las claves de la tabla
+        devuelve una lista vacia en el caso en que la tabla este vacia*/
         int pos = 0, pos2 = 1;
         Lista lista = new Lista();
         //recorre la tabla hash
@@ -117,6 +134,8 @@ public class TDB {
     }
 
     public Lista listarDatos() {
+         /* este metodo devuelve una lista con todos los datos de la tabla
+        devuelve una lista vacia en el caso en que la tabla este vacia*/
         int pos = 0, pos2 = 1;
         Lista lista = new Lista();
         //recorre la tabla hash0
@@ -134,6 +153,7 @@ public class TDB {
 
     }
     public String toString (){
+         /* este metodo devuelve una cadena con las claves y datos de tabla*/
         int pos = 0;
         String cadena="";
         //recorre la tabla hash0
@@ -150,6 +170,7 @@ public class TDB {
     }
 
     public TDB clone() {
+        /*este metodo devuelve una tabla, copia de la original*/
         TDB clone = new TDB();
         int pos = 0;
         while (pos < this.TAMANIO) {

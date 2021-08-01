@@ -17,6 +17,7 @@ import java.io.*;
 public class Juego {
 
     public static String leerTxt(String direccion) {
+        /*este metodo lee el txt que se encuentra en la direccion recibida por parametro y almacena el texto en la variable texto*/
         String texto = "";
         try {
             BufferedReader bf = new BufferedReader(new FileReader(direccion));
@@ -33,12 +34,14 @@ public class Juego {
     }
 
     public static void leerArchivo(String texto, Grafo g, TablaDeBusqueda hab, TablaDeBusqueda desafios, TDB equipos) {
+        /*este metodo lee la cadena ingresada por parametro y crea los objetos segun lo indiquen las letras*/
         StringTokenizer st = new StringTokenizer(texto, "|");
         String cad = "", cod, codD;
         boolean exito;
         while (st.hasMoreTokens()) {
             cad = st.nextToken();
             switch (cad) {
+                //luego de obtener el resultado de que letra se va a trabajar se llama al metodo propio para crear el objeto de esa clase
                 case "H":
                     cod = st.nextToken();
                     exito = agregarHabitacion(cod, st.nextToken(), st.nextToken(), st.nextToken(), st.nextToken(), hab, g);
@@ -75,6 +78,7 @@ public class Juego {
     }
 
     public static void escribirLog(String texto) {
+        /*este metodo escribi las operaciones realizas durante el juego en un archivo de texto*/
         try {
             PrintWriter writer = new PrintWriter(new FileWriter("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\ABM.txt", true));
             writer.println(texto);
@@ -85,6 +89,7 @@ public class Juego {
     }
 
     public static boolean agregarPuerta(String codOrigen, String codDestino, String puntaje, TablaDeBusqueda h, Grafo g) {
+        /*este metodo crea una puerta*/
         int codO = Integer.parseInt(codOrigen);
         int codD = Integer.parseInt(codDestino);
         int pun = Integer.parseInt(puntaje);
@@ -95,6 +100,7 @@ public class Juego {
 
     public static boolean agregarHabitacion(String codigo, String nombre, String planta, String mCuadrados, String tieneSalida,
             TablaDeBusqueda h, Grafo g) {
+        /*este metodo agrega una habitacion*/
         int codigoH = Integer.parseInt(codigo);
         int plantaH = Integer.parseInt(planta);
         double cantM = Double.parseDouble(mCuadrados);
@@ -109,6 +115,7 @@ public class Juego {
     }
 
     public static boolean agregarDesafio(String puntajeAOtorgar, String nombre, String tipo, TablaDeBusqueda d) {
+        /*este metodo agrega un desafio a la tabla de busqueda*/
         int puntajeO = Integer.parseInt(puntajeAOtorgar);
         Desafio nuevoD = new Desafio(puntajeO, nombre, tipo);
         return d.insertar(puntajeO, nuevoD);
@@ -116,6 +123,7 @@ public class Juego {
     }
 
     public static boolean agregarEquipo(String nombre, String puntajeExigido, String habitacionActual, TDB e) {
+        /*este metodo agrega un desafio*/
         int puntE = Integer.parseInt(puntajeExigido);
         int habAct = Integer.parseInt(habitacionActual);
         Equipo nuevoE = new Equipo(nombre, puntE, habAct);
@@ -140,6 +148,8 @@ public class Juego {
     }
      */
     public static void administrarSistema() {
+        /*este metodo administra el sistema de juego*/
+        //creacion de las estructuras a utilizar durante el juego
         Grafo plano = new Grafo();
         TablaDeBusqueda infoH = new TablaDeBusqueda();
         TablaDeBusqueda infoD = new TablaDeBusqueda();
@@ -147,13 +157,16 @@ public class Juego {
         MapeoAMuchos desafiosR = new MapeoAMuchos();
         MapeoAMuchos puertasCompletadas = new MapeoAMuchos();
         String direccion = ("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
+        //se muestra el menu hasta que el usuario desee finalizar
         int n = mostrarMenu();
         while (n >= 1 && n <= 6) {
             switch (n) {
                 case 1:
+                    //se cargan los datos almacenados en el txt
                     iniciarPrograma(direccion, plano, infoH, infoD, infoE);
                     break;
                 case 2:
+                    //altas bajas y modificaciones
                     ABM(plano, infoH, infoD, infoE, desafiosR);
                     break;
                 case 3:
@@ -166,6 +179,7 @@ public class Juego {
                     consultasSobreEquipos(plano, infoE, desafiosR, infoD, infoH, puertasCompletadas);
                     break;
                 case 6:
+                    //toString de todas las estructuras
                     mostrarSistema(plano, infoH, infoD, infoE, desafiosR,puertasCompletadas);
                     break;
                 default:
@@ -176,6 +190,7 @@ public class Juego {
     }
 
     public static int mostrarMenu() {
+        /*este metodo le muestra el menu al usuario y guarda la opcion ingresada, la retorna al metodo administrarSistema*/
         System.out.println("Ingrese que desea hacer");
         System.out.println("1-Carga Inicial del Sistema");
         System.out.println("2-Modificaciones de Habitaciones,desafios,equipos y puertas");
@@ -189,6 +204,7 @@ public class Juego {
     }
 
     public static void mostrarSistema(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR,MapeoAMuchos puertasSuperadas) {
+        /*este metodo muestra un menu para elegir que estructura desea ver el usuario, luego la muestra*/
         System.out.println("Ingrese que desea ver");
         System.out.println("P-Plano de la casa");
         System.out.println("H-Informacion de las habitaciones");
@@ -224,12 +240,14 @@ public class Juego {
     }
 
     public static void iniciarPrograma(String direccion, Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE) {
+        /*este metodo inicia el proceso de lectura del archivo con los datos de las habitaciones, las puertas, los equipos y los desafios*/
         String texto = leerTxt("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
         leerArchivo(texto, plano, infoH, infoD, infoE);
 
     }
 
     public static void ABM(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR) {
+        /*este metodo muestra un menu para elegir con que operar para las bajas altas y modificaciones*/
         System.out.println("Ingrese H- si desea operar con las habitaciones");
         System.out.println("Ingrese D- si desea operar con los desafios");
         System.out.println("Ingrese E- si desea operar con los equipos");
@@ -255,6 +273,7 @@ public class Juego {
     }
 
     public static void ABMHabitaciones(Grafo plano, TablaDeBusqueda infoH) {
+        /*este metodo le muestra al usuario la opcion de crear una nueva habitacion o de trabajar con alguna ya existente*/
         String res;
         System.out.println("Desea crear una nueva habitacion?");
         res = TecladoIn.readLine();
@@ -273,6 +292,7 @@ public class Juego {
     }
 
     public static boolean crearHabitacion(Grafo plano, TablaDeBusqueda infoH) {
+        /*este metodo crea una habitacion pidiendole todos los datos al usuario*/ 
         System.out.println("Ingrese el codigo de la habitacion");
         int n = TecladoIn.readLineInt();
         boolean encontrado = infoH.existeClave(n);
@@ -300,6 +320,9 @@ public class Juego {
     }
 
     public static boolean modifacionesHabitaciones(Grafo plano, TablaDeBusqueda infoH) {
+        /*este metodo le muestra al usuario una menu sobre que desea modificar de la habitacion ingresada
+        luego trabaja segun la opcion seleccionada
+        */
         Habitacion h = obtenerHabitacion(infoH);
         //si la habitacion existe se piden los demas datos
         if (h != null) {
@@ -338,6 +361,7 @@ public class Juego {
     }
 
     public static void eliminarHabitacion(Grafo plano, TablaDeBusqueda infoH, Habitacion h) {
+        /*este metodo elimina una habitacion*/
         boolean exito = infoH.eliminar(h.getCodigo());
         if (exito) {
             plano.eliminarVertice(h);
@@ -346,6 +370,7 @@ public class Juego {
     }
 
     public static void cambiarNombre(Habitacion h) {
+        /*este metodo le pide al usuario el nuevo nombre para la habitacion recibida por parametro*/
         System.out.println("Ingrese el nuevo nombre");
         String res = TecladoIn.readLine();
         h.setNombre(res);
@@ -353,6 +378,7 @@ public class Juego {
     }
 
     public static void cambiarNroPlanta(Habitacion h) {
+          /*este metodo le pide al usuario el nuevo nro de planta para la habitacion recibida por parametro*/
         System.out.println("Ingrese el nuevo nro de planta");
         int nro = TecladoIn.readLineInt();
         h.setPlanta(nro);
@@ -360,13 +386,15 @@ public class Juego {
     }
 
     public static void cambiarCantMCuadrados(Habitacion h) {
+          /*este metodo le pide al usuario la nueva cantMCuadrados para la habitacion recibida por parametro*/
         System.out.println("Ingrese la cantidad de m cuadrados");
         Double mC = TecladoIn.readLineDouble();
         h.setmCuadrados(mC);
         escribirLog("Se modificaron los mCuadradros de la habitacion con codigo " + h.getCodigo() + "\n");
     }
 
-    public static void cambiarTieneSalida(Habitacion h) {
+    public static void cambiarTieneSalida(Habitacion h) {  
+        /*este metodo le pide al usuario el nuevo valor para el atributo tiene salida para la habitacion recibida por parametro*/
         System.out.println("Ingrese el nuevo valor para el atributo tieneSalida");
         boolean tieneS = TecladoIn.readLineBoolean();
         h.setTieneSalida(tieneS);
@@ -374,6 +402,7 @@ public class Juego {
     }
 
     public static void ABMDesafios(TablaDeBusqueda infoD) {
+        /*este metodo le muestra al usuario la opcion de crear un nuevo desafio o de trabajar con alguno ya existente*/
         String res;
         System.out.println("Desea crear un nuevo desafio?");
         res = TecladoIn.readLine();
@@ -392,6 +421,9 @@ public class Juego {
     }
 
     public static boolean modifacionesDesafios(TablaDeBusqueda infoE) {
+        /*este metodo le muestra al usuario una menu sobre que desea modificar del desafio ingresado
+        luego trabaja segun la opcion seleccionada
+        */
         System.out.println("Ingrese el puntaje del desafio que desea modificar");
         int n = TecladoIn.readLineInt();
         Desafio d = (Desafio) infoE.obtenerDato(n);
@@ -426,6 +458,7 @@ public class Juego {
     }
 
     public static boolean crearDesafio(TablaDeBusqueda infoD) {
+        /*se crea un nuevo desafio*/
         System.out.println("Ingrese el puntaje que otorga");
         int puntaje = TecladoIn.readLineInt();
         boolean encontrado = infoD.existeClave(puntaje);
@@ -444,6 +477,7 @@ public class Juego {
     }
 
     public static void ABMEquipos(TDB infoE, TablaDeBusqueda infoD, MapeoAMuchos desafiosR, TablaDeBusqueda infoH) {
+        /*este metodo le muestra al usuario la opcion de crear un nuevo equipo o de trabajar con alguno ya existente*/
         String res;
         System.out.println("Desea crear un nuevo equipo?");
         res = TecladoIn.readLine();
@@ -462,6 +496,7 @@ public class Juego {
     }
 
     public static boolean crearEquipo(TDB infoE, TablaDeBusqueda infoD, TablaDeBusqueda infoH) {
+        /*se crea un nuevo equipo*/
         System.out.println("Ingrese el nombre de el equipo");
         String nombre = TecladoIn.readLine();
         Equipo nuevoEquipo = null;
@@ -492,6 +527,9 @@ public class Juego {
     }
 
     public static boolean modifacionesEquipos(TDB infoE, TablaDeBusqueda infoD, MapeoAMuchos desafiosR, TablaDeBusqueda infoH) {
+        /*este metodo le muestra al usuario una menu sobre que desea modificar del equipo ingresado
+        luego trabaja segun la opcion seleccionada
+        */
         System.out.println("Ingrese el nombre de el equipo  que desea modificar");
         String nombre = TecladoIn.readLine();
         Equipo e = (Equipo) infoE.obtenerDato(nombre);
@@ -539,6 +577,7 @@ public class Juego {
     }
 
     public static void eliminarEquipo(Equipo e, TDB infoE, Habitacion hActual) {
+        /*se elimina un equipo*/
         String nombre = e.getNombre();
         infoE.eliminar(nombre);
         if (e.getHabitacionActual() != 0) {
@@ -548,6 +587,7 @@ public class Juego {
     }
 
     public static void modificarPuntajeExigido(Equipo e) {
+        /*se le modifica el puntaje exigido para salir de la casa al equipo e*/
         System.out.println("Ingrese el nuevo puntaje");
         int cant = TecladoIn.readLineInt();
         e.setPuntajeExigido(cant);
@@ -555,6 +595,7 @@ public class Juego {
     }
 
     public static void modificarPuntajeTotal(Equipo e) {
+        /*se le modifica el puntaje total al equipo e*/
         System.out.println("Ingrese el nuevo puntaje total");
         int puntT = TecladoIn.readLineInt();
         e.setPuntajeTotal(puntT);
@@ -562,6 +603,7 @@ public class Juego {
     }
 
     public static boolean modificarHabitacionActual(Equipo e, TablaDeBusqueda infoH) {
+        /*se le modifica la habitacion actual al equipo e*/
         System.out.println("Ingrese el nro de habitacion");
         int nroH = TecladoIn.readLineInt();
         Habitacion habActual = (Habitacion) infoH.obtenerDato(e.getHabitacionActual());
@@ -583,6 +625,7 @@ public class Juego {
     }
 
     public static void modificarPuntajeHabitacionActual(Equipo e) {
+          /*se le modifica el puntaje actual en la habitacion al equipo e*/
         System.out.println("Ingrese el nuevo puntaje actual en la habitacion");
         int puntA = TecladoIn.readLineInt();
         e.setPuntajeActual(puntA);
@@ -590,10 +633,13 @@ public class Juego {
     }
 
     public static boolean añadirDesafioResuelto(Equipo e, TablaDeBusqueda infoD, MapeoAMuchos desafiosR) {
+        /*al equipo e se le añada un desafo resuelto*/
         Desafio d = obtenerDesafio(infoD);
         boolean exito = false;
         if (d != null) {
+            //si ya no habian jugado ese desafio
             if (desafiosR.asociar(e, d)) {
+                //se asignan los puntos correspondientes al desafio
                 e.setPuntajeActual(d.getPuntajeAOtorgar());
                 exito = true;
                 escribirLog("El equipo con nombre " + e.getNombre() + "resolvio el desafio con puntaje " + d.getPuntajeAOtorgar() + "\n");
@@ -603,6 +649,7 @@ public class Juego {
     }
 
     public static void ABMPuertas(Grafo plano, TablaDeBusqueda infoH) {
+        /*este metodo le muestra al usuario la opcion de crear una nueva puerta o de trabajar con alguna ya existente*/
         String res;
         System.out.println("Desea crear un nueva puerta?");
         res = TecladoIn.readLine();
@@ -622,6 +669,7 @@ public class Juego {
     }
 
     public static boolean crearPuerta(Grafo plano, TablaDeBusqueda infoH) {
+        /*se crea una puerta segun los datos ingresados*/
         System.out.println("Ingrese el codigo de la habitacion origen");
         int n = TecladoIn.readLineInt();
         Habitacion habO = (Habitacion) infoH.obtenerDato(n);
@@ -631,8 +679,8 @@ public class Juego {
         int nD = TecladoIn.readLineInt();
         Habitacion habD = (Habitacion) infoH.obtenerDato(nD);
 
-        //si existen las dos habitaciones y no existe una puerta entre ellas
-        if (habO != null && habD != null && !plano.existeArco(habO, habD)) {
+        //si existen las dos habitaciones 
+        if (habO != null && habD != null) {
             int puntaje;
             System.out.println("Ingrese el puntaje exigido para pasar de la habitacion origen a la de destino");
             puntaje = TecladoIn.readLineInt();
@@ -644,6 +692,9 @@ public class Juego {
     }
 
     public static boolean modifacionesPuertas(Grafo plano, TablaDeBusqueda infoH) {
+         /*este metodo le muestra al usuario una menu sobre que desea modificar de la puerta ingresada
+        luego trabaja segun la opcion seleccionada
+        */
         System.out.println("Ingrese el codigo de la habitacion origen");
         int n = TecladoIn.readLineInt();
         Habitacion habO = (Habitacion) infoH.obtenerDato(n);
@@ -676,6 +727,9 @@ public class Juego {
 
     //Consultas sobre habitaciones
     public static void consultasSobreHabitaciones(TablaDeBusqueda infoH, Grafo plano) {
+        /*este metodo le muestra al usuario un menu para hacer consultas sobre las habitaciones
+        luego trabaja segun la opcion seleccionada
+        */
         System.out.println("Ingrese que desea hacer");
         System.out.println("1-Mostrar habitacion");
         System.out.println("2-Dado una habitacion mostrar las habitaciones contiguas y el puntaje necesario para pasar a ellas");
@@ -718,8 +772,10 @@ public class Juego {
     }
 
     public static void esPosibleLlegar(Grafo plano, Habitacion h, Habitacion h2) {
+        /*este metodo le muestra al usuario si es posible ir desde h a h2 sin superar el puntaje que se ingresa*/
         System.out.println("Ingrese el puntaje");
         int pun = TecladoIn.readLineInt();
+        //llamada al metodo que buscara si es posible llegar bajo las condiciones dades
         if (plano.esPosibleLlegar(h, h2, pun)) {
             System.out.println("Si es posible llegar");
         } else {
@@ -728,24 +784,30 @@ public class Juego {
     }
 
     public static void formasDePasar(Grafo plano, Habitacion h, Habitacion h2, Habitacion h3) {
+        /*este metodo muestra las formas de psar de h a h2 sin pasar por h3 y sin superar el puntaje ingresado
+        para ello llama un metodo auxiliar 
+        */
         System.out.println("Ingrese el puntaje");
         int pun = TecladoIn.readLineInt();
         mostrarCaminos(plano.sinPasarPor(h, h2, h3, pun));
     }
 
     public static void mostrarCaminos(Cola caminos) {
+        /*este metodo muestra todos los caminos almacenados en la cola*/
         if(caminos.esVacia()){
              System.out.println("No existen caminos bajo las condiciones indicadas");
         }
         else{
+            //mientras haya caminos en la cola
             while (!caminos.esVacia()) {
-            Lista caminoActual = (Lista) caminos.obtenerFrente();
-            int i = 1, maxLongitud = caminoActual.longitud();
-            while (i <= maxLongitud) {
-                Habitacion h = (Habitacion) caminoActual.recuperar(i);
-                System.out.print(" H" + "codigo=" + h.getCodigo());
-                i++;
-            }
+                Lista caminoActual = (Lista) caminos.obtenerFrente();
+                int i = 1, maxLongitud = caminoActual.longitud();
+                //se itera sobre un camino mostrando la informacion
+                while (i <= maxLongitud) {
+                    Habitacion h = (Habitacion) caminoActual.recuperar(i);
+                    System.out.print(" H" + "codigo=" + h.getCodigo());
+                    i++;
+                }
             System.out.println("\n");
 
             caminos.sacar();
@@ -754,6 +816,9 @@ public class Juego {
     }
 
     public static Habitacion obtenerHabitacion(TablaDeBusqueda infoH) {
+        /*este metodo le pido al usuario el codigo de una habitacion y luego la busca en la estructura correspondiente
+        si la encuentra la retorna y sino retorna null
+        */
         System.out.println("Ingrese el codigo de habitacion");
         int cod = TecladoIn.readLineInt();
         Habitacion h = (Habitacion) infoH.obtenerDato(cod);
@@ -761,6 +826,7 @@ public class Juego {
     }
 
     public static void mostrarHabitacionesContiguas(Lista habitacionesContiguas) {
+        /*este metodo muestra la lista de habitaciones contiguas recibidas por parametro*/
         int cantH = habitacionesContiguas.longitud(), i = 1;
         if (cantH == 0) {
             System.out.println("La habitacion ingresada no tiene habitaciones contiguas");
@@ -777,6 +843,9 @@ public class Juego {
     }
 
     public static void consultasSobreDesafios(TablaDeBusqueda infoD, MapeoAMuchos desafiosR, TDB infoE) {
+        /*este metodo le muestra al usuario un menu para hacer consultas sobre los desafios
+        luego trabaja segun la opcion seleccionada
+        */
         System.out.println("Ingrese que desea hacer");
         System.out.println("1-Mostrar un desafio");
         System.out.println("2-Dado un equipo mostrar los desafios que resolvio");
@@ -809,6 +878,9 @@ public class Juego {
     }
 
     public static Desafio obtenerDesafio(TablaDeBusqueda infoD) {
+        /*este metodo le pido al usuario el puntaje de un desafio y luego lo busca en la estructura correspondiente
+        si lo encuentra lo retorna y sino retorna null
+        */
         System.out.println("Ingrese el puntaje del desafio");
         int puntaje = TecladoIn.readLineInt();
         Desafio d = (Desafio) infoD.obtenerDato(puntaje);
@@ -816,6 +888,7 @@ public class Juego {
     }
 
     public static void mostrarDesafiosResueltosPorEquipo(Equipo e, MapeoAMuchos desafiosR) {
+        /*este metodo muestra los desafios que resolvio el equipo recibido por parametro*/
         Lista desafiosRes = desafiosR.obtenerValores(e);
         if (desafiosRes.esVacia()) {
             System.out.println("El equipo ingresado todavia no ha completado ningun desafio");
@@ -825,6 +898,7 @@ public class Juego {
     }
 
     public static void mostrarDesafiosTipo(TablaDeBusqueda infoD) {
+        /*este metodo muestra los desafios de un cierto tipo y que estan en el rango [puntMin,puntMax]*/
         System.out.println("Ingrese el tipo");
         String tipo = TecladoIn.readLine();
         System.out.println("Ingrese el puntajeMinimo");
@@ -832,6 +906,7 @@ public class Juego {
         System.out.println("Ingrese el puntajeMaximo");
         int puntMax = TecladoIn.readLineInt();
         String cad = buscarDesafiosTipo(tipo, puntMin, puntMax, infoD);
+        //si no retorna nada el metodo es por que no hay desafios segun lo que se ingreso
         if (cad.equals("")) {
             System.out.println("No existe ningun desafio con los datos ingresados, por favor intentelo de nuevo");
         } else {
@@ -840,6 +915,7 @@ public class Juego {
     }
 
     public static String buscarDesafiosTipo(String tipo, int puntMin, int puntMax, TablaDeBusqueda infoD) {
+         /*este metodo busca los desafios de un cierto tipo y que estan en el rango [puntMin,puntMax]*/
         Lista desafioPuntRango = infoD.listarRango(puntMin, puntMax);
         int i = 1, cantD = desafioPuntRango.longitud();
         String cad = "";
@@ -855,6 +931,9 @@ public class Juego {
     }
 
     public static void consultasSobreEquipos(Grafo plano, TDB infoE, MapeoAMuchos desafiosR, TablaDeBusqueda infoD, TablaDeBusqueda infoH, MapeoAMuchos puertasCompletadas) {
+       /*este metodo le muestra al usuario un menu para hacer consultas sobre los equipos
+        luego trabaja segun la opcion seleccionada
+        */
         Equipo e = obtenerEquipo(infoE);
         if (e != null) {
             if (e.getHabitacionActual() == 0) {
@@ -913,6 +992,9 @@ public class Juego {
     }
 
     public static Equipo obtenerEquipo(TDB infoE) {
+        /*este metodo le pido al usuario el nombre de un equipo y luego lo busca en la estructura correspondiente
+        si lo encuentra lo retorna y sino retorna null
+        */
         System.out.println("Ingrese el nombre de el equipo");
         String codE = TecladoIn.readLine();
         Equipo e = (Equipo) infoE.obtenerDato(codE);
@@ -920,6 +1002,7 @@ public class Juego {
     }
 
     public static void consultasReducidasEquipo(Equipo e) {
+        /*este metodo le muestra al usuario consultas reducidas que puede realizar si no esta en una habitacion valida*/
         System.out.println("Dado que el equipo no se encuentra en una habitacion de la casa, podra solo pedir que se muestre la info del mismo. \n"
                 + "Si desea realiziar otro tipo de consultas por favor asegurese que el equipo se encuentre en una habitacion valida. ");
         System.out.println("Ingrese SI-Si desea mostrar la informacion,NO-Si desea volver al menu principal");
@@ -930,6 +1013,9 @@ public class Juego {
     }
 
     public static boolean jugarDesafio(Equipo e, Desafio d, MapeoAMuchos desafiosR) {
+        /*este metodo juega un desafio y lo registra en los desafios resueltos por equipo
+        devuelve true si el desafio no habia sido resuelto por el equipo 
+        false en el caso contrario*/
         boolean exito = desafiosR.asociar(e, d);
         //si ese desafio todavia no habia sido resuelto
         if (exito) {
@@ -940,10 +1026,11 @@ public class Juego {
     }
 
     public static boolean sePuedePasar(MapeoAMuchos puertasCompletadas, Equipo e, Habitacion h2, Grafo plano, TablaDeBusqueda infoH) {
+        /*este metodo averigua si se puede pasar desde la habitacion actual hasta la h2, sin pasar por h3 y sn superar el puntaje ingresado
+        devuelve true si se puede, false si no se puede*/
         int nroH = e.getHabitacionActual();
         Habitacion h = (Habitacion) infoH.obtenerDato(nroH);
         Puerta p = new Puerta(nroH, h2.getCodigo());
-        Puerta pVuelta = new Puerta(h2.getCodigo(),nroH);
         boolean exito = false;
 
         Lista puertas = puertasCompletadas.obtenerValores(e);
@@ -954,7 +1041,6 @@ public class Juego {
                 e.setPuntajeTotal(e.getPuntajeTotal() + e.getPuntajeActual());
                 e.setPuntajeActual(0);
                 puertasCompletadas.asociar(e, p);
-                puertasCompletadas.asociar(e, pVuelta);
                 exito = true;
             }
         } else {

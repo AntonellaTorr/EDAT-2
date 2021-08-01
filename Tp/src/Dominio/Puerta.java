@@ -56,10 +56,10 @@ public class Puerta {
             return false;
         }
         final Puerta other = (Puerta) obj;
-        if (this.codHabDestino != other.codHabDestino) {
+        if (this.codHabDestino != other.codHabDestino && this.codHabDestino!=other.codHabOrigen)  {
             return false;
         }
-        if (this.codHabOrigen != other.codHabOrigen) {
+        if (this.codHabOrigen != other.codHabOrigen && this.codHabOrigen!=other.codHabDestino) {
             return false;
         }
         return true;

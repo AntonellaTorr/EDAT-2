@@ -16,7 +16,7 @@ public class Grafo {
         this.inicio=null;
     }
     public boolean insertarVertice(Object nuevoVertice){
-        //busca si el vertice ya esta presente en el grafo
+        //este metodo devuelve false si el elemento a insertar ya se encuentra en el grafo y true si no es asi
         NodoVert n= ubicarVertice(nuevoVertice,this.inicio);
         boolean exito=false;
         //si no lo esta lo inserta
@@ -27,6 +27,7 @@ public class Grafo {
         return exito;
     }
     private NodoVert ubicarVertice(Object elem,NodoVert n){
+        //este metodo busca el vertice en la lista apartir de n 
         NodoVert aux= n;
         while (aux!=null && !aux.getElem().equals(elem)){
             aux=aux.getSigVertice();
@@ -34,13 +35,14 @@ public class Grafo {
         return aux;
     }
     public boolean eliminarVertice(Object vertice){
+        //este metodo devuelve true si el elemento se encontraba en el grafo y false si no lo hacia
         NodoVert aux=this.inicio;
         boolean exito=false;
-        //si el vertice a eliminar se encuentra al principio de la lista seteo el inicio al siguiente
+        //si el vertice a eliminar se encuentra al principio de la lista 
         if (this.inicio.getElem().equals(vertice)){
+            //se eliminan todos los arcos que tiene como origen o destino al vertice a eliminar
             eliminarArcos(this.inicio);
             this.inicio=this.inicio.getSigVertice();
-            
             exito=true;
         }
         else{
@@ -48,7 +50,7 @@ public class Grafo {
             while (aux!=null && !exito){
                 //si el vertice siguiente al que estoy parado tiene el vertice a eliminar le seteo el siguiente al proximo
                 if(aux.getSigVertice()!=null && aux.getSigVertice().getElem().equals(vertice)){
-                    //elimino al vertice de la lista
+                    //elimina todos los arcos  se seteo el inicio al siguiente vertice
                     eliminarArcos(aux.getSigVertice());
                     aux.setSigVertice(aux.getSigVertice().getSigVertice());
                     exito=true;
@@ -71,12 +73,16 @@ public class Grafo {
         }
     }
      public boolean insertarArco (Object origen, Object destino, int etiqueta){
+        /*Este metodo inserta un arco entre los dos elementos recibidos por parametro
+          Devuelve true si ambos vertices existen y si ya no existia un arco entre ellos
+          Devuele false en el caso contrario
+         */
         boolean exito=false;
         //se ubican los vertices de origen y destino
         NodoVert nodoO=ubicarVertice(origen,this.inicio);
         NodoVert nodoD=ubicarVertice(destino,this.inicio);
         //si ambos vertices se encuentran en el grafo
-        if (nodoO!=null && nodoD!=null){
+        if (!existeArco(origen,destino)&& nodoO!=null && nodoD!=null){
             nodoO.setPrimerAdy(new NodoAdy (nodoD, nodoO.getPrimerAdy(),etiqueta));
             nodoD.setPrimerAdy(new NodoAdy (nodoO, nodoD.getPrimerAdy(),etiqueta));
             exito=true;
@@ -84,10 +90,14 @@ public class Grafo {
         return exito;
     }
     public boolean existeVertice(Object verticeBuscado){
+        /*retorna true si existe el vertice en el grafo false en el caso contrario*/
         return ubicarVertice(verticeBuscado,this.inicio)!=null;
     }
  
     public boolean eliminarArco(Object origen, Object destino){
+        /*Este metodo devuelve true si ambos elementos existian y habia un arco entre ellos
+         false en el caso contrario        
+        */
         NodoVert nodoO=ubicarVertice(origen,this.inicio);
         NodoVert nodoD=ubicarVertice(destino,this.inicio);
         boolean exito=false;
@@ -99,7 +109,8 @@ public class Grafo {
         return exito;
     }
     private boolean eliminarArcoAux(NodoVert nodoO,NodoVert nodoD){
-        //este metodo elimina el arco entre el nodoO y el nodoD
+        /*este metodo elimina el arco entre el nodoO y el nodoD devuelve true si lo encuentra
+        false en el caso contrario*/
         boolean encontrado=false;
         NodoAdy aux=nodoO.getPrimerAdy();
         if (aux.getVertice().equals(nodoD)){
@@ -118,12 +129,17 @@ public class Grafo {
     }
     
     public boolean existeArco(Object origen, Object destino){
+        /*este metodo retorna true si existe un arco entre los dos elementos ingresados
+        devuelve false en el caso en que no exista alguno de los dos elementos en el grafo
+        o no exista el arco entre ellos 
+        */
         NodoVert nodoO=ubicarVertice(origen,this.inicio);
         NodoVert nodoD=ubicarVertice(destino,this.inicio);
         return verificarArco(nodoO, nodoD);
         
     }
     private boolean verificarArco(NodoVert nodoO, NodoVert nodoD){
+        /*este metodo busca el arco entre los nodos recibidos por parametro*/
         boolean encontrado=false;
         if (nodoO!=null && nodoD!=null){
             NodoAdy aux=nodoO.getPrimerAdy();
@@ -141,6 +157,10 @@ public class Grafo {
     }
 
     public boolean existeCamino (Object origen, Object destino){
+        /*este metodo retorna true si existe un camino entre ambos elementos ingresados por parametro
+        devuelve false en el caso en que alguno de los dos elementos no se encuentre en el grafo o si 
+        no existe el camino 
+        */
         //busca el nodo origen de el camino
         NodoVert o=ubicarVertice(origen,this.inicio);
         HashSet visitados= new HashSet ();
@@ -148,11 +168,11 @@ public class Grafo {
     }
 
     private boolean buscarCamino(NodoVert n, Object destino,HashSet visitados){
+        /*metodo auxiliar recursivo que busca la existencia de un camino entre el elemento que contiene el nodo n y el destino
+        retorna true en el caso de que lo encuentre y false si no lo hace*/
         boolean encontrado=false;
         if (n!=null){
-            //añade en visitados el nodo actual
             visitados.add(n.getElem());
-            //busca los caminos en los nodos adyacentes
             NodoAdy ad=n.getPrimerAdy();
             //si el elemento del adyacente coincide con el de destino se encontro un camino
             if (ad.getVertice().getElem().equals(destino)){
@@ -173,6 +193,7 @@ public class Grafo {
     }
 
     public HashSet listarEnProfundidad(){
+        /*este metodo lista en profundidad los vertices del grafo*/
         HashSet visitados= new HashSet ();
         NodoVert u= this.inicio;
         while (u!=null){
@@ -186,6 +207,7 @@ public class Grafo {
         return visitados;
     }
     private void profundidadDesde(NodoVert n, HashSet visitados){
+        /*metodo auxiliar recursivo que va listando en profundidad todos los vertices del grafo*/
         if (n!=null){
             visitados.add(n.getElem());
             NodoAdy v=n.getPrimerAdy();
@@ -200,6 +222,9 @@ public class Grafo {
        
     }
     public Lista caminoMasLargo(Object origen, Object destino){
+        /*este metodo devuelve una lista con el camino mas largo en el grafo
+        retorna una lista vacia en el caso en que alguno de los dos elementos ingresado por parametro no exista
+        o si no existe un camino entre ellos*/
         NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMax= new Lista();
         Lista visitados= new Lista();
@@ -207,11 +232,13 @@ public class Grafo {
         
     }
      private Lista caminoMasLargoAux(NodoVert n, Lista visitados, Object destino, int longitudMayor, Lista caminoMax){
-         //intentar mejorar los llamados a longitud
+        /*este metodo auxiliar recursivo busca el camino mas largo entre el elemento que tiene n y el de destino
+        retorna el caminoMaximo encontrado*/
         int longitudActual;
         if (n!=null){
             longitudActual=visitados.longitud();
             visitados.insertar(n.getElem(),longitudActual+1);
+            //si se encontro un camino
             if(n.getElem().equals(destino)){
                 if (longitudActual>=longitudMayor){
                     caminoMax=visitados.clone();                    
@@ -235,6 +262,9 @@ public class Grafo {
        
     }
      public Lista caminoMasCorto(Object origen, Object destino){
+        /*este metodo devuelve una lista con el camino mas corto en el grafo
+        retorna una lista vacia en el caso en que alguno de los dos elementos ingresado por parametro no exista
+        o si no existe un camino entre ellos*/
         NodoVert n=ubicarVertice(origen,this.inicio);
         Lista caminoMin= new Lista();
         Lista visitados= new Lista();
@@ -242,6 +272,8 @@ public class Grafo {
         
     }
      private Lista caminoMasCortoAux(NodoVert n, Lista visitados, Object destino, int longitudMin, Lista caminoMin){
+         /*este metodo auxiliar recursivo busca el camino mas corto entre el elemento que tiene n y el de destino
+        retorna el caminoMin encontrado*/
         int longitudActual;
         if (n!=null){
             longitudActual=visitados.longitud();
@@ -271,6 +303,7 @@ public class Grafo {
    
      }
      public Lista listarEnAnchura(){
+        /*este devuelve una lista con los vertices del grafo listados en anchura*/
         Lista visitados= new Lista ();
         NodoVert u= this.inicio;
         while (u!=null){
@@ -283,6 +316,7 @@ public class Grafo {
         return visitados;
      }
     private void anchuraDesde(NodoVert verticeInicial,Lista  visitados){
+        /*este metodo auxiliar recursivo lista en anchura los vertices del grafo*/
         Cola q= new Cola ();
         q.poner(verticeInicial);
         visitados.insertar(verticeInicial.getElem(), visitados.longitud()+1);
@@ -304,6 +338,7 @@ public class Grafo {
      }
     @Override
     public String toString (){
+        /*este metodo devuelve una cadena con los vertices del grafo y sus respectivos nodos adyacentes*/
         NodoVert aux=this.inicio;
         String cadena="";
         while (aux!=null){
@@ -322,13 +357,18 @@ public class Grafo {
         
     }
     public boolean esVacio(){
+        /*retorna true si no hay vertices el grafo
+        false en el caso contrario
+        */
         return this.inicio==null;
     }
     public void vaciar(){
+        /*vacia el grafo*/
         this.inicio=null;
     }
     @Override
     public Grafo clone(){
+        /*este metodo devuelve un grafo, el cual es una copia del original*/
         Grafo clone= new Grafo();
         if (this.inicio!=null){
             //copia el inicio de la lista de vertices
@@ -356,7 +396,7 @@ public class Grafo {
         return clone;
     }
     private void copiaNodosAdy (NodoVert n, NodoVert c, NodoVert inicioClone){
-        //este metodo clona los nodos adyacentes del nodo c recibido por parametro
+        /*este metodo clona los nodos adyacentes del nodo c recibido por parametro*/
         NodoAdy aux=n.getPrimerAdy();
         if (aux!=null){
             //copia el primer nodo adyacente
@@ -373,12 +413,15 @@ public class Grafo {
     }
 
     public Lista buscarAdyacentes(Object h){
-        //este metodo almacena en una lista todos los nodos adyacentes y su respectiva etiqueta
-        //agregar arreglo de vertice y 
+        /*este metodo almacena en una lista todos los nodos adyacentes al elemento ingresado por parametro, en las posiciones impares,
+        y sus respectivas etiquetas en las posiciones pares
+        Devuelve una lista vacia en el caso en que el elemento no exista en el grafo
+        */
         NodoVert u= ubicarVertice(h,this.inicio);
         Lista adyacentes= new Lista ();
         int pos=1;
         if (u!=null){
+            //recorre la lista de adyacentes listandolos 
             NodoAdy ad= u.getPrimerAdy();
             while (ad!=null){
                 adyacentes.insertar(ad.getVertice().getElem(),pos);
@@ -391,13 +434,17 @@ public class Grafo {
         return adyacentes;
     }
     public boolean esPosibleLlegar (Object  h, Object h2, int peso){
-        //este metodo averigua si es posible llegar de h a h2 sin superar el puntaje recibido por parametro
+        /*este metodo devuelve true si posible llegar de h a h2 sin superar el peso recibido por parametro
+        devuelve false:
+        -en el caso en que alguno o los dos elementos no esten el grafo
+        -en el caso en que no existan caminos bajo las condiciones dadas */
         NodoVert o=ubicarVertice(h,this.inicio);
         Lista visitados= new Lista ();
         //llamada a metodo auxiliar
         return esPosibleLlegar(o, h2,visitados,peso,0);
     }
     private boolean esPosibleLlegar(NodoVert n, Object destino,Lista visitados,int peso, int pesoTot){
+        /*este metodo averigua si es posible llegar de n a destino sin superar el peso recibido por parametro*/
         boolean encontrado=false;
         if (n!=null){
             visitados.insertar(n.getElem(),1);
@@ -423,7 +470,9 @@ public class Grafo {
          return encontrado;
     }
     public Cola sinPasarPor (Object h, Object h2, Object h3, int peso){
-        //este metodo devuelve todos los caminos entre h y h2 sin pasar por h3 y sin superar el peso recibido por parametro
+        /*este metodo devuelve todos los caminos entre h y h2 sin pasar por h3 y sin superar el peso recibido por parametro
+        devuelve la cola vacia en el caso en que no exista h o h2 o en el caso en que no existan caminos bajo las condiciones
+        dadas*/
         //ubicamos el nodo que contiene a h
         NodoVert o=ubicarVertice(h,this.inicio);
         //creacion de listas auxiliares
@@ -432,11 +481,12 @@ public class Grafo {
         sinPasarPor(o, h2,h3,visitados,peso,0,caminos);
         return caminos;
     }
-    private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int puntaje, int puntajeTot,Cola caminos){
+    private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int peso, int pesoTot,Cola caminos){
+        /*este metodo devuelve los caminos entre el elemento que contiene n y destino sin pasar por h3 y sin superar el peso
+        recibido por parametro*/
         if (n!=null){
             visitados.insertar(n.getElem(),visitados.longitud()+1);
-            //inserta en la lista de camino actual
-            //si se encontro un camino se inserta en la lista de caminos
+            //si se encontro un camino lo inserta en la cola
             if(n.getElem().equals(destino)){
                Lista cam=visitados.clone();
                caminos.poner(cam);
@@ -447,8 +497,8 @@ public class Grafo {
                     //si no visitamos al nodo todavia y si no es igual al h3 
                     if(visitados.localizar(ad.getVertice().getElem())<0 && !ad.getVertice().getElem().equals(h3)){
                             //si para pasar al nodo adyacente no se supera el puntaje maximo llamamos recursivamente
-                            if (puntajeTot+ad.getEtiqueta()<=puntaje){
-                                 sinPasarPor(ad.getVertice(),destino,h3, visitados,puntaje,puntajeTot+ad.getEtiqueta(),caminos);
+                            if (pesoTot+ad.getEtiqueta()<=peso){
+                                 sinPasarPor(ad.getVertice(),destino,h3, visitados,peso,pesoTot+ad.getEtiqueta(),caminos);
                                  visitados.eliminar(visitados.longitud());
                             }
                     }
@@ -463,6 +513,9 @@ public class Grafo {
  
 
     public boolean puedePasar(Object hA,Object hD, int pesoAct){
+        /*este metodo devuelve true si se puede pasar desde hA a h2 con el peso actual
+        devuelve false en el caso en que tanto hA como hD no existan en el grafo o en el 
+        caso en que el pesoAct sea mayor a la etiqueta*/
         NodoVert o=ubicarVertice(hA,this.inicio);
         boolean exito=false, cortar=false;
         if (o!=null){
@@ -486,11 +539,15 @@ public class Grafo {
         
     }
     public boolean cambiarPeso(Object origen, Object destino, int nuevoPeso){
+    /*este metodo devuelve true en el caso en que existan los elementos origen y destino y
+     exista un arco entre ellos, por lo que se puede cambiar el peso. false en el caso contrario
+    */
     boolean encontrado=false;
     NodoVert o=ubicarVertice(origen,this.inicio);
     if (o!=null){
         NodoAdy ad=o.getPrimerAdy();
         while (!encontrado && ad!=null){
+            //si se encuentra el destino se cambia el peso
             if (ad.getVertice().getElem().equals(destino)){
                 ad.setEtiqueta(nuevoPeso);
                 encontrado=true;
