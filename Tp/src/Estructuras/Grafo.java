@@ -72,29 +72,7 @@ public class Grafo {
             adyacente=adyacente.getSigAdyacente();
         }
     }
-     public boolean insertarArco (Object origen, Object destino, int etiqueta){
-        /*Este metodo inserta un arco entre los dos elementos recibidos por parametro
-          Devuelve true si ambos vertices existen y si ya no existia un arco entre ellos
-          Devuele false en el caso contrario
-         */
-        boolean exito=false;
-        //se ubican los vertices de origen y destino
-        NodoVert nodoO=ubicarVertice(origen,this.inicio);
-        NodoVert nodoD=ubicarVertice(destino,this.inicio);
-        //si ambos vertices se encuentran en el grafo
-        if (!existeArco(origen,destino)&& nodoO!=null && nodoD!=null){
-            nodoO.setPrimerAdy(new NodoAdy (nodoD, nodoO.getPrimerAdy(),etiqueta));
-            nodoD.setPrimerAdy(new NodoAdy (nodoO, nodoD.getPrimerAdy(),etiqueta));
-            exito=true;
-        }
-        return exito;
-    }
-    public boolean existeVertice(Object verticeBuscado){
-        /*retorna true si existe el vertice en el grafo false en el caso contrario*/
-        return ubicarVertice(verticeBuscado,this.inicio)!=null;
-    }
- 
-    public boolean eliminarArco(Object origen, Object destino){
+        public boolean eliminarArco(Object origen, Object destino){
         /*Este metodo devuelve true si ambos elementos existian y habia un arco entre ellos
          false en el caso contrario        
         */
@@ -127,6 +105,29 @@ public class Grafo {
         }
         return encontrado;
     }
+     public boolean insertarArco (Object origen, Object destino, int etiqueta){
+        /*Este metodo inserta un arco entre los dos elementos recibidos por parametro
+          Devuelve true si ambos vertices existen y si ya no existia un arco entre ellos
+          Devuele false en el caso contrario
+         */
+        boolean exito=false;
+        //se ubican los vertices de origen y destino
+        NodoVert nodoO=ubicarVertice(origen,this.inicio);
+        NodoVert nodoD=ubicarVertice(destino,this.inicio);
+        //si ambos vertices se encuentran en el grafo
+        if (!existeArco(origen,destino)&& nodoO!=null && nodoD!=null){
+            nodoO.setPrimerAdy(new NodoAdy (nodoD, nodoO.getPrimerAdy(),etiqueta));
+            nodoD.setPrimerAdy(new NodoAdy (nodoO, nodoD.getPrimerAdy(),etiqueta));
+            exito=true;
+        }
+        return exito;
+    }
+    public boolean existeVertice(Object verticeBuscado){
+        /*retorna true si existe el vertice en el grafo false en el caso contrario*/
+        return ubicarVertice(verticeBuscado,this.inicio)!=null;
+    }
+ 
+
     
     public boolean existeArco(Object origen, Object destino){
         /*este metodo retorna true si existe un arco entre los dos elementos ingresados

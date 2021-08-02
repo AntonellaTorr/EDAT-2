@@ -85,7 +85,6 @@ public class TDB {
             encontrado = aux.getClave().equals(clave);
             aux = aux.getEnlace();
         }
-        //si lo encuentra va a retornar true y sino false
         return encontrado;
     }
 

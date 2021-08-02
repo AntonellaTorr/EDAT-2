@@ -9,11 +9,7 @@ package Dominio;
  *
  * @author Anto
  */
-public class Habitacion {
-
- 
-
-    
+public class Habitacion {    
     private int codigo;
     private String nombre;
     private int planta;

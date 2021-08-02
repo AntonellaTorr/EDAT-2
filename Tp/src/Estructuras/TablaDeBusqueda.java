@@ -5,7 +5,6 @@
  */
 package Estructuras;
 
-import Dominio.Desafio;
 
 /**
  *
@@ -14,7 +13,7 @@ import Dominio.Desafio;
 public class TablaDeBusqueda {
 
     private NodoAVLDic raiz;
-
+    //constructor
     public TablaDeBusqueda() {
         this.raiz = null;
     }

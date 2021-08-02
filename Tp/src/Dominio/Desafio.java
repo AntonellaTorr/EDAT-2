@@ -20,9 +20,6 @@ public class Desafio {
         this.nombre = nombre;
         this.tipo = tipo;
     }
-    
- 
-
     public int getPuntajeAOtorgar() {
         return puntajeAOtorgar;
     }

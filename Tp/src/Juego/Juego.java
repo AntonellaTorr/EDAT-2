@@ -80,7 +80,7 @@ public class Juego {
     public static void escribirLog(String texto) {
         /*este metodo escribi las operaciones realizas durante el juego en un archivo de texto*/
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\ABM.txt", true));
+            PrintWriter writer = new PrintWriter(new FileWriter("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\LOG.txt", true));
             writer.println(texto);
             writer.close();
         } catch (Exception e) {
@@ -130,23 +130,6 @@ public class Juego {
         return e.insertar(nombre, nuevoE);
     }
 
-    /* public static boolean agregarDesafioResuelto(String nombreEquipo, String puntajeDes, MapeoAMuchos desafiosR, TDB infoE, TablaDeBusqueda infoD) {
-        //agregar verificacion de si no resolvio desafio el equipo
-        boolean exito;
-        int puntajeD= Integer.parseInt(puntajeDes);
-        Desafio d = (Desafio) infoD.obtenerDato(puntajeD);
-        Equipo e = (Equipo) infoE.obtenerDato(nombreEquipo);
-        exito = d != null && e != null;
-        if (exito) {
-            //si el equipo todavia no habia resuelto el desafio le agregamos el puntaje
-            if (desafiosR.asociar(e, d)){
-                 e.setPuntajeActual(e.getPuntajeActual()+puntajeD);
-            }
-          
-        }
-        return exito;
-    }
-     */
     public static void administrarSistema() {
         /*este metodo administra el sistema de juego*/
         //creacion de las estructuras a utilizar durante el juego
@@ -202,6 +185,13 @@ public class Juego {
         int n = TecladoIn.readLineInt();
         return n;
     }
+    
+    public static void iniciarPrograma(String direccion, Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE) {
+        /*este metodo inicia el proceso de lectura del archivo con los datos de las habitaciones, las puertas, los equipos y los desafios*/
+        String texto = leerTxt("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
+        leerArchivo(texto, plano, infoH, infoD, infoE);
+
+    }
 
     public static void mostrarSistema(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR,MapeoAMuchos puertasSuperadas) {
         /*este metodo muestra un menu para elegir que estructura desea ver el usuario, luego la muestra*/
@@ -238,14 +228,6 @@ public class Juego {
         
 
     }
-
-    public static void iniciarPrograma(String direccion, Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE) {
-        /*este metodo inicia el proceso de lectura del archivo con los datos de las habitaciones, las puertas, los equipos y los desafios*/
-        String texto = leerTxt("C:\\Users\\Anto\\Documents\\UNCO\\Tpfinal\\datos.txt");
-        leerArchivo(texto, plano, infoH, infoD, infoE);
-
-    }
-
     public static void ABM(Grafo plano, TablaDeBusqueda infoH, TablaDeBusqueda infoD, TDB infoE, MapeoAMuchos desafiosR) {
         /*este metodo muestra un menu para elegir con que operar para las bajas altas y modificaciones*/
         System.out.println("Ingrese H- si desea operar con las habitaciones");
@@ -1004,7 +986,7 @@ public class Juego {
     public static void consultasReducidasEquipo(Equipo e) {
         /*este metodo le muestra al usuario consultas reducidas que puede realizar si no esta en una habitacion valida*/
         System.out.println("Dado que el equipo no se encuentra en una habitacion de la casa, podra solo pedir que se muestre la info del mismo. \n"
-                + "Si desea realiziar otro tipo de consultas por favor asegurese que el equipo se encuentre en una habitacion valida. ");
+                + "Si desea realizar otro tipo de consultas por favor asegurese que el equipo se encuentre en una habitacion valida. ");
         System.out.println("Ingrese SI-Si desea mostrar la informacion,NO-Si desea volver al menu principal");
         String res = TecladoIn.readLine();
         if (res.equalsIgnoreCase("SI")) {
@@ -1062,24 +1044,7 @@ public class Juego {
     }
 
     public static void main(String[] args) {
-        // TODO code application logic here
         administrarSistema();
-//        TablaDeBusqueda a= new TablaDeBusqueda ();
-//        a.insertar(50, "Cincuenta");
-//        a.insertar(20, "Veinte");
-//        a.insertar(70, "SET");
-//        a.insertar(60, "SESEN");
-//        a.insertar(30,"TRIENTA");
-//        a.insertar(80, "OCHENTA");
-//        a.insertar(87, "OCHENTAYSIETE");
-//        a.insertar(19,"DIEZ Y NUEVE");
-//        a.insertar(25,"VEINTICINCO");
-//        System.out.println (a.listarClaves());
-//         System.out.println (a.listarDatos());
-//         TablaDeBusqueda b=a.clone();
-//         a.eliminar(50);
-//         System.out.println ("ARBOL ORIGINAL SIN EL 50=>"+a.toString());
-//        System.out.println ("ARBOL CLONE"+b.toString ());
 
     }
 
