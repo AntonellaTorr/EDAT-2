@@ -10,6 +10,7 @@ package Dominio;
  * @author Anto
  */
 public class Habitacion {    
+
     private int codigo;
     private String nombre;
     private int planta;
@@ -23,6 +24,10 @@ public class Habitacion {
         this.planta = planta;
         this.mCuadrados = mCuadrados;
         this.tieneSalida = tieneSalida;
+    }
+    
+    public Habitacion(int codigo) {
+        this.codigo = codigo;
     }
     public int getCodigo(){
         return codigo;
@@ -92,7 +97,8 @@ public class Habitacion {
     }
     @Override
     public String toString() {
-        return "Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida +" cantEquiposOcupandola=" + cantEquiposOcupandola;
+      return "Habitacion " + "codigo=" + codigo + ", nombre=" + nombre + ", planta=" + planta + ", mCuadrados=" + mCuadrados + ", tieneSalida=" + tieneSalida +" cantEquiposOcupandola=" + cantEquiposOcupandola;
+ 
     }
   
 }

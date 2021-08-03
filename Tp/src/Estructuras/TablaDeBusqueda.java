@@ -31,7 +31,6 @@ public class TablaDeBusqueda {
             exito = insertarAux(this.raiz, clave, dato);
             this.raiz.recalcularAltura();
             chequearBalanceo(this.raiz, null);
-            this.raiz.recalcularAltura();
         }
         return exito;
     }
@@ -52,7 +51,6 @@ public class TablaDeBusqueda {
                 exito = insertarAux(nodo.getIzquierdo(), clave, dato);
                 nodo.recalcularAltura();
                 chequearBalanceo(nodo.getIzquierdo(), nodo);
-                nodo.recalcularAltura();
 
             }
         } else {
@@ -67,7 +65,6 @@ public class TablaDeBusqueda {
                     exito = insertarAux(nodo.getDerecho(), clave, dato);
                     nodo.recalcularAltura();
                     chequearBalanceo(nodo.getDerecho(), nodo);
-                    nodo.recalcularAltura();
                 }
             }
 
@@ -83,9 +80,7 @@ public class TablaDeBusqueda {
         boolean exito = eliminarAux(this.raiz, clave, null);
         this.raiz.recalcularAltura();
         chequearBalanceo(this.raiz, null);
-        this.raiz.recalcularAltura();
         return exito;
-
     }
 
     private boolean eliminarAux(NodoAVLDic nodo, Comparable clave, NodoAVLDic padre) {
@@ -120,12 +115,10 @@ public class TablaDeBusqueda {
                     encontrado = eliminarAux(nodo.getIzquierdo(), clave, nodo);
                     nodo.recalcularAltura();
                     chequearBalanceo(nodo, padre);
-                    nodo.recalcularAltura();
                 } else {
                     encontrado = eliminarAux(nodo.getDerecho(), clave, nodo);
                     nodo.recalcularAltura();
                     chequearBalanceo(nodo, padre);
-                    nodo.recalcularAltura();
 
                 }
 
@@ -192,6 +185,8 @@ public class TablaDeBusqueda {
         } else {
             //si el hijo derecho no es null avanzo
             candidato = encontrarCandidato(hijoIzquierdo.getDerecho(), hijoIzquierdo);
+            padre.recalcularAltura();
+            chequearBalanceo(hijoIzquierdo,padre);
         }
         return candidato;
     }
@@ -240,6 +235,7 @@ public class TablaDeBusqueda {
         //si el padre es null a nueva raiz sera n
         if (padre == null) {
             this.raiz = n;
+            this.raiz.recalcularAltura();
         } else {
             //sino buscamos el lado al que hay que setearle al padre
             if (padre.getIzquierdo().equals(nodo)) {
@@ -247,7 +243,9 @@ public class TablaDeBusqueda {
             } else {
                 padre.setDerecho(n);
             }
+            padre.recalcularAltura();
         }
+        
     }
 
     private NodoAVLDic rotarIzquierda(NodoAVLDic r) {

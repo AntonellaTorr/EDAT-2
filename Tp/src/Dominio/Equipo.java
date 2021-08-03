@@ -13,12 +13,15 @@ import java.util.Objects;
  */
 public class Equipo {
 
-
     private String nombre;
     private int puntajeExigido;
     private int puntajeTotal;
     private int habitacionActual;
     private int puntajeActual;
+
+    public Equipo(String nombre) {
+        this.nombre = nombre;
+    }
     //
     public Equipo(String nombre, int puntajeExigido, int habitacionActual) {
         this.nombre = nombre;

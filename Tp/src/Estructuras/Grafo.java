@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package Estructuras;
-import java.util.HashSet;
+import java.util.*;
+
 /**
  *
  * @author Anto
@@ -17,7 +18,7 @@ public class Grafo {
     }
     public boolean insertarVertice(Object nuevoVertice){
         //este metodo devuelve false si el elemento a insertar ya se encuentra en el grafo y true si no es asi
-        NodoVert n= ubicarVertice(nuevoVertice,this.inicio);
+        NodoVert n= ubicarVertice(nuevoVertice);
         boolean exito=false;
         //si no lo esta lo inserta
         if (n==null){
@@ -26,9 +27,9 @@ public class Grafo {
         }
         return exito;
     }
-    private NodoVert ubicarVertice(Object elem,NodoVert n){
+    private NodoVert ubicarVertice(Object elem){
         //este metodo busca el vertice en la lista apartir de n 
-        NodoVert aux= n;
+        NodoVert aux= this.inicio;
         while (aux!=null && !aux.getElem().equals(elem)){
             aux=aux.getSigVertice();
         }
@@ -67,7 +68,6 @@ public class Grafo {
         //este metodo elimina todos los arcos que tiene como origen/destino al nodo recibido por parametro
         NodoAdy adyacente=n.getPrimerAdy();
         while(adyacente!=null){
-            eliminarArcoAux(n, adyacente.getVertice());
             eliminarArcoAux(adyacente.getVertice(),n);
             adyacente=adyacente.getSigAdyacente();
         }
@@ -76,8 +76,8 @@ public class Grafo {
         /*Este metodo devuelve true si ambos elementos existian y habia un arco entre ellos
          false en el caso contrario        
         */
-        NodoVert nodoO=ubicarVertice(origen,this.inicio);
-        NodoVert nodoD=ubicarVertice(destino,this.inicio);
+        NodoVert nodoO=ubicarVertice(origen);
+        NodoVert nodoD=ubicarVertice(destino);
         boolean exito=false;
         //si existen ambos vertices llama al metodo eliminar
         if (nodoO!=null && nodoD!=null){
@@ -112,8 +112,8 @@ public class Grafo {
          */
         boolean exito=false;
         //se ubican los vertices de origen y destino
-        NodoVert nodoO=ubicarVertice(origen,this.inicio);
-        NodoVert nodoD=ubicarVertice(destino,this.inicio);
+        NodoVert nodoO=ubicarVertice(origen);
+        NodoVert nodoD=ubicarVertice(destino);
         //si ambos vertices se encuentran en el grafo
         if (!existeArco(origen,destino)&& nodoO!=null && nodoD!=null){
             nodoO.setPrimerAdy(new NodoAdy (nodoD, nodoO.getPrimerAdy(),etiqueta));
@@ -124,7 +124,7 @@ public class Grafo {
     }
     public boolean existeVertice(Object verticeBuscado){
         /*retorna true si existe el vertice en el grafo false en el caso contrario*/
-        return ubicarVertice(verticeBuscado,this.inicio)!=null;
+        return ubicarVertice(verticeBuscado)!=null;
     }
  
 
@@ -134,8 +134,8 @@ public class Grafo {
         devuelve false en el caso en que no exista alguno de los dos elementos en el grafo
         o no exista el arco entre ellos 
         */
-        NodoVert nodoO=ubicarVertice(origen,this.inicio);
-        NodoVert nodoD=ubicarVertice(destino,this.inicio);
+        NodoVert nodoO=ubicarVertice(origen);
+        NodoVert nodoD=ubicarVertice(destino);
         return verificarArco(nodoO, nodoD);
         
     }
@@ -163,7 +163,7 @@ public class Grafo {
         no existe el camino 
         */
         //busca el nodo origen de el camino
-        NodoVert o=ubicarVertice(origen,this.inicio);
+        NodoVert o=ubicarVertice(origen);
         HashSet visitados= new HashSet ();
         return buscarCamino(o, destino,visitados);
     }
@@ -226,7 +226,7 @@ public class Grafo {
         /*este metodo devuelve una lista con el camino mas largo en el grafo
         retorna una lista vacia en el caso en que alguno de los dos elementos ingresado por parametro no exista
         o si no existe un camino entre ellos*/
-        NodoVert n=ubicarVertice(origen,this.inicio);
+        NodoVert n=ubicarVertice(origen);
         Lista caminoMax= new Lista();
         Lista visitados= new Lista();
         return  caminoMasLargoAux(n, visitados, destino, 0, caminoMax);
@@ -266,7 +266,7 @@ public class Grafo {
         /*este metodo devuelve una lista con el camino mas corto en el grafo
         retorna una lista vacia en el caso en que alguno de los dos elementos ingresado por parametro no exista
         o si no existe un camino entre ellos*/
-        NodoVert n=ubicarVertice(origen,this.inicio);
+        NodoVert n=ubicarVertice(origen);
         Lista caminoMin= new Lista();
         Lista visitados= new Lista();
         return  caminoMasCortoAux(n, visitados, destino, 0, caminoMin);
@@ -291,10 +291,14 @@ public class Grafo {
                 NodoAdy v=n.getPrimerAdy();
                 while (v!=null){
                     if(visitados.localizar(v.getVertice().getElem())<0){
-                        caminoMin=caminoMasCortoAux(v.getVertice(), visitados,destino,longitudMin,caminoMin);
-                        longitudMin=caminoMin.longitud();
-                        //se reestablece la lista a lo que era antes de llamar recursivamente 
-                        visitados.eliminar(visitados.longitud());
+                        //si todavia no se ha encontrado algun camino o si la longitudActual no supera la de el camino minimo encontrado entonces llamada
+                        if (longitudMin==0 || longitudActual+1<longitudMin){
+                            caminoMin=caminoMasCortoAux(v.getVertice(), visitados,destino,longitudMin,caminoMin);
+                            longitudMin=caminoMin.longitud();
+                            //se reestablece la lista a lo que era antes de llamar recursivamente 
+                            visitados.eliminar(visitados.longitud());
+                        }
+                        
                     }
                     v=v.getSigAdyacente();
                 }
@@ -369,6 +373,7 @@ public class Grafo {
     }
     @Override
     public Grafo clone(){
+        HashMap mapNodos= new HashMap(50);
         /*este metodo devuelve un grafo, el cual es una copia del original*/
         Grafo clone= new Grafo();
         if (this.inicio!=null){
@@ -376,18 +381,21 @@ public class Grafo {
             clone.inicio=new NodoVert(this.inicio.getElem(), null);
             NodoVert c=clone.inicio;
             NodoVert n=this.inicio;
+            mapNodos.put(n, c);
             //copia de todos los vertices en la lista
             n=n.getSigVertice();
             while (n!=null){
                 c.setSigVertice(new NodoVert (n.getElem(),null));
                 c=c.getSigVertice();
+                mapNodos.put(n, c);
                 n=n.getSigVertice();
+               
             }
             c=clone.inicio;
             n=this.inicio;
             //copia de los vertices adyacentes
             while(n!=null){
-                copiaNodosAdy(n,c,clone.inicio);
+                copiaNodosAdy(n,c,mapNodos);
                 n=n.getSigVertice();
                 c=c.getSigVertice();
             }
@@ -396,17 +404,17 @@ public class Grafo {
      
         return clone;
     }
-    private void copiaNodosAdy (NodoVert n, NodoVert c, NodoVert inicioClone){
+    private void copiaNodosAdy (NodoVert n, NodoVert c,HashMap mapNodos ){
         /*este metodo clona los nodos adyacentes del nodo c recibido por parametro*/
         NodoAdy aux=n.getPrimerAdy();
         if (aux!=null){
             //copia el primer nodo adyacente
-            c.setPrimerAdy(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
+            c.setPrimerAdy(new NodoAdy ((NodoVert)mapNodos.get(aux.getVertice()),null,aux.getEtiqueta()));
             NodoAdy auxC=c.getPrimerAdy();
             aux=aux.getSigAdyacente();
             //si tiene mas adyacentes los copia
             while (aux!=null){
-                auxC.setSigAdyacente(new NodoAdy (ubicarVertice(aux.getVertice().getElem(),inicioClone),null,aux.getEtiqueta()));
+                auxC.setSigAdyacente(new NodoAdy ((NodoVert)mapNodos.get(aux.getVertice()),null,aux.getEtiqueta()));
                 aux=aux.getSigAdyacente();
                 auxC=auxC.getSigAdyacente();
             }
@@ -418,7 +426,7 @@ public class Grafo {
         y sus respectivas etiquetas en las posiciones pares
         Devuelve una lista vacia en el caso en que el elemento no exista en el grafo
         */
-        NodoVert u= ubicarVertice(h,this.inicio);
+        NodoVert u= ubicarVertice(h);
         Lista adyacentes= new Lista ();
         int pos=1;
         if (u!=null){
@@ -439,7 +447,7 @@ public class Grafo {
         devuelve false:
         -en el caso en que alguno o los dos elementos no esten el grafo
         -en el caso en que no existan caminos bajo las condiciones dadas */
-        NodoVert o=ubicarVertice(h,this.inicio);
+        NodoVert o=ubicarVertice(h);
         Lista visitados= new Lista ();
         //llamada a metodo auxiliar
         return esPosibleLlegar(o, h2,visitados,peso,0);
@@ -475,7 +483,7 @@ public class Grafo {
         devuelve la cola vacia en el caso en que no exista h o h2 o en el caso en que no existan caminos bajo las condiciones
         dadas*/
         //ubicamos el nodo que contiene a h
-        NodoVert o=ubicarVertice(h,this.inicio);
+        NodoVert o=ubicarVertice(h);
         //creacion de listas auxiliares
         Lista visitados= new Lista ();
         Cola caminos=new Cola();
@@ -517,7 +525,7 @@ public class Grafo {
         /*este metodo devuelve true si se puede pasar desde hA a h2 con el peso actual
         devuelve false en el caso en que tanto hA como hD no existan en el grafo o en el 
         caso en que el pesoAct sea mayor a la etiqueta*/
-        NodoVert o=ubicarVertice(hA,this.inicio);
+        NodoVert o=ubicarVertice(hA);
         boolean exito=false, cortar=false;
         if (o!=null){
             NodoAdy ad=o.getPrimerAdy();
@@ -544,7 +552,7 @@ public class Grafo {
      exista un arco entre ellos, por lo que se puede cambiar el peso. false en el caso contrario
     */
     boolean encontrado=false;
-    NodoVert o=ubicarVertice(origen,this.inicio);
+    NodoVert o=ubicarVertice(origen);
     if (o!=null){
         NodoAdy ad=o.getPrimerAdy();
         while (!encontrado && ad!=null){

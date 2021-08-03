@@ -24,10 +24,6 @@ public class Desafio {
         return puntajeAOtorgar;
     }
 
-    public void setPuntajeAOtorgar(int puntajeAOtorgar) {
-        this.puntajeAOtorgar = puntajeAOtorgar;
-    }
-
     public String getNombre() {
         return nombre;
     }
