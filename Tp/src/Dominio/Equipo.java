@@ -22,7 +22,6 @@ public class Equipo {
     public Equipo(String nombre) {
         this.nombre = nombre;
     }
-    //
     public Equipo(String nombre, int puntajeExigido, int habitacionActual) {
         this.nombre = nombre;
         this.puntajeExigido = puntajeExigido;

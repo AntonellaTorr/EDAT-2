@@ -20,7 +20,7 @@ public class Grafo {
         //este metodo devuelve false si el elemento a insertar ya se encuentra en el grafo y true si no es asi
         NodoVert n= ubicarVertice(nuevoVertice);
         boolean exito=false;
-        //si no lo esta lo inserta
+        //si no esta lo inserta
         if (n==null){
             this.inicio= new NodoVert(nuevoVertice, this.inicio);
             exito=true;
@@ -28,7 +28,7 @@ public class Grafo {
         return exito;
     }
     private NodoVert ubicarVertice(Object elem){
-        //este metodo busca el vertice en la lista apartir de n 
+        //este metodo busca el vertice en la lista  
         NodoVert aux= this.inicio;
         while (aux!=null && !aux.getElem().equals(elem)){
             aux=aux.getSigVertice();
@@ -41,7 +41,7 @@ public class Grafo {
         boolean exito=false;
         //si el vertice a eliminar se encuentra al principio de la lista 
         if (this.inicio.getElem().equals(vertice)){
-            //se eliminan todos los arcos que tiene como origen o destino al vertice a eliminar
+            //se eliminan todos los arcos que tiene como destino al vertice a eliminar
             eliminarArcos(this.inicio);
             this.inicio=this.inicio.getSigVertice();
             exito=true;
@@ -51,7 +51,7 @@ public class Grafo {
             while (aux!=null && !exito){
                 //si el vertice siguiente al que estoy parado tiene el vertice a eliminar le seteo el siguiente al proximo
                 if(aux.getSigVertice()!=null && aux.getSigVertice().getElem().equals(vertice)){
-                    //elimina todos los arcos  se seteo el inicio al siguiente vertice
+                    //se eliminan todos los arcos que tiene como destino al vertice a eliminar
                     eliminarArcos(aux.getSigVertice());
                     aux.setSigVertice(aux.getSigVertice().getSigVertice());
                     exito=true;
@@ -65,7 +65,7 @@ public class Grafo {
         return exito;
     }
     private void eliminarArcos(NodoVert n){
-        //este metodo elimina todos los arcos que tiene como origen/destino al nodo recibido por parametro
+        //este metodo elimina todos los arcos que tiene como destino al nodo recibido por parametro
         NodoAdy adyacente=n.getPrimerAdy();
         while(adyacente!=null){
             eliminarArcoAux(adyacente.getVertice(),n);
@@ -373,7 +373,7 @@ public class Grafo {
     }
     @Override
     public Grafo clone(){
-        HashMap mapNodos= new HashMap(50);
+        HashMap mapNodos= new HashMap();
         /*este metodo devuelve un grafo, el cual es una copia del original*/
         Grafo clone= new Grafo();
         if (this.inicio!=null){
@@ -482,13 +482,16 @@ public class Grafo {
         /*este metodo devuelve todos los caminos entre h y h2 sin pasar por h3 y sin superar el peso recibido por parametro
         devuelve la cola vacia en el caso en que no exista h o h2 o en el caso en que no existan caminos bajo las condiciones
         dadas*/
-        //ubicamos el nodo que contiene a h
-        NodoVert o=ubicarVertice(h);
-        //creacion de listas auxiliares
-        Lista visitados= new Lista ();
         Cola caminos=new Cola();
-        sinPasarPor(o, h2,h3,visitados,peso,0,caminos);
+        if (!h.equals(h3)){
+            //ubicamos el nodo que contiene a h
+            NodoVert o=ubicarVertice(h);
+            //creacion de listas auxiliares
+            Lista visitados= new Lista ();
+            sinPasarPor(o, h2,h3,visitados,peso,0,caminos);
+        }
         return caminos;
+        
     }
     private void sinPasarPor(NodoVert n, Object destino,Object h3,Lista visitados,int peso, int pesoTot,Cola caminos){
         /*este metodo devuelve los caminos entre el elemento que contiene n y destino sin pasar por h3 y sin superar el peso
@@ -504,7 +507,7 @@ public class Grafo {
                 NodoAdy ad=n.getPrimerAdy();
                 while (ad!=null){
                     //si no visitamos al nodo todavia y si no es igual al h3 
-                    if(visitados.localizar(ad.getVertice().getElem())<0 && !ad.getVertice().getElem().equals(h3)){
+                    if(!ad.getVertice().getElem().equals(h3) && visitados.localizar(ad.getVertice().getElem())<0 ){
                             //si para pasar al nodo adyacente no se supera el puntaje maximo llamamos recursivamente
                             if (pesoTot+ad.getEtiqueta()<=peso){
                                  sinPasarPor(ad.getVertice(),destino,h3, visitados,peso,pesoTot+ad.getEtiqueta(),caminos);
